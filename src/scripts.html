@@ -27774,6 +27774,31 @@ Verificado agora: ${hora}` : ''}`;
   };
 
   /**
+   * Helpers universais para abertura e fechamento de modais
+   */
+  function abrirModal(modalId) {
+    const modal = $(modalId);
+    if (!modal) {
+      console.warn('[MODAL] Elemento não encontrado:', modalId);
+      return;
+    }
+    modal.hidden = false;
+    modal.removeAttribute('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    modal.style.display = 'grid';
+    if (typeof protegerUiMapa === 'function') protegerUiMapa(modal);
+  }
+
+  function fecharModal(modalId) {
+    const modal = $(modalId);
+    if (!modal) return;
+    modal.hidden = true;
+    modal.setAttribute('hidden', '');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.style.display = 'none';
+  }
+
+  /**
    * Inicialização do Módulo de Patrimônio
    */
   function instalarModuloPatrimonio() {
@@ -27839,6 +27864,9 @@ Verificado agora: ${hora}` : ''}`;
 
     const btnCanc = $('btnCancelarPatrimonio');
     if (btnCanc) btnCanc.addEventListener('click', () => fecharModal('formPatrimonioModal'));
+
+    const overlayPat = $('formPatrimonioModal');
+    if (overlayPat) overlayPat.addEventListener('click', (e) => { if (e.target === overlayPat) fecharModal('formPatrimonioModal'); });
 
     // Botão Painel Gestão
     const btnGestao = $('gestaoPatrimonioBtn');
@@ -28210,6 +28238,9 @@ Verificado agora: ${hora}` : ''}`;
     const btnCanc = $('btnCancelarReclamacao');
     if (btnCanc) btnCanc.addEventListener('click', () => fecharModal('formReclamacaoModal'));
 
+    const overlayRec = $('formReclamacaoModal');
+    if (overlayRec) overlayRec.addEventListener('click', (e) => { if (e.target === overlayRec) fecharModal('formReclamacaoModal'); });
+
     // Painel Gestão Reclamações
     const btnGestao = $('gestaoReclamacoesBtn');
     if (btnGestao) {
@@ -28507,6 +28538,9 @@ Verificado agora: ${hora}` : ''}`;
 
     const btnVoltar = $('btnCancelarAssinatura');
     if (btnVoltar) btnVoltar.addEventListener('click', () => fecharModal('termoAssinaturaModal'));
+
+    const overlaySig = $('termoAssinaturaModal');
+    if (overlaySig) overlaySig.addEventListener('click', (e) => { if (e.target === overlaySig) fecharModal('termoAssinaturaModal'); });
 
     const btnEmitir = $('btnConfirmarEmissaoTermoPdf');
     if (btnEmitir) btnEmitir.addEventListener('click', executarEmissaoTermoPdfFinal);
