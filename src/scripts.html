@@ -27697,15 +27697,1065 @@ Verificado agora: ${hora}` : ''}`;
     }
   }
 
+  // ==========================================================================
+  // MÓDULOS PATRIMÔNIO & RECLAMAÇÕES (Fase S26.10 / CEOP)
+  // ==========================================================================
+
+  const PATRIMONIO_CHECKLIST_25 = [
+    'RETIRADA DE LATERAL / DIVISÓRIA DO BOX',
+    'INSTALAÇÃO DE LATERAL / DIVISÓRIA DO BOX',
+    'RETIRADA DE MDF (FUNDO DO BOX)',
+    'INSTALAÇÃO DE MDF (FUNDO DO BOX)',
+    'RETIRADA DE RABICHO ELÉTRICO DO BOX',
+    'INSTALAÇÃO DE RABICHO ELÉTRICO DO BOX',
+    'RETIRADA DE TESTEIRA DO BOX',
+    'INSTALAÇÃO DE TESTEIRA DO BOX',
+    'DESOCUPAÇÃO',
+    'MANUTENÇÃO DA PORTA',
+    'RETIRADA DE PORTA',
+    'INSTALAÇÃO DE PORTA',
+    'RETIRADA DE ESTRUTURA',
+    'INSTALAÇÃO DE ESTRUTURA',
+    'INSTALAÇÃO DE TAPUME',
+    'RETIRADA DE TAPUME',
+    'DESLOCAMENTO',
+    'MONTAGEM DE MEGA BOX',
+    'MONTAGEM DE BOX',
+    'UNIFICAÇÃO DE BOX',
+    'RETIRADA/INSTALAÇÃO/FACHADA',
+    'RETIRADA/INSTALAÇÃO/TETO',
+    'DESMONTAGEM DE MÓVEL',
+    'DESMONTAGEM DE BOX',
+    'RETIRADA DE PERTENCES'
+  ];
+
+  const RECLAMACOES_CATEGORIAS_12 = [
+    'USO INDEVIDO DO ESPAÇO',
+    'FALTA DE ENERGIA',
+    'RELACIONADOS A CHUVAS',
+    'CAUSADOS POR PETS',
+    'LIMPEZA E CONSERVAÇÃO',
+    'OCORRÊNCIA DA BRIGADA',
+    'INCIDENTE COM PRESTADORES DE SERVIÇOS',
+    'ESTRUTURAL',
+    'ATENDIMENTO',
+    'QUEDA DE ENERGIA',
+    'ACHADOS E PERDIDOS',
+    'VAZAMENTO CAUSADO PELO AR CONDICIONADO'
+  ];
+
+  const RUAS_POR_SETOR_MAPA = {
+    'VERDE': ['RUA CASTRO E SILVA', 'RUA ANTÔNIO POMPEU', 'RUA METON DE ALENCAR', 'RUA CLARINDO DE QUEIROZ', 'RUA DOM PEDRO I', 'RUA PEDRO PEREIRA'],
+    'AZUL': ['RUA CORONEL FERRAZ', 'AVENIDA DOM MANUEL', 'RUA 25 DE MARÇO', 'RUA SÃO JOSÉ', 'RUA GOVERNADOR SAMPAIO', 'RUA CONDE D\'EU'],
+    'AMARELO': ['RUA SÃO JOSÉ', 'RUA FLORIANO PEIXOTO', 'RUA MAJOR FACUNDO', 'RUA BARÃO DO RIO BRANCO', 'RUA SENADOR POMPEU'],
+    'BRANCO': ['AVENIDA 13 DE MAIO', 'AVENIDA DUQUE DE CAXIAS', 'RUA LIBERATO BARROSO', 'RUA 24 DE MAIO'],
+    'VERMELHO': ['ESTACIONAMENTO NÍVEL 3', 'RAMPA DE ACESSO NORTE', 'ÁREA DE DESCARGA VERMELHA'],
+    'ROXO': ['RUA GENERAL BEZERRIL', 'ILHA CENTRAL SETOR ROXO', 'RUA GENERAL SAMPAIO', 'RUA TRISTÃO GONÇALVES'],
+    'AREA_COMUM': ['PRAÇA DE ALIMENTAÇÃO', 'CORREDOR CENTRAL', 'ACESSO PRINCIPAL', 'BANHEIROS', 'ESTACIONAMENTO']
+  };
+
+  // Estado dos Módulos
+  const moduloPatrimonioState = {
+    tagSelecionada: 'SOLICITAÇÃO COMERCIAL',
+    servicosSelecionados: new Set(),
+    ordens: []
+  };
+
+  const moduloReclamacoesState = {
+    categoriaSelecionada: 'ESTRUTURAL',
+    anexos: [],
+    chamados: []
+  };
+
+  const motorAssinaturaState = {
+    tipoDocumento: null, // 'PATRIMONIO' | 'RECLAMACAO'
+    docId: null,
+    dadosDoc: null
+  };
+
+  /**
+   * Inicialização do Módulo de Patrimônio
+   */
+  function instalarModuloPatrimonio() {
+    console.log('[PATRIMONIO] Inicializando módulo de Ordens de Patrimônio...');
+
+    // Renderiza grid de 25 serviços
+    const grid = $('patrimonioChecklistGrid');
+    if (grid) {
+      grid.innerHTML = PATRIMONIO_CHECKLIST_25.map((servico, idx) => `
+        <label class="patrimonio-check-item" id="itemCheckPat_${idx}">
+          <input type="checkbox" value="${servico}" onchange="toggleServicoPatrimonio(this, ${idx})">
+          <span>${servico}</span>
+        </label>
+      `).join('');
+    }
+
+    // Tags de Solicitante
+    const tagBtns = document.querySelectorAll('.patrimonio-tag-btn');
+    tagBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tagBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const tag = btn.getAttribute('data-tag');
+        moduloPatrimonioState.tagSelecionada = tag;
+        const hiddenTag = $('patrimonioTagSelecionada');
+        if (hiddenTag) hiddenTag.value = tag;
+      });
+    });
+
+    // Cascata Setor -> Rua
+    const selSetor = $('patrimonioSetorSelect');
+    const selRua = $('patrimonioRuaSelect');
+    if (selSetor && selRua) {
+      selSetor.addEventListener('change', () => {
+        const setor = selSetor.value;
+        const ruas = RUAS_POR_SETOR_MAPA[setor] || [];
+        selRua.innerHTML = '<option value="">Selecione a Rua</option>' +
+          ruas.map(r => `<option value="${r}">${r}</option>`).join('');
+      });
+    }
+
+    // Máscara CPF e Telefone
+    aplicarMascaraCpf($('patrimonioCpfInput'));
+    aplicarMascaraTelefone($('patrimonioTelefoneInput'));
+
+    // Busca rápida de lojista ao digitar box
+    const btnBuscaBox = $('btnBuscarLojistaPatrimonio');
+    if (btnBuscaBox) {
+      btnBuscaBox.addEventListener('click', buscarLojistaParaPatrimonio);
+    }
+
+    // Botões de Abrir/Fechar Modal
+    const btnMenu = $('menuPatrimonioBtn');
+    if (btnMenu) {
+      btnMenu.addEventListener('click', () => {
+        abrirModal('formPatrimonioModal');
+        fecharMenuLateral();
+      });
+    }
+
+    const fecharModalBtn = $('fecharModalPatrimonio');
+    if (fecharModalBtn) fecharModalBtn.addEventListener('click', () => fecharModal('formPatrimonioModal'));
+
+    const btnCanc = $('btnCancelarPatrimonio');
+    if (btnCanc) btnCanc.addEventListener('click', () => fecharModal('formPatrimonioModal'));
+
+    // Botão Painel Gestão
+    const btnGestao = $('gestaoPatrimonioBtn');
+    if (btnGestao) {
+      btnGestao.addEventListener('click', () => {
+        abrirPainelGestaoPatrimonio();
+        fecharMenuLateral();
+      });
+    }
+
+    const fecharGestaoBtn = $('fecharGestaoPatrimonioPanel');
+    if (fecharGestaoBtn) fecharGestaoBtn.addEventListener('click', fecharPainelGestaoPatrimonio);
+
+    const btnNovaOsTopo = $('btnNovaOsPatrimonioTopo');
+    if (btnNovaOsTopo) {
+      btnNovaOsTopo.addEventListener('click', () => {
+        abrirModal('formPatrimonioModal');
+      });
+    }
+
+    // Submissão do Formulário
+    const form = $('formOrdemPatrimonio');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        submeterOrdemPatrimonio(false);
+      });
+    }
+
+    const btnEmitirTermo = $('btnEmitirTermoPatrimonio');
+    if (btnEmitirTermo) {
+      btnEmitirTermo.addEventListener('click', () => {
+        submeterOrdemPatrimonio(true);
+      });
+    }
+
+    // Filtros e busca no painel
+    const inputBusca = $('buscaPatrimonioInput');
+    const fStatus = $('filtroStatusPatrimonio');
+    const fSetor = $('filtroSetorPatrimonio');
+    if (inputBusca) inputBusca.addEventListener('input', filtrarTabelaPatrimonio);
+    if (fStatus) fStatus.addEventListener('change', filtrarTabelaPatrimonio);
+    if (fSetor) fSetor.addEventListener('change', filtrarTabelaPatrimonio);
+    const btnRec = $('btnRecarregarPatrimonio');
+    if (btnRec) btnRec.addEventListener('click', carregarOrdensPatrimonio);
+  }
+
+  window.toggleServicoPatrimonio = function(checkbox, idx) {
+    const card = $('itemCheckPat_' + idx);
+    if (checkbox.checked) {
+      moduloPatrimonioState.servicosSelecionados.add(checkbox.value);
+      if (card) card.classList.add('selected');
+    } else {
+      moduloPatrimonioState.servicosSelecionados.delete(checkbox.value);
+      if (card) card.classList.remove('selected');
+    }
+  };
+
+  function buscarLojistaParaPatrimonio() {
+    const boxInput = $('patrimonioBoxInput');
+    if (!boxInput || !boxInput.value.trim()) {
+      alert('Digite o número do box para pesquisar.');
+      return;
+    }
+    const termo = boxInput.value.trim().toUpperCase();
+
+    // Se a base de lojistas estiver em memória
+    if (typeof lojistasState !== 'undefined' && Array.isArray(lojistasState.lojistas)) {
+      const achado = lojistasState.lojistas.find(l => String(l.LUC || l.box || '').toUpperCase() === termo);
+      if (achado) {
+        if ($('patrimonioNomeInput') && achado.LOJISTA) $('patrimonioNomeInput').value = achado.LOJISTA.toUpperCase();
+        if ($('patrimonioSetorSelect') && achado.SETOR) {
+          $('patrimonioSetorSelect').value = achado.SETOR.toUpperCase();
+          $('patrimonioSetorSelect').dispatchEvent(new Event('change'));
+          setTimeout(() => {
+            if ($('patrimonioRuaSelect') && achado.RUA) $('patrimonioRuaSelect').value = achado.RUA;
+          }, 100);
+        }
+        alert('Lojista localizado: ' + (achado.LOJISTA || achado.NOME_FANTASIA || termo));
+        return;
+      }
+    }
+  }
+
+  function submeterOrdemPatrimonio(abrirAssinaturaDireta) {
+    const nome = $('patrimonioNomeInput') ? $('patrimonioNomeInput').value.trim() : '';
+    const cpf = $('patrimonioCpfInput') ? $('patrimonioCpfInput').value.trim() : '';
+    const tel = $('patrimonioTelefoneInput') ? $('patrimonioTelefoneInput').value.trim() : '';
+    const email = $('patrimonioEmailInput') ? $('patrimonioEmailInput').value.trim() : '';
+    const setor = $('patrimonioSetorSelect') ? $('patrimonioSetorSelect').value : '';
+    const rua = $('patrimonioRuaSelect') ? $('patrimonioRuaSelect').value : '';
+    const box = $('patrimonioBoxInput') ? $('patrimonioBoxInput').value.trim() : '';
+    const obs = $('patrimonioObsInput') ? $('patrimonioObsInput').value.trim() : '';
+    const servicos = Array.from(moduloPatrimonioState.servicosSelecionados);
+
+    if (!nome) { alert('Informe o nome completo do solicitante.'); return; }
+    if (!setor) { alert('Selecione o setor.'); return; }
+    if (!box) { alert('Informe o número do box/loja.'); return; }
+    if (servicos.length === 0 && !obs) {
+      alert('Selecione ao menos um serviço ou adicione observações.');
+      return;
+    }
+
+    const payload = {
+      tagOrigem: moduloPatrimonioState.tagSelecionada,
+      nomeSolicitante: nome,
+      cpfSolicitante: cpf,
+      telefoneSolicitante: tel,
+      emailSolicitante: email,
+      setor: setor,
+      rua: rua,
+      boxLoja: box,
+      servicos: servicos,
+      observacoes: obs
+    };
+
+    const btnSalvar = $('btnSalvarOrdemPatrimonio');
+    if (btnSalvar) {
+      btnSalvar.disabled = true;
+      btnSalvar.innerText = 'Gravando OS...';
+    }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(res => {
+          if (btnSalvar) {
+            btnSalvar.disabled = false;
+            btnSalvar.innerHTML = '<span>💾</span> Registrar OS';
+          }
+          if (res && res.ok) {
+            alert(res.mensagem || 'Ordem de Serviço registrada com sucesso!');
+            fecharModal('formPatrimonioModal');
+            if (abrirAssinaturaDireta) {
+              abrirModalAssinatura('PATRIMONIO', res.idOS, res.dados || payload);
+            }
+            carregarOrdensPatrimonio();
+          } else {
+            alert('Erro: ' + ((res && res.error) || 'Falha ao registrar OS'));
+          }
+        })
+        .withFailureHandler(err => {
+          if (btnSalvar) {
+            btnSalvar.disabled = false;
+            btnSalvar.innerHTML = '<span>💾</span> Registrar OS';
+          }
+          alert('Erro de comunicação: ' + String(err));
+        })
+        .criarOrdemServicoPatrimonio(payload);
+    } else {
+      // Mock para showroom / testes locais
+      setTimeout(() => {
+        if (btnSalvar) {
+          btnSalvar.disabled = false;
+          btnSalvar.innerHTML = '<span>💾</span> Registrar OS';
+        }
+        const mockId = 'OS-2026-00042';
+        payload.idOS = mockId;
+        payload.STATUS = 'PENDENTE';
+        payload.DATA_CRIACAO = new Date().toISOString();
+        moduloPatrimonioState.ordens.unshift(payload);
+        alert(`[Mock] Ordem de Serviço ${mockId} registrada com sucesso!`);
+        fecharModal('formPatrimonioModal');
+        if (abrirAssinaturaDireta) {
+          abrirModalAssinatura('PATRIMONIO', mockId, payload);
+        }
+        renderizarTabelaPatrimonio();
+      }, 500);
+    }
+  }
+
+  function abrirPainelGestaoPatrimonio() {
+    const p = $('gestaoPatrimonioPanel');
+    if (p) {
+      p.hidden = false;
+      p.removeAttribute('aria-hidden');
+      carregarOrdensPatrimonio();
+    }
+  }
+
+  function fecharPainelGestaoPatrimonio() {
+    const p = $('gestaoPatrimonioPanel');
+    if (p) {
+      p.hidden = true;
+      p.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function carregarOrdensPatrimonio() {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(res => {
+          if (res && res.ok) {
+            moduloPatrimonioState.ordens = res.itens || [];
+            renderizarTabelaPatrimonio();
+          }
+        })
+        .listarOrdensServicoPatrimonio({});
+    } else {
+      // Mock inicial no showroom
+      if (moduloPatrimonioState.ordens.length === 0) {
+        moduloPatrimonioState.ordens = [
+          {
+            ID_OS: 'OS-2026-00001',
+            DATA_CRIACAO: '2026-07-16T10:00:00Z',
+            TAG_ORIGEM: 'SOLICITAÇÃO COMERCIAL',
+            NOME_SOLICITANTE: 'FRANCISCA RODRIGUES COSTA',
+            CPF_SOLICITANTE: '276.005.303-25',
+            TELEFONE_SOLICITANTE: '+55 85 98822-0102',
+            EMAIL_SOLICITANTE: '1@GMAIL.COM',
+            SETOR: 'AMARELO',
+            RUA: 'RUA SÃO JOSÉ',
+            BOX_LOJA: '2229',
+            SERVICOS_ARRAY: ['RETIRADA/INSTALAÇÃO/TETO'],
+            OBSERVACOES: 'INSTALAÇÃO DE TETO',
+            STATUS: 'CONCLUIDO',
+            URL_TERMO_PDF: '#'
+          }
+        ];
+      }
+      renderizarTabelaPatrimonio();
+    }
+  }
+
+  function renderizarTabelaPatrimonio() {
+    const corpo = $('tabelaPatrimonioCorpo');
+    if (!corpo) return;
+
+    const itens = moduloPatrimonioState.ordens;
+
+    // Atualiza KPIs
+    const total = itens.length;
+    const pendentes = itens.filter(i => i.STATUS === 'PENDENTE').length;
+    const andamento = itens.filter(i => i.STATUS === 'EM_ANDAMENTO').length;
+    const concluidas = itens.filter(i => i.STATUS === 'CONCLUIDO').length;
+
+    if ($('kpiTotalPatrimonio')) $('kpiTotalPatrimonio').textContent = total;
+    if ($('kpiPendentesPatrimonio')) $('kpiPendentesPatrimonio').textContent = pendentes;
+    if ($('kpiAndamentoPatrimonio')) $('kpiAndamentoPatrimonio').textContent = andamento;
+    if ($('kpiConcluidasPatrimonio')) $('kpiConcluidasPatrimonio').textContent = concluidas;
+
+    if (itens.length === 0) {
+      corpo.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#6B7280;">Nenhuma OS registrada.</td></tr>';
+      return;
+    }
+
+    corpo.innerHTML = itens.map(i => {
+      const servicosTxt = (i.SERVICOS_ARRAY && i.SERVICOS_ARRAY.length > 0)
+        ? i.SERVICOS_ARRAY.join(', ')
+        : (i.OBSERVACOES || 'Serviço sob demanda');
+
+      let badgeCor = '#fef08a; color:#854d0e;';
+      if (i.STATUS === 'CONCLUIDO') badgeCor = '#dcfce7; color:#15803d;';
+      if (i.STATUS === 'EM_ANDAMENTO') badgeCor = '#dbeafe; color:#1d4ed8;';
+
+      return `
+        <tr>
+          <td><strong>${i.ID_OS}</strong></td>
+          <td>${i.DATA_CRIACAO ? i.DATA_CRIACAO.slice(0, 10) : '-'}</td>
+          <td><span style="font-size:11px; background:#f1f5f9; padding:2px 6px; border-radius:4px;">${i.TAG_ORIGEM || 'COMERCIAL'}</span></td>
+          <td>${i.NOME_SOLICITANTE || '-'}</td>
+          <td>Setor ${i.SETOR || '-'} — ${i.BOX_LOJA || '-'}</td>
+          <td style="max-width:220px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${servicosTxt}">${servicosTxt}</td>
+          <td style="text-align:center;"><span style="padding:3px 8px; border-radius:999px; font-weight:700; font-size:11px; background:${badgeCor}">${i.STATUS}</span></td>
+          <td style="text-align:center; white-space:nowrap;">
+            <button class="icon-btn" title="Emitir/Coletar Assinatura do Termo" onclick="abrirAssinaturaParaOS('${i.ID_OS}')" style="background:#fef08a; color:#854d0e; padding:4px 8px; font-size:11px; border-radius:6px; margin-right:4px;">✍️ Termo</button>
+            ${i.URL_TERMO_PDF ? `<a href="${i.URL_TERMO_PDF}" target="_blank" class="icon-btn" style="text-decoration:none; background:#171b68; color:#fff; padding:4px 8px; font-size:11px; border-radius:6px;" title="Ver PDF Oficial">📄 PDF</a>` : ''}
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function filtrarTabelaPatrimonio() {
+    const busca = ($('buscaPatrimonioInput') ? $('buscaPatrimonioInput').value.trim() : '').toUpperCase();
+    const status = $('filtroStatusPatrimonio') ? $('filtroStatusPatrimonio').value : '';
+    const setor = $('filtroSetorPatrimonio') ? $('filtroSetorPatrimonio').value : '';
+
+    const linhas = document.querySelectorAll('#tabelaPatrimonioCorpo tr');
+    linhas.forEach(row => {
+      const txt = row.innerText.toUpperCase();
+      let match = true;
+      if (busca && !txt.includes(busca)) match = false;
+      if (status && !txt.includes(status.toUpperCase())) match = false;
+      if (setor && !txt.includes(setor.toUpperCase())) match = false;
+      row.style.display = match ? '' : 'none';
+    });
+  }
+
+  window.abrirAssinaturaParaOS = function(idOS) {
+    const os = moduloPatrimonioState.ordens.find(o => o.ID_OS === idOS);
+    if (!os) return alert('OS não encontrada.');
+    abrirModalAssinatura('PATRIMONIO', idOS, os);
+  };
+
+  /**
+   * Inicialização do Módulo de Reclamações
+   */
+  function instalarModuloReclamacoes() {
+    console.log('[RECLAMACOES] Inicializando módulo de Reclamações & SAC...');
+
+    // Renderiza chips das 12 categorias
+    const chipsGrid = $('reclamacaoChipsGrid');
+    if (chipsGrid) {
+      chipsGrid.innerHTML = RECLAMACOES_CATEGORIAS_12.map((cat, idx) => `
+        <button type="button" class="reclamacao-chip ${idx === 7 ? 'active' : ''}" data-cat="${cat}" onclick="selecionarCategoriaReclamacao(this, '${cat}')">
+          ${cat}
+        </button>
+      `).join('');
+    }
+
+    // Cascata Setor -> Rua
+    const selSetor = $('reclamacaoSetorSelect');
+    const selRua = $('reclamacaoRuaSelect');
+    if (selSetor && selRua) {
+      selSetor.addEventListener('change', () => {
+        const setor = selSetor.value;
+        const ruas = RUAS_POR_SETOR_MAPA[setor] || [];
+        selRua.innerHTML = '<option value="">Selecione a Rua</option>' +
+          ruas.map(r => `<option value="${r}">${r}</option>`).join('');
+      });
+    }
+
+    // Máscaras
+    aplicarMascaraCpf($('reclamacaoCpfInput'));
+    aplicarMascaraTelefone($('reclamacaoTelefoneInput'));
+
+    // Configura data padrão da ocorrência para hoje
+    const dtInput = $('reclamacaoDataOcorrencia');
+    if (dtInput) {
+      dtInput.value = new Date().toISOString().slice(0, 10);
+    }
+
+    // Upload de Mídias (Input File e Drag & Drop)
+    const fileInput = $('reclamacaoFileInput');
+    if (fileInput) {
+      fileInput.addEventListener('change', handleUploadArquivosReclamacao);
+    }
+
+    const dropzone = $('midiaUploadDropzone');
+    if (dropzone) {
+      dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.style.borderColor = '#171b68';
+      });
+      dropzone.addEventListener('dragleave', () => {
+        dropzone.style.borderColor = '#cbd5e1';
+      });
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.style.borderColor = '#cbd5e1';
+        if (e.dataTransfer && e.dataTransfer.files) {
+          processarArquivosParaReclamacao(e.dataTransfer.files);
+        }
+      });
+    }
+
+    // Botões Modal
+    const btnMenu = $('menuReclamacaoBtn');
+    if (btnMenu) {
+      btnMenu.addEventListener('click', () => {
+        abrirModal('formReclamacaoModal');
+        fecharMenuLateral();
+      });
+    }
+
+    const fecharModalBtn = $('fecharModalReclamacao');
+    if (fecharModalBtn) fecharModalBtn.addEventListener('click', () => fecharModal('formReclamacaoModal'));
+
+    const btnCanc = $('btnCancelarReclamacao');
+    if (btnCanc) btnCanc.addEventListener('click', () => fecharModal('formReclamacaoModal'));
+
+    // Painel Gestão Reclamações
+    const btnGestao = $('gestaoReclamacoesBtn');
+    if (btnGestao) {
+      btnGestao.addEventListener('click', () => {
+        abrirPainelGestaoReclamacoes();
+        fecharMenuLateral();
+      });
+    }
+
+    const fecharGestaoBtn = $('fecharGestaoReclamacoesPanel');
+    if (fecharGestaoBtn) fecharGestaoBtn.addEventListener('click', fecharPainelGestaoReclamacoes);
+
+    const btnNovoTopo = $('btnNovoChamadoReclamacaoTopo');
+    if (btnNovoTopo) {
+      btnNovoTopo.addEventListener('click', () => {
+        abrirModal('formReclamacaoModal');
+      });
+    }
+
+    // Submissão do Formulário
+    const form = $('formNovoChamadoReclamacao');
+    if (form) {
+      form.addEventListener('submit', submeterChamadoReclamacao);
+    }
+
+    const btnRec = $('btnRecarregarReclamacoes');
+    if (btnRec) btnRec.addEventListener('click', carregarChamadosReclamacoes);
+  }
+
+  window.selecionarCategoriaReclamacao = function(btn, cat) {
+    document.querySelectorAll('.reclamacao-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    moduloReclamacoesState.categoriaSelecionada = cat;
+    if ($('reclamacaoCategoriaSelecionada')) $('reclamacaoCategoriaSelecionada').value = cat;
+  };
+
+  function handleUploadArquivosReclamacao(e) {
+    if (e.target && e.target.files) {
+      processarArquivosParaReclamacao(e.target.files);
+    }
+  }
+
+  function processarArquivosParaReclamacao(files) {
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const item = {
+          nome: file.name,
+          mimeType: file.type,
+          tamanho: file.size,
+          base64: evt.target.result
+        };
+        moduloReclamacoesState.anexos.push(item);
+        renderizarListaAnexosReclamacao();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderizarListaAnexosReclamacao() {
+    const container = $('midiaPreviewList');
+    if (!container) return;
+
+    container.innerHTML = moduloReclamacoesState.anexos.map((a, idx) => {
+      let icon = '📷';
+      if (a.mimeType.startsWith('audio/')) icon = '🎙️';
+      else if (a.mimeType.startsWith('video/')) icon = '🎥';
+
+      const tamKb = Math.round(a.tamanho / 1024);
+
+      return `
+        <div class="midia-preview-card">
+          <span>${icon}</span>
+          <span style="font-weight:600; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${a.nome}</span>
+          <small style="color:#64748b;">(${tamKb} KB)</small>
+          <button type="button" class="midia-remove-btn" onclick="removerAnexoReclamacao(${idx})">×</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.removerAnexoReclamacao = function(idx) {
+    moduloReclamacoesState.anexos.splice(idx, 1);
+    renderizarListaAnexosReclamacao();
+  };
+
+  function submeterChamadoReclamacao(e) {
+    e.preventDefault();
+    const nome = $('reclamacaoNomeInput') ? $('reclamacaoNomeInput').value.trim() : '';
+    const cpf = $('reclamacaoCpfInput') ? $('reclamacaoCpfInput').value.trim() : '';
+    const tel = $('reclamacaoTelefoneInput') ? $('reclamacaoTelefoneInput').value.trim() : '';
+    const email = $('reclamacaoEmailInput') ? $('reclamacaoEmailInput').value.trim() : '';
+    const setor = $('reclamacaoSetorSelect') ? $('reclamacaoSetorSelect').value : '';
+    const rua = $('reclamacaoRuaSelect') ? $('reclamacaoRuaSelect').value : '';
+    const box = $('reclamacaoBoxInput') ? $('reclamacaoBoxInput').value.trim() : '';
+    const dataOcorr = $('reclamacaoDataOcorrencia') ? $('reclamacaoDataOcorrencia').value : '';
+    const detalhes = $('reclamacaoDetalhesInput') ? $('reclamacaoDetalhesInput').value.trim() : '';
+    const lgpd = $('aceiteLgpdCheckbox') ? $('aceiteLgpdCheckbox').checked : false;
+
+    const rdoTipo = document.querySelector('input[name="tipoReclamante"]:checked');
+    const tipo = rdoTipo ? rdoTipo.value : 'PERMISSIONARIO/LOJISTA';
+
+    if (!nome) { alert('Informe o nome completo.'); return; }
+    if (!detalhes) { alert('Descreva detalhadamente o ocorrido.'); return; }
+    if (!lgpd) { alert('É obrigatório aceitar o termo da LGPD para registrar a reclamação.'); return; }
+
+    const payload = {
+      tipoReclamante: tipo,
+      nomeReclamante: nome,
+      cpfReclamante: cpf,
+      telefoneReclamante: tel,
+      emailReclamante: email,
+      setor: setor,
+      rua: rua,
+      boxLoja: box,
+      categoria: moduloReclamacoesState.categoriaSelecionada,
+      dataOcorrencia: dataOcorr,
+      descricaoReclamacao: detalhes,
+      aceiteLGPD: true
+    };
+
+    const btnSalvar = $('btnSalvarReclamacao');
+    if (btnSalvar) {
+      btnSalvar.disabled = true;
+      btnSalvar.innerText = 'Enviando chamado...';
+    }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(res => {
+          if (btnSalvar) {
+            btnSalvar.disabled = false;
+            btnSalvar.innerHTML = '<span>📢</span> Registrar Chamado';
+          }
+          if (res && res.ok) {
+            alert(`Chamado registrado com sucesso!\n\nCódigo Pipe / Protocolo: ${res.codigoPipe}`);
+            fecharModal('formReclamacaoModal');
+            moduloReclamacoesState.anexos = [];
+            renderizarListaAnexosReclamacao();
+            carregarChamadosReclamacoes();
+          } else {
+            alert('Erro: ' + ((res && res.error) || 'Falha ao registrar chamado'));
+          }
+        })
+        .withFailureHandler(err => {
+          if (btnSalvar) {
+            btnSalvar.disabled = false;
+            btnSalvar.innerHTML = '<span>📢</span> Registrar Chamado';
+          }
+          alert('Erro de comunicação: ' + String(err));
+        })
+        .criarChamadoReclamacao(payload, moduloReclamacoesState.anexos);
+    } else {
+      setTimeout(() => {
+        if (btnSalvar) {
+          btnSalvar.disabled = false;
+          btnSalvar.innerHTML = '<span>📢</span> Registrar Chamado';
+        }
+        const mockPipe = '1414432738';
+        payload.CODIGO_PIPE = mockPipe;
+        payload.DATA_ABERTURA = new Date().toISOString();
+        payload.STATUS = 'NOVO';
+        moduloReclamacoesState.chamados.unshift(payload);
+        alert(`[Mock] Chamado registrado com sucesso!\n\nCódigo Pipe: ${mockPipe}`);
+        fecharModal('formReclamacaoModal');
+        moduloReclamacoesState.anexos = [];
+        renderizarListaAnexosReclamacao();
+        renderizarTabelaReclamacoes();
+      }, 500);
+    }
+  }
+
+  function abrirPainelGestaoReclamacoes() {
+    const p = $('gestaoReclamacoesPanel');
+    if (p) {
+      p.hidden = false;
+      p.removeAttribute('aria-hidden');
+      carregarChamadosReclamacoes();
+    }
+  }
+
+  function fecharPainelGestaoReclamacoes() {
+    const p = $('gestaoReclamacoesPanel');
+    if (p) {
+      p.hidden = true;
+      p.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function carregarChamadosReclamacoes() {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(res => {
+          if (res && res.ok) {
+            moduloReclamacoesState.chamados = res.itens || [];
+            renderizarTabelaReclamacoes();
+          }
+        })
+        .listarChamadosReclamacoes({});
+    } else {
+      if (moduloReclamacoesState.chamados.length === 0) {
+        moduloReclamacoesState.chamados = [
+          {
+            CODIGO_PIPE: '1414432738',
+            DATA_OCORRENCIA: '16/07/2026',
+            TIPO_RECLAMANTE: 'PERMISSIONARIO/LOJISTA',
+            NOME_RECLAMANTE: 'SANDRA ALVES CAVALCANTE',
+            CPF_RECLAMANTE: '219.043.403-34',
+            TELEFONE_RECLAMANTE: '+55 85 98551-9561',
+            EMAIL_RECLAMANTE: '1@GMAIL.COM',
+            SETOR: 'AZUL',
+            RUA: 'RUA CORONEL FERRAZ',
+            BOX_LOJA: '1268',
+            CATEGORIA: 'FALTA DE ENERGIA',
+            DESCRICAO_RECLAMACAO: '4 LÂMPADAS QUEIMADAS APÓS OSCILAÇÃO NA REDE ELÉTRICA. PERMISSIONÁRIA SOLICITA RESSARCIMENTO PELOS DANOS CAUSADOS.',
+            STATUS: 'RESOLVIDO',
+            DATA_RESOLUCAO: '20/07/2026',
+            MEDIDAS_TOMADAS: 'Substituição das 4 lâmpadas e verificação da fiação do box pela equipe de manutenção elétrica.',
+            URL_TERMO_ENCERRAMENTO: '#'
+          }
+        ];
+      }
+      renderizarTabelaReclamacoes();
+    }
+  }
+
+  function renderizarTabelaReclamacoes() {
+    const corpo = $('tabelaReclamacoesCorpo');
+    if (!corpo) return;
+
+    const itens = moduloReclamacoesState.chamados;
+
+    const total = itens.length;
+    const novos = itens.filter(i => i.STATUS === 'NOVO').length;
+    const analise = itens.filter(i => i.STATUS === 'EM_ANALISE').length;
+    const encerrados = itens.filter(i => i.STATUS === 'ENCERRADO' || i.STATUS === 'RESOLVIDO').length;
+
+    if ($('kpiTotalReclamacoes')) $('kpiTotalReclamacoes').textContent = total;
+    if ($('kpiNovosReclamacoes')) $('kpiNovosReclamacoes').textContent = novos;
+    if ($('kpiAnaliseReclamacoes')) $('kpiAnaliseReclamacoes').textContent = analise;
+    if ($('kpiEncerradosReclamacoes')) $('kpiEncerradosReclamacoes').textContent = encerrados;
+
+    if (itens.length === 0) {
+      corpo.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#6B7280;">Nenhum chamado de reclamação encontrado.</td></tr>';
+      return;
+    }
+
+    corpo.innerHTML = itens.map(i => {
+      let badgeCor = '#fee2e2; color:#b91c1c;';
+      if (i.STATUS === 'ENCERRADO') badgeCor = '#dcfce7; color:#15803d;';
+      else if (i.STATUS === 'RESOLVIDO') badgeCor = '#dbeafe; color:#1d4ed8;';
+      else if (i.STATUS === 'EM_ANALISE') badgeCor = '#fef08a; color:#854d0e;';
+
+      return `
+        <tr>
+          <td><strong>${i.CODIGO_PIPE}</strong></td>
+          <td>${i.DATA_OCORRENCIA || '-'}</td>
+          <td>${i.NOME_RECLAMANTE || '-'}<br><small style="color:#64748b;">${i.TIPO_RECLAMANTE || ''}</small></td>
+          <td>Setor ${i.SETOR || '-'} — ${i.BOX_LOJA || '-'}</td>
+          <td><span style="font-size:11px; background:#f1f5f9; padding:2px 6px; border-radius:4px; font-weight:700;">${i.CATEGORIA || '-'}</span></td>
+          <td style="max-width:240px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${i.DESCRICAO_RECLAMACAO || ''}">${i.DESCRICAO_RECLAMACAO || '-'}</td>
+          <td style="text-align:center;"><span style="padding:3px 8px; border-radius:999px; font-weight:700; font-size:11px; background:${badgeCor}">${i.STATUS}</span></td>
+          <td style="text-align:center; white-space:nowrap;">
+            <button class="icon-btn" title="Emitir Termo de Encerramento com Quitação" onclick="abrirAssinaturaParaReclamacao('${i.CODIGO_PIPE}')" style="background:#ffe4e6; color:#be123c; padding:4px 8px; font-size:11px; border-radius:6px; margin-right:4px;">✍️ Encerramento</button>
+            ${i.URL_TERMO_ENCERRAMENTO ? `<a href="${i.URL_TERMO_ENCERRAMENTO}" target="_blank" class="icon-btn" style="text-decoration:none; background:#171b68; color:#fff; padding:4px 8px; font-size:11px; border-radius:6px;" title="Ver Termo Oficial">📄 PDF</a>` : ''}
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  window.abrirAssinaturaParaReclamacao = function(codigoPipe) {
+    const ch = moduloReclamacoesState.chamados.find(c => c.CODIGO_PIPE === codigoPipe);
+    if (!ch) return alert('Chamado não encontrado.');
+    abrirModalAssinatura('RECLAMACAO', codigoPipe, ch);
+  };
+
+  /**
+   * Motor de Assinatura Digital Touch & Mouse (Signature Pad)
+   */
+  function instalarMotorAssinaturaDigital() {
+    console.log('[ASSINATURA] Inicializando motor de assinatura digital...');
+
+    configurarCanvasAssinatura('canvasAssinatura1');
+    configurarCanvasAssinatura('canvasAssinatura2');
+
+    const btnClear1 = $('btnLimparSig1');
+    if (btnClear1) btnClear1.addEventListener('click', () => limparCanvas('canvasAssinatura1'));
+
+    const btnClear2 = $('btnLimparSig2');
+    if (btnClear2) btnClear2.addEventListener('click', () => limparCanvas('canvasAssinatura2'));
+
+    const btnFechar = $('fecharModalAssinatura');
+    if (btnFechar) btnFechar.addEventListener('click', () => fecharModal('termoAssinaturaModal'));
+
+    const btnVoltar = $('btnCancelarAssinatura');
+    if (btnVoltar) btnVoltar.addEventListener('click', () => fecharModal('termoAssinaturaModal'));
+
+    const btnEmitir = $('btnConfirmarEmissaoTermoPdf');
+    if (btnEmitir) btnEmitir.addEventListener('click', executarEmissaoTermoPdfFinal);
+  }
+
+  function configurarCanvasAssinatura(canvasId) {
+    const canvas = $(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let desenhando = false;
+
+    function getCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) * (canvas.width / rect.width),
+        y: (clientY - rect.top) * (canvas.height / rect.height)
+      };
+    }
+
+    function start(e) {
+      e.preventDefault();
+      desenhando = true;
+      const pos = getCoords(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    }
+
+    function move(e) {
+      if (!desenhando) return;
+      e.preventDefault();
+      const pos = getCoords(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    }
+
+    function end() {
+      desenhando = false;
+    }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    window.addEventListener('touchend', end);
+  }
+
+  function limparCanvas(canvasId) {
+    const canvas = $(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function abrirModalAssinatura(tipo, docId, dados) {
+    motorAssinaturaState.tipoDocumento = tipo;
+    motorAssinaturaState.docId = docId;
+    motorAssinaturaState.dadosDoc = dados;
+
+    limparCanvas('canvasAssinatura1');
+    limparCanvas('canvasAssinatura2');
+
+    const cardResumo = $('termoResumoCard');
+    const subtitulo = $('assinaturaModalSubtitulo');
+    const titulo = $('assinaturaModalTitulo');
+    const lblSig1 = $('labelAssinatura1');
+    const lblSig2 = $('labelAssinatura2');
+
+    if (tipo === 'PATRIMONIO') {
+      if (titulo) titulo.textContent = `Emissão do Termo de Controle de Patrimônio — ${docId}`;
+      if (subtitulo) subtitulo.textContent = 'Ordem de Serviço de Patrimônio (Serviços Interno)';
+      if (lblSig1) lblSig1.textContent = '✍️ Assinatura do Solicitante / Cliente';
+      if (lblSig2) lblSig2.textContent = '🏢 Assinatura Representante Centro Fashion';
+
+      const servicos = (dados.SERVICOS_ARRAY && dados.SERVICOS_ARRAY.length > 0)
+        ? dados.SERVICOS_ARRAY.join('; ')
+        : (dados.servicos ? dados.servicos.join('; ') : 'Serviços de patrimônio');
+
+      if (cardResumo) {
+        cardResumo.innerHTML = `
+          <strong>Documento:</strong> CONTROLE DE PATRIMÔNIO – SERVIÇOS INTERNO<br>
+          <strong>Solicitante:</strong> ${dados.NOME_SOLICITANTE || dados.nomeSolicitante || '-'} (CPF: ${dados.CPF_SOLICITANTE || dados.cpfSolicitante || '-'})<br>
+          <strong>Localização:</strong> Setor ${dados.SETOR || dados.setor || '-'} — ${dados.RUA || dados.rua || '-'}, Box ${dados.BOX_LOJA || dados.boxLoja || '-'}<br>
+          <strong>Ref. Serviços:</strong> ${servicos}<br>
+          <em style="color:#64748b; font-size:11px;">O termo declara a devolução e titularidade do patrimônio ao Centro Fashion Fortaleza.</em>
+        `;
+      }
+    } else {
+      if (titulo) titulo.textContent = `Emissão do Termo de Encerramento — Pipe ${docId}`;
+      if (subtitulo) subtitulo.textContent = 'Termo de Encerramento de Chamado de Reclamação (SAC CEOP)';
+      if (lblSig1) lblSig1.textContent = '✍️ Assinatura do Reclamante / Solicitante';
+      if (lblSig2) lblSig2.textContent = '🏢 Assinatura Centro Fashion Empreendimentos';
+
+      if (cardResumo) {
+        cardResumo.innerHTML = `
+          <strong>Documento:</strong> Termo de Encerramento de Chamado de Reclamação (Código Pipe ${docId})<br>
+          <strong>Reclamante:</strong> ${dados.NOME_RECLAMANTE || dados.nomeReclamante || '-'} (CPF: ${dados.CPF_RECLAMANTE || dados.cpfReclamante || '-'})<br>
+          <strong>Categoria:</strong> ${dados.CATEGORIA || dados.categoria || '-'}<br>
+          <strong>Ocorrência:</strong> ${dados.DESCRICAO_RECLAMACAO || dados.descricaoReclamacao || '-'}<br>
+          <em style="color:#64748b; font-size:11px;">O documento formaliza a quitação mútua e conclusão definitiva do processo sem pendências remanescentes.</em>
+        `;
+      }
+    }
+
+    const msg = $('statusGeracaoTermoMsg');
+    if (msg) msg.hidden = true;
+
+    abrirModal('termoAssinaturaModal');
+  }
+
+  function executarEmissaoTermoPdfFinal() {
+    const canvas1 = $('canvasAssinatura1');
+    const canvas2 = $('canvasAssinatura2');
+    const sig1Base64 = canvas1 ? canvas1.toDataURL('image/png') : '';
+    const sig2Base64 = canvas2 ? canvas2.toDataURL('image/png') : '';
+
+    const btnEmitir = $('btnConfirmarEmissaoTermoPdf');
+    const msg = $('statusGeracaoTermoMsg');
+
+    if (btnEmitir) {
+      btnEmitir.disabled = true;
+      btnEmitir.innerHTML = '<span>⏳</span> Compilando PDF e assinaturas no Drive...';
+    }
+
+    const tipo = motorAssinaturaState.tipoDocumento;
+    const docId = motorAssinaturaState.docId;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      const handlerSuccess = res => {
+        if (btnEmitir) {
+          btnEmitir.disabled = false;
+          btnEmitir.innerHTML = '<span>📄</span> Gerar PDF Oficial no Google Drive';
+        }
+        if (res && res.ok) {
+          if (msg) {
+            msg.hidden = false;
+            msg.className = 'assinatura-status-msg sucesso';
+            msg.innerHTML = `
+              🎉 Documento Oficial Gerado com Sucesso!<br>
+              <a href="${res.urlPdf}" target="_blank" style="font-weight:bold; color:#15803d; text-decoration:underline;">Clique aqui para abrir o PDF no Google Drive</a>
+            `;
+          }
+          if (tipo === 'PATRIMONIO') carregarOrdensPatrimonio();
+          else carregarChamadosReclamacoes();
+        } else {
+          if (msg) {
+            msg.hidden = false;
+            msg.className = 'assinatura-status-msg erro';
+            msg.textContent = 'Erro: ' + ((res && res.error) || 'Falha na geração do PDF.');
+          }
+        }
+      };
+
+      const handlerFailure = err => {
+        if (btnEmitir) {
+          btnEmitir.disabled = false;
+          btnEmitir.innerHTML = '<span>📄</span> Gerar PDF Oficial no Google Drive';
+        }
+        if (msg) {
+          msg.hidden = false;
+          msg.className = 'assinatura-status-msg erro';
+          msg.textContent = 'Erro ao processar: ' + String(err);
+        }
+      };
+
+      if (tipo === 'PATRIMONIO') {
+        google.script.run
+          .withSuccessHandler(handlerSuccess)
+          .withFailureHandler(handlerFailure)
+          .gerarTermoControlePatrimonioPdf(docId, sig1Base64, sig2Base64);
+      } else {
+        google.script.run
+          .withSuccessHandler(handlerSuccess)
+          .withFailureHandler(handlerFailure)
+          .gerarTermoEncerramentoReclamacaoPdf(docId, sig1Base64, sig2Base64);
+      }
+    } else {
+      // Mock para showroom / testes locais
+      setTimeout(() => {
+        if (btnEmitir) {
+          btnEmitir.disabled = false;
+          btnEmitir.innerHTML = '<span>📄</span> Gerar PDF Oficial no Google Drive';
+        }
+        if (msg) {
+          msg.hidden = false;
+          msg.className = 'assinatura-status-msg sucesso';
+          msg.innerHTML = `
+            🎉 [Mock] Termo PDF gerado com sucesso com as assinaturas digitais!<br>
+            <span style="color:#15803d; font-weight:bold;">Arquivo arquivado na pasta oficial do Google Drive.</span>
+          `;
+        }
+      }, 700);
+    }
+  }
+
+  // Helpers de Máscara
+  function aplicarMascaraCpf(input) {
+    if (!input) return;
+    input.addEventListener('input', () => {
+      let v = input.value.replace(/\D/g, '');
+      if (v.length > 11) v = v.slice(0, 11);
+      v = v.replace(/(\d{3})(\d)/, '$1.$2');
+      v = v.replace(/(\d{3})(\d)/, '$1.$2');
+      v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      input.value = v;
+    });
+  }
+
+  function aplicarMascaraTelefone(input) {
+    if (!input) return;
+    input.addEventListener('input', () => {
+      let v = input.value.replace(/\D/g, '');
+      if (v.length > 11) v = v.slice(0, 11);
+      if (v.length > 6) {
+        v = v.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+      } else if (v.length > 2) {
+        v = v.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+      }
+      input.value = v;
+    });
+  }
+
+  function fecharMenuLateral() {
+    const m = $('appMenuS22513');
+    if (m) m.hidden = true;
+  }
+
   // Inicialização no DOM
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       setTimeout(instalarLojistas, 1300);
       setTimeout(instalarGestaoAs, 1400);
+      setTimeout(instalarModuloPatrimonio, 1500);
+      setTimeout(instalarModuloReclamacoes, 1600);
+      setTimeout(instalarMotorAssinaturaDigital, 1700);
     });
   } else {
     setTimeout(instalarLojistas, 500);
     setTimeout(instalarGestaoAs, 600);
+    setTimeout(instalarModuloPatrimonio, 700);
+    setTimeout(instalarModuloReclamacoes, 800);
+    setTimeout(instalarMotorAssinaturaDigital, 900);
   }
 
   //# sourceURL=app_scripts.js

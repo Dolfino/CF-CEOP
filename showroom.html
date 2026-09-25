@@ -6775,7 +6775,18 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
 .as-btn-nova-solicitacao:hover{background:#E2E8F0;color:#0F172A}
 
 /* Modal de Sucesso Pós-Salvamento */
-.as-success-overlay{background:rgba(15,23,42,.65);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:9999}
+.as-success-overlay{
+  position:fixed!important;
+  inset:0!important;
+  background:rgba(15,23,42,.65);
+  backdrop-filter:blur(6px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:20000!important;
+  padding:16px;
+}
+.as-success-overlay[hidden]{display:none!important}
 .as-success-dialog{background:#FFFFFF;border-radius:18px;padding:28px 24px;max-width:440px;width:90%;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);animation:asModalIn .25s cubic-bezier(0.16, 1, 0.3, 1)}
 @keyframes asModalIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 .as-success-icon-wrap{width:64px;height:64px;margin:0 auto 12px;background:#ECFDF5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px}
@@ -6794,18 +6805,75 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
 .as-btn-secondary:hover{background:#E2E8F0;color:#0F172A}
 
 /* Modal de Pré-visualização da Impressão */
-.as-preview-overlay{background:rgba(15,23,42,.75);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:9999}
-.as-preview-modal{width:min(940px, 96vw);height:92vh;background:#F1F5F9;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,.35)}
-.as-preview-header{background:#FFFFFF;border-bottom:1px solid #E2E8F0;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.as-preview-header-info h3{margin:0;font-size:15px;font-weight:800;color:#0F172A}
-.as-preview-header-info p{margin:2px 0 0;font-size:11px;color:#64748B}
-.as-preview-header-actions{display:flex;align-items:center;gap:10px}
-.as-btn-print-now{padding:8px 16px;font-size:13px;font-weight:800;border-radius:8px;background:#D97706;border:none;color:#FFF;cursor:pointer;transition:all .15s ease}
-.as-btn-print-now:hover{background:#B45309}
-.as-btn-close-preview{width:32px;height:32px;border-radius:50%;background:#F1F5F9;border:none;font-size:14px;color:#64748B;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.as-btn-close-preview:hover{background:#E2E8F0;color:#0F172A}
-.as-preview-body{flex:1;overflow-y:auto;padding:24px;display:flex;justify-content:center}
-.as-preview-paper-stage{width:100%;max-width:210mm;background:#FFFFFF;box-shadow:0 4px 20px rgba(0,0,0,.15);border-radius:4px;padding:18mm 16mm;box-sizing:border-box}
+.as-preview-overlay{
+  position:fixed!important;
+  inset:0!important;
+  background:rgba(15,23,42,.8)!important;
+  backdrop-filter:blur(8px)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  z-index:20000!important;
+  padding:24px!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+.as-preview-overlay[hidden]{display:none!important}
+.as-preview-modal{
+  width:min(960px, 95vw)!important;
+  height:90vh!important;
+  max-height:90vh!important;
+  background:#F1F5F9!important;
+  border-radius:14px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  box-shadow:0 25px 60px -15px rgba(0,0,0,.6)!important;
+  margin:0 auto!important;
+  border:1px solid rgba(255,255,255,0.2)!important;
+  box-sizing:border-box!important;
+}
+.as-preview-header{
+  background:#FFFFFF!important;
+  border-bottom:1px solid #E2E8F0!important;
+  padding:14px 20px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  flex-shrink:0!important;
+  gap:16px!important;
+  box-sizing:border-box!important;
+}
+.as-preview-header-info{flex:1!important;min-width:0!important}
+.as-preview-header-info h3{margin:0!important;font-size:16px!important;font-weight:800!important;color:#0F172A!important;line-height:1.3!important;display:flex!important;align-items:center!important;gap:6px!important}
+.as-preview-header-info p{margin:3px 0 0!important;font-size:12px!important;color:#64748B!important;line-height:1.35!important}
+.as-preview-header-info p strong{color:#D81B60!important;font-weight:700!important}
+.as-preview-header-actions{display:flex!important;align-items:center!important;gap:10px!important;flex-shrink:0!important}
+.as-btn-print-now{padding:9px 18px!important;font-size:13px!important;font-weight:800!important;border-radius:8px!important;background:#D81B60!important;border:none!important;color:#FFF!important;cursor:pointer!important;display:inline-flex!important;align-items:center!important;gap:6px!important;transition:all .15s ease!important}
+.as-btn-print-now:hover{background:#C2185B!important;box-shadow:0 4px 12px rgba(216,27,96,.35)!important}
+.as-btn-close-preview{width:34px!important;height:34px!important;border-radius:50%!important;background:#F1F5F9!important;border:none!important;font-size:16px!important;color:#64748B!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;transition:all .15s ease!important}
+.as-btn-close-preview:hover{background:#E2E8F0!important;color:#0F172A!important}
+.as-preview-body{
+  flex:1 1 0%!important;
+  min-height:0!important;
+  height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:24px 16px!important;
+  background:#475569!important;
+  display:block!important;
+  box-sizing:border-box!important;
+}
+.as-preview-paper-stage{
+  width:100%!important;
+  max-width:800px!important;
+  margin:0 auto 30px auto!important;
+  background:#FFFFFF!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.35)!important;
+  border-radius:4px!important;
+  padding:16mm 14mm!important;
+  box-sizing:border-box!important;
+}
 
 /* Botão no card do mapa */
 .btn-as-imprimir-card{background:#D97706;color:#FFF;border:none;border-radius:6px;padding:6px 12px;font-size:11.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s ease}
@@ -6817,7 +6885,7 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
 .as-doc-official{font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#111827;line-height:1.35;font-size:10.5pt;background:#FFF}
 .as-doc-header{display:flex;align-items:center;justify-content:space-between;border-bottom:2.5px solid #1E293B;padding-bottom:12px;margin-bottom:14px}
 .as-doc-brand{display:flex;align-items:center;gap:12px}
-.as-doc-brand-icon{font-size:32px}
+.as-doc-brand-icon{font-size:32px}.as-doc-brand-logo{width:48px;height:48px;object-fit:contain;display:block;flex-shrink:0}
 .as-doc-brand-text h1{margin:0;font-size:13pt;font-weight:900;color:#0F172A;letter-spacing:-.01em;text-transform:uppercase}
 .as-doc-brand-text p{margin:2px 0 0;font-size:8.5pt;color:#64748B;font-weight:600;letter-spacing:.02em}
 .as-doc-badge-status{background:#ECFDF5;border:1.5px solid #10B981;border-radius:8px;padding:6px 14px;text-align:center}
@@ -6836,15 +6904,15 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
 .as-doc-grid-4{grid-template-columns:1fr 1fr 1fr 1fr}
 .as-doc-field span{display:block;font-size:7pt;font-weight:700;color:#64748B;text-transform:uppercase}
 .as-doc-field strong{display:block;font-size:9pt;font-weight:800;color:#0F172A;word-break:break-word}
-.as-doc-desc-box{padding:8px 10px;font-size:8.5pt;color:#1E293B;white-space:pre-wrap;background:#FAFAFA;border-top:1px solid #F1F5F9}
+.as-doc-desc-box{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:8px 10px;font-size:8.5pt;color:#334155}
 
-.as-doc-terms{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:8px 10px;font-size:7pt;color:#475569;line-height:1.35;margin-bottom:14px}
+.as-doc-terms{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:8px 10px;margin-bottom:14px;font-size:7pt;color:#64748B;line-height:1.4}
 .as-doc-terms p{margin:0 0 4px}
-.as-doc-terms strong{color:#1E293B}
+.as-doc-terms p:last-child{margin-bottom:0}
 
-.as-doc-signatures{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px;padding-top:10px}
-.as-doc-sig-box{text-align:center}
-.as-doc-sig-line{border-top:1.5px solid #475569;margin-bottom:4px}
+.as-doc-signatures{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px;padding:0 12px}
+.as-doc-sig-box{text-align:center;position:relative}.as-doc-sig-img{width:140px;height:auto;display:block;margin:0 auto -12px auto;mix-blend-mode:multiply}
+.as-doc-sig-line{border-top:1.5px solid #1E293B;margin-bottom:6px;height:1px}
 .as-doc-sig-name{font-size:8.5pt;font-weight:800;color:#0F172A}
 .as-doc-sig-sub{font-size:7pt;color:#64748B;text-transform:uppercase}
 
@@ -6866,11 +6934,12 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
     overflow:visible!important;
   }
   /* Oculta toda a aplicação */
-  body > *{
+  body > *:not(#asDocumentoImpressao){
     display:none!important;
   }
   /* Exibe exclusivamente o documento oficial de AS */
-  #asDocumentoImpressao{
+  #asDocumentoImpressao,
+  #asDocumentoImpressao[hidden]{
     display:block!important;
     position:relative!important;
     left:0!important;
@@ -6883,6 +6952,7 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
     background:#FFF!important;
     page-break-inside:avoid;
   }
+  #asDocumentoImpressao,
   #asDocumentoImpressao *{
     visibility:visible!important;
   }
@@ -8318,7 +8388,897 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
   border-color: #93c5fd;
   color: #1e40af;
 }
+
+.btn-hist-editar-as, .btn-hist-editar-registro {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #1e293b;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-hist-editar-as:hover, .btn-hist-editar-registro:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.btn-as-editar-card {
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-as-editar-card:hover {
+  background: #1e293b;
+}
+
+.btn-as-concluir-card {
+  background: #059669;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-as-concluir-card:hover {
+  background: #047857;
+  transform: translateY(-1px);
+}
+
+.btn-as-concluir-card.is-concluido {
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.btn-as-concluir-card.is-concluido:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.btn-hist-concluir-as {
+  background: #059669;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-hist-concluir-as:hover {
+  background: #047857;
+}
+
+.btn-hist-reabrir-as {
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-hist-reabrir-as:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+/* ========================================================
+   S26.10 — CENTRAL DE GESTÃO DE AUTORIZAÇÕES DE SERVIÇO (AS)
+   ======================================================== */
+.gestao-as-panel .lojistas-box {
+  width: 96vw;
+  max-width: 1480px;
+}
+
+.kpi-card-as-filter {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+}
+
+.kpi-card-as-filter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.kpi-card-as-filter.is-active-kpi {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2), 0 4px 12px rgba(15, 23, 42, 0.1);
+  background: #f8fafc;
+}
+
+.gestao-as-table td {
+  vertical-align: middle;
+  padding: 9px 12px;
+  font-size: 12px;
+}
+
+.badge-as-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.badge-as-status.status-autorizado,
+.badge-as-status.status-ativa {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.badge-as-status.status-concluido,
+.badge-as-status.status-concluida,
+.badge-as-status.status-finalizado {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.badge-as-status.status-pendente,
+.badge-as-status.status-em_andamento {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.badge-as-status.status-cancelado,
+.badge-as-status.status-rejeitado {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.tag-local-tipo {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-top: 2px;
+}
+
+.tag-local-tipo.tipo-rua {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.tag-local-tipo.tipo-loja {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.as-acoes-cell {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.btn-as-tabela {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  transition: all 0.12s ease;
+}
+
+.btn-as-tab-print {
+  background: #d97706;
+  color: #ffffff;
+}
+.btn-as-tab-print:hover { background: #b45309; }
+
+.btn-as-tab-edit {
+  background: #1e293b;
+  color: #ffffff;
+}
+.btn-as-tab-edit:hover { background: #0f172a; }
+
+.btn-as-tab-concluir {
+  background: #059669;
+  color: #ffffff;
+}
+.btn-as-tab-concluir:hover { background: #047857; }
+
+.btn-as-tab-reabrir {
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+.btn-as-tab-reabrir:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.btn-as-tab-map {
+  background: #2563eb;
+  color: #ffffff;
+}
+.btn-as-tab-map:hover { background: #1d4ed8; }
+
+.btn-as-tab-email {
+  background: #7c3aed;
+  color: #ffffff;
+}
+.btn-as-tab-email:hover { background: #6d28d9; }
+.btn-as-tab-email.is-sending {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Modal de Envio de AS por E-mail */
+.as-email-overlay {
+  position: fixed!important;
+  inset: 0!important;
+  background: rgba(15, 23, 42, 0.75)!important;
+  backdrop-filter: blur(6px)!important;
+  display: flex!important;
+  align-items: center!important;
+  justify-content: center!important;
+  z-index: 21000!important;
+  padding: 16px!important;
+  box-sizing: border-box!important;
+}
+.as-email-overlay[hidden] { display: none!important; }
+.as-email-dialog {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px 22px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+  animation: asModalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+.as-email-icon-wrap {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 8px;
+  background: #ede9fe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+.as-email-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  color: #7c3aed;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: block;
+  text-align: center;
+}
+.as-email-dialog h2 {
+  margin: 4px 0 6px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+}
+.as-email-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 14px;
+  text-align: center;
+  line-height: 1.4;
+}
+.as-email-info-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+}
+.as-email-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.as-email-info-row:last-child { margin-bottom: 0; }
+.as-email-label {
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   MÓDULOS PATRIMÔNIO & RECLAMAÇÕES (Fase S26.10 / CEOP)
+   ========================================================================== */
+.modal-patrimonio-box,
+.modal-reclamacao-box,
+.modal-assinatura-box {
+  max-width: 860px;
+  width: 95vw;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-modal);
+}
+
+.modal-badge-patrimonio {
+  background: #fef08a;
+  color: #854d0e;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.modal-badge-reclamacao {
+  background: #ffe4e6;
+  color: #be123c;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.form-patrimonio-corpo,
+.form-reclamacao-corpo,
+.assinatura-modal-corpo {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.patrimonio-section,
+.reclamacao-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.patrimonio-section-label,
+.reclamacao-section-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.field-hint {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 5px;
+}
+
+.form-field-wrap label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.form-field-wrap input,
+.form-field-wrap select,
+.form-field-wrap textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-field-wrap input:focus,
+.form-field-wrap select:focus,
+.form-field-wrap textarea:focus {
+  border-color: #171b68;
+  box-shadow: 0 0 0 3px rgba(23, 27, 104, 0.12);
+}
+
+.patrimonio-grid-2,
+.reclamacao-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.patrimonio-grid-3,
+.reclamacao-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 680px) {
+  .patrimonio-grid-2,
+  .reclamacao-grid-2,
+  .patrimonio-grid-3,
+  .reclamacao-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Tags de Solicitante */
+.patrimonio-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.patrimonio-tag-btn {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.patrimonio-tag-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.patrimonio-tag-btn.active {
+  background: #fffbeb;
+  border-color: #f59e0b;
+  color: #b45309;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+/* Phone input group */
+.phone-input-group {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.phone-input-group .country-flag {
+  padding: 8px 10px;
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+  font-size: 16px;
+}
+
+.phone-input-group input {
+  border: none !important;
+  box-shadow: none !important;
+  padding: 9px 12px;
+}
+
+/* Box Search */
+.box-search-group {
+  display: flex;
+  gap: 6px;
+}
+
+.box-search-group button {
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.box-search-group button:hover {
+  background: #e2e8f0;
+}
+
+/* Checklist 25 Serviços */
+.patrimonio-checklist-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px 4px;
+}
+
+@media (max-width: 640px) {
+  .patrimonio-checklist-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.patrimonio-check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.patrimonio-check-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.patrimonio-check-item.selected {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.patrimonio-check-item input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #171b68;
+  cursor: pointer;
+}
+
+.patrimonio-check-item span {
+  font-size: 11.5px;
+  line-height: 1.3;
+}
+
+/* Reclamações: Seletor de Tipo */
+.reclamacao-tipo-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.radio-card {
+  display: block;
+  cursor: pointer;
+}
+
+.radio-card input {
+  display: none;
+}
+
+.radio-card-content {
+  display: block;
+  padding: 12px 16px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.radio-card-content strong {
+  display: block;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.radio-card-content small {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.radio-card input:checked + .radio-card-content {
+  border-color: #e11d48;
+  background: #fff1f2;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
+}
+
+.radio-card input:checked + .radio-card-content strong {
+  color: #be123c;
+}
+
+/* Categorias de Reclamação */
+.reclamacao-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.reclamacao-chip {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.reclamacao-chip:hover {
+  background: #f1f5f9;
+}
+
+.reclamacao-chip.active {
+  background: #ffe4e6;
+  border-color: #f43f5e;
+  color: #be123c;
+  box-shadow: 0 2px 6px rgba(244, 63, 94, 0.2);
+}
+
+/* Dropzone Multimídia */
+.midia-upload-dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.midia-upload-dropzone:hover {
+  border-color: #171b68;
+  background: #f1f5f9;
+}
+
+.dropzone-icons {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.midia-upload-dropzone p {
+  margin: 0 0 12px 0;
+  font-size: 12px;
+  color: #475569;
+}
+
+.btn-anexo-add {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #171b68;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-anexo-add:hover {
+  background: #171b68;
+  color: #ffffff;
+  border-color: #171b68;
+}
+
+.midia-preview-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.midia-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.midia-preview-card .midia-remove-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+/* LGPD */
+.lgpd-box {
+  background: #f8fafc;
+  border-left: 4px solid #171b68;
+}
+
+.lgpd-box h4 {
+  margin: 0 0 6px 0;
+  font-size: 12.5px;
+  color: #0f172a;
+}
+
+.lgpd-box p {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #64748b;
+  margin: 0 0 10px 0;
+  text-align: justify;
+}
+
+.lgpd-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.lgpd-checkbox-label input[type="checkbox"] {
+  margin-top: 2px;
+  accent-color: #171b68;
+}
+
+/* Assinatura Digital & Canvas Pad */
+.assinaturas-grid-dupla {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (max-width: 720px) {
+  .assinaturas-grid-dupla {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sig-pad-block {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.sig-pad-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.btn-clear-sig {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #ef4444;
+  cursor: pointer;
+}
+
+.canvas-wrapper {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.canvas-wrapper canvas {
+  width: 100%;
+  height: 140px;
+  display: block;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.sig-pad-hint {
+  display: block;
+  text-align: center;
+  font-size: 10.5px;
+  color: #94a3b8;
+  margin-top: 6px;
+}
+
+.termo-resumo-card {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: #1e3a8a;
+  line-height: 1.5;
+}
+
+.assinatura-status-msg {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 12px;
+}
+.assinatura-status-msg.sucesso {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+.assinatura-status-msg.erro {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
 </style>
+
+
 
 </style>
 </head>
@@ -8373,6 +9333,12 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
               <button id="menuEmitirAsBtn" class="app-menu-item-s22513 app-menu-item-as" type="button">
                 <span class="app-menu-icon-s22513">📝</span><span>Emitir AS</span>
               </button>
+              <button id="menuPatrimonioBtn" class="app-menu-item-s22513 app-menu-item-patrimonio" type="button">
+                <span class="app-menu-icon-s22513">🏷️</span><span>Patrimônio</span>
+              </button>
+              <button id="menuReclamacaoBtn" class="app-menu-item-s22513 app-menu-item-reclamacao" type="button">
+                <span class="app-menu-icon-s22513">📢</span><span>Reclamações</span>
+              </button>
               <button id="camadasBtn" class="app-menu-item-s22513" type="button">
                 <span class="app-menu-icon-s22513">▱</span><span>Camadas</span>
               </button>
@@ -8417,6 +9383,24 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
           <section id="menuGestaoSectionS268D" class="app-menu-section-s268d" aria-labelledby="menuGestaoTituloS268D" hidden>
             <div id="menuGestaoTituloS268D" class="app-menu-section-title-s268d">Gestão</div>
             <div class="app-menu-grid-s22513">
+              <!-- Central de Gestão de Autorizações de Serviço (AS) -->
+              <button id="gestaoAsBtn" class="app-menu-item-s22513 app-menu-item-feature-s268d" type="button" hidden>
+                <span class="app-menu-icon-s22513">📝</span>
+                <span class="app-menu-item-copy-s268d"><strong>Autorizações de Serviço</strong><small>Em aberto, pendentes e concluídas</small></span>
+                <span class="app-menu-chevron-s268d">›</span>
+              </button>
+              <!-- Gestão de Patrimônio e Serviços Internos -->
+              <button id="gestaoPatrimonioBtn" class="app-menu-item-s22513 app-menu-item-feature-s268d" type="button">
+                <span class="app-menu-icon-s22513">🏷️</span>
+                <span class="app-menu-item-copy-s268d"><strong>Ordens de Patrimônio</strong><small>Serviços internos, reformas e termos</small></span>
+                <span class="app-menu-chevron-s268d">›</span>
+              </button>
+              <!-- Gestão de Reclamações e Ouvidoria SAC -->
+              <button id="gestaoReclamacoesBtn" class="app-menu-item-s22513 app-menu-item-feature-s268d" type="button">
+                <span class="app-menu-icon-s22513">📢</span>
+                <span class="app-menu-item-copy-s268d"><strong>Central de Reclamações</strong><small>SAC, evidências multimídia e termos de quitação</small></span>
+                <span class="app-menu-chevron-s268d">›</span>
+              </button>
               <button id="cartografiaMenuBtnS268D" class="app-menu-item-s22513 app-menu-item-feature-s268d" type="button" hidden>
                 <span class="app-menu-icon-s22513">⌖</span>
                 <span class="app-menu-item-copy-s268d"><strong>Cartografia</strong><small>Calibração e delimitações</small></span>
@@ -8780,6 +9764,8 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
           <p id="sigCardResponsavel" class="sig-card-line"></p>
           <div class="sig-card-actions">
             <button id="btnImprimirAsCard" type="button" class="btn-as-imprimir-card" hidden>📄 Imprimir AS / PDF</button>
+            <button id="btnEditarAsCard" type="button" class="btn-as-editar-card" hidden>✏️ Editar AS</button>
+            <button id="btnConcluirAsCard" type="button" class="btn-as-concluir-card" hidden>✅ Concluir AS</button>
             <button id="btnHistoricoS8" type="button">Histórico</button><button id="btnPendenciasS10"
               type="button">Pendências</button>
             <button id="btnCicloVidaS18" type="button">Ciclo de vida</button><button id="btnNovaInspecao" type="button"
@@ -9240,9 +10226,9 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
 
             <div class="as-lgpd-text">
               <p>
-                <strong>Lei Geral de Proteção de Dados - (Lei no 13.709/2018):</strong> O solicitante, ao requerer Autorizações de Serviços, autoriza expressamente a Central de Operações do Centro Fashion Fortaleza, na qualidade de Controlador, a realizar a coleta e tratamento de seus dados pessoais, sensíveis ou não, nos termos dos artigos 7º e 8º da legislação mencionada, para os fins específicos de fiel cumprimento da presente Autorização de Serviços, Tratamento de Não Conformidades e Notificações Extra Judiciais, bem como para uso estatístico, os quais serão armazenados pelo período necessário.
+                <strong>Lei Geral de Proteção de Dados - (Lei no. 13.709/2018):</strong> O solicitante, ao requerer Autorizações de Serviços, autoriza expressamente a Central de Operações do Centro Fashion Fortaleza, na qualidade de Controlador, a realizar a coleta e tratamento de seus dados pessoais, sensíveis ou não, nos termos dos artigos 7 e 8 da legislação mencionada, para os fins específicos de fiel cumprimento da presente Autorização de Serviços, Tratamento de Não Conformidades e Notificações Extra Judiciais, bem como para uso estatístico, os quais serão armazenados pelo período necessário.
               </p>
-              <a href="https://chatgpt.com/c/6aabda96-ddb4-83e9-ac75-d48f2d2f4a4e#" target="_blank" rel="noopener noreferrer" class="as-link-privacidade">
+              <a href="#" target="_blank" rel="noopener noreferrer" class="as-link-privacidade">
                 Conheça Nossa Política de Privacidade
               </a>
             </div>
@@ -10812,6 +11798,121 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
       </div>
     </section>
 
+    <!-- Central de Gestão de Autorizações de Serviço (AS) -->
+    <section id="gestaoAsPanel" class="offline-panel lojistas-panel gestao-as-panel" hidden aria-hidden="true" aria-labelledby="gestaoAsTitulo">
+      <div class="offline-box lojistas-box gestao-as-box">
+        <div class="offline-head lojistas-head gestao-as-head">
+          <div>
+            <small id="gestaoAsStatusBadge">Central de Serviços &amp; Ocorrências</small>
+            <h2 id="gestaoAsTitulo">Gestão de Autorizações de Serviço (AS)</h2>
+            <p>Controle unificado de solicitações, serviços em corredores, ruas e lojas (em aberto, pendentes e concluídas).</p>
+          </div>
+          <button id="fecharGestaoAsPanel" class="icon-btn" type="button" aria-label="Fechar Gestão de AS">×</button>
+        </div>
+
+        <div id="gestaoAsKpis" class="lojistas-kpis gestao-as-kpis" aria-live="polite">
+          <article class="kpi-card kpi-card-as-filter" data-filtro-kpi="" title="Clique para ver todas as solicitações">
+            <strong id="kpiTotalAs">—</strong>
+            <span>Total de Solicitações</span>
+          </article>
+          <article class="kpi-card kpi-ocupada kpi-card-as-filter" data-filtro-kpi="ABERTAS" title="Clique para filtrar em aberto / autorizadas">
+            <strong id="kpiAbertasAs">—</strong>
+            <span>Em Aberto / Autorizadas</span>
+          </article>
+          <article class="kpi-card kpi-bloqueada kpi-card-as-filter" data-filtro-kpi="PENDENTES" title="Clique para filtrar pendentes / em andamento">
+            <strong id="kpiPendentesAs">—</strong>
+            <span>Pendentes / Em Andamento</span>
+          </article>
+          <article class="kpi-card kpi-disponivel kpi-card-as-filter" data-filtro-kpi="CONCLUIDAS" title="Clique para filtrar concluídas">
+            <strong id="kpiConcluidasAs">—</strong>
+            <span>Concluídas / Finalizadas</span>
+          </article>
+        </div>
+
+        <div class="lojistas-toolbar gestao-as-toolbar">
+          <label class="lojistas-search gestao-as-search">
+            <span>Pesquisar Solicitação</span>
+            <input id="buscaAsInput" type="search" autocomplete="off" placeholder="Protocolo, Loja, Rua, Solicitante, Prestador, Descrição...">
+          </label>
+
+          <label>
+            <span>Status</span>
+            <select id="filtroStatusAs">
+              <option value="">Todos os status</option>
+              <option value="ABERTAS">Em Aberto / Autorizadas</option>
+              <option value="PENDENTES">Pendentes / Em Andamento</option>
+              <option value="CONCLUIDAS">Concluídas / Finalizadas</option>
+              <option value="CANCELADAS">Canceladas</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Local</span>
+            <select id="filtroLocalAs">
+              <option value="">Todos os locais</option>
+              <option value="RUA">Apenas Ruas e Corredores</option>
+              <option value="LOJA">Apenas Lojas / Boxes</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Setor</span>
+            <select id="filtroSetorAs">
+              <option value="">Todos os setores</option>
+              <option value="AZUL">Setor Azul</option>
+              <option value="VERDE">Setor Verde</option>
+              <option value="AMARELO">Setor Amarelo</option>
+              <option value="BRANCO">Setor Branco</option>
+              <option value="VERMELHO">Setor Vermelho</option>
+              <option value="ROXO">Setor Roxo</option>
+            </select>
+          </label>
+
+          <div class="lojistas-actions-row">
+            <button id="btnNovaAsPainel" type="button" class="primary" title="Emitir nova Autorização de Serviço">
+              <span>＋</span> Nova AS
+            </button>
+            <button id="btnAtualizarAs" type="button" class="ghost" title="Atualizar dados do servidor">
+              <span>↻</span> Atualizar
+            </button>
+          </div>
+        </div>
+
+        <div id="gestaoAsStatusMsg" class="lojistas-status-msg" hidden></div>
+
+        <div class="lojistas-table-wrap gestao-as-table-wrap">
+          <table class="lojistas-table gestao-as-table">
+            <thead>
+              <tr>
+                <th style="min-width:130px;">Protocolo</th>
+                <th style="min-width:150px;">Localização / Espaço</th>
+                <th style="min-width:140px;">Solicitante / Loja</th>
+                <th style="min-width:140px;">Prestador / Empresa</th>
+                <th style="min-width:140px;">Serviço</th>
+                <th style="min-width:120px;">Período / Data</th>
+                <th style="min-width:100px; text-align:center;">Status</th>
+                <th style="min-width:260px; text-align:center;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaGestaoAsCorpo">
+              <tr>
+                <td colspan="8" style="text-align:center; padding:30px; color:#6B7280;">Carregando Autorizações de Serviço...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="lojistas-paginacao gestao-as-paginacao">
+          <span id="gestaoAsPaginacaoInfo">Exibindo 0 solicitações</span>
+          <div class="lojistas-paginacao-botoes">
+            <button id="btnPagAnteriorAs" type="button" disabled>‹ Anterior</button>
+            <span id="gestaoAsPaginaAtual">1 / 1</span>
+            <button id="btnPagProximaAs" type="button" disabled>Próxima ›</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Modal de Cadastro e Edição de Lojista -->
     <div id="lojistaModal" class="modal-overlay lojista-modal-overlay" hidden aria-hidden="true">
       <div class="modal lojista-modal-box">
@@ -10857,6 +11958,10 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
                 <option value="SETOR VERDE">SETOR VERDE</option>
                 <option value="SETOR VERMELHO">SETOR VERMELHO</option>
               </select>
+            </label>
+            <label class="span2">
+              Rua / Corredor (Nome Completo)
+              <input id="formLojistaRua" maxlength="100" placeholder="Ex.: Rua Barão do Rio Branco, Avenida Imperador">
             </label>
             <label>
               Tipo de Espaço *
@@ -11829,509 +12934,6 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
     <section class="gate"><strong>Gate S22.5.16:</strong> em celular, valide cabeçalho compacto; abra Fila com itens
       pendentes e confirme que os registros/fotos aparecem e sincronizam.</section>
   </main>
-  
-<style>
-/* =========================================================
-   SHOWROOM DOCK & TOOLBAR STYLES (Glassmorphic Premium UI)
-   ========================================================= */
-#ceopShowroomDock {
-  position: fixed;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 99999;
-  background: rgba(19, 23, 79, 0.94);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 20px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(245, 0, 135, 0.35);
-  padding: 10px 18px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  max-width: 96vw;
-  box-sizing: border-box;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-#ceopShowroomDock .dock-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 800;
-  letter-spacing: 0.3px;
-  color: #fff;
-  white-space: nowrap;
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
-  padding-right: 14px;
-}
-
-#ceopShowroomDock .dock-badge {
-  background: #f50087;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 3px 7px;
-  border-radius: 999px;
-  letter-spacing: 0.5px;
-}
-
-#ceopShowroomDock .dock-select {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 10px;
-  color: #fff;
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  outline: none;
-  cursor: pointer;
-  max-width: 340px;
-}
-
-#ceopShowroomDock .dock-select option {
-  background: #171b68;
-  color: #fff;
-}
-
-#ceopShowroomDock .dock-btn {
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 10px;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 8px 14px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-}
-
-#ceopShowroomDock .dock-btn:hover {
-  background: rgba(255, 255, 255, 0.28);
-  transform: translateY(-1px);
-}
-
-#ceopShowroomDock .dock-btn.primary {
-  background: #f50087;
-  border-color: #f50087;
-}
-
-#ceopShowroomDock .dock-btn.primary:hover {
-  background: #ff199b;
-  box-shadow: 0 4px 14px rgba(245, 0, 135, 0.5);
-}
-
-#ceopShowroomDock .dock-btn.danger {
-  background: rgba(239, 68, 68, 0.3);
-  border-color: rgba(239, 68, 68, 0.6);
-  color: #fca5a5;
-}
-
-#ceopShowroomDock .dock-btn.danger:hover {
-  background: rgba(239, 68, 68, 0.8);
-  color: #fff;
-}
-
-#ceopShowroomDock .dock-counter {
-  font-weight: 700;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-  white-space: nowrap;
-}
-
-/* Info pill flutuante no topo */
-#ceopScreenInfoBar {
-  position: fixed;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 99998;
-  background: rgba(16, 18, 40, 0.88);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
-  padding: 6px 18px;
-  color: #fff;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  pointer-events: none;
-}
-#ceopScreenInfoBar strong { color: #f50087; }
-
-/* Viewport emulator frame */
-body.showroom-mobile-mode {
-  display: flex;
-  justify-content: center;
-  background: #111428;
-}
-body.showroom-mobile-mode > main {
-  width: 390px !important;
-  max-width: 390px !important;
-  min-height: 844px;
-  border-left: 2px solid rgba(255,255,255,0.1);
-  border-right: 2px solid rgba(255,255,255,0.1);
-  background: var(--bg, #f4f5f8);
-  box-shadow: 0 0 50px rgba(0,0,0,0.7);
-}
-body.showroom-tablet-mode {
-  display: flex;
-  justify-content: center;
-  background: #111428;
-}
-body.showroom-tablet-mode > main {
-  width: 768px !important;
-  max-width: 768px !important;
-  min-height: 1024px;
-  border-left: 2px solid rgba(255,255,255,0.1);
-  border-right: 2px solid rgba(255,255,255,0.1);
-  background: var(--bg, #f4f5f8);
-  box-shadow: 0 0 50px rgba(0,0,0,0.7);
-}
-
-/* Força que o container de fundo não corte os modais no showroom */
-.offline-panel {
-  transition: opacity 0.2s ease;
-}
-</style>
-
-<div id="ceopScreenInfoBar">
-  <span>Visão Atual:</span>
-  <strong id="showroomInfoTitle">Mapa & HUD Operacional</strong>
-  <span id="showroomInfoTarget" style="color:#94a3b8; font-family:monospace;">(Base)</span>
-</div>
-
-<div id="ceopShowroomDock" role="toolbar" aria-label="Showroom de Telas CEOP">
-  <div class="dock-brand">
-    <span>CEOP Showroom</span>
-    <span class="dock-badge">50 Telas</span>
-  </div>
-
-  <button id="dockPrevBtn" class="dock-btn" type="button" title="Tela Anterior (Seta Esquerda)">‹ Anterior</button>
-
-  <select id="dockScreenSelect" class="dock-select" aria-label="Selecione a tela ou modal"></select>
-
-  <button id="dockNextBtn" class="dock-btn primary" type="button" title="Próxima Tela (Seta Direita)">Próxima ›</button>
-
-  <button id="dockResetBtn" class="dock-btn" type="button" title="Fechar painéis e voltar ao mapa">⌖ Mapa</button>
-
-  <div class="dock-counter" id="dockCounter">01 / 50</div>
-
-  <button id="dockDeviceBtn" class="dock-btn" type="button" title="Alternar viewport (Desktop / Mobile / Tablet)">📱 Modo</button>
-</div>
-
-<script>
-(function () {
-  // Catálogo com todas as 50 telas/modais mapeadas
-  const SCREENS = [
-    // --- GRUPO 1: MAPA & HUD PRINCIPAL ---
-    { id: 'view_mapa_base', name: '01. Mapa Principal & HUD do Mall', type: 'base', desc: 'Planta interativa, toolbar, seletor de pisos e marcadores' },
-    { id: 'appMenuS22513', name: '02. Menu Lateral do App (Principal)', type: 'drawer', desc: 'Gaveta de navegação lateral com ações rápidas e gestão' },
-    { id: 'appMenuCartografiaS268D', name: '03. Menu Lateral (Submenu Cartografia)', type: 'drawer_sub', desc: 'Submenu de ferramentas cartográficas avançadas' },
-    { id: 'camadas', name: '04. Menu Rápido de Camadas', type: 'popup', desc: 'Toggle rápido de camadas ativas sobre o mapa' },
-    { id: 'centralCamadasS261', name: '05. Central Avançada de Camadas', type: 'drawer', desc: 'Gerenciador com visibilidade, legendas e presets corporativos' },
-    { id: 'sinalizacaoMapaCard', name: '06. Card de Sinalização Selecionada', type: 'card', desc: 'Card flutuante com dados, fotos, estado e ações rápidas' },
-    { id: 'localCard', name: '07. Card de Local Geométrico Selecionado', type: 'card', desc: 'Card flutuante com coordenadas e botão Confirmar Local' },
-    { id: 'legendaOcupacaoMapa', name: '08. Legenda de Ocupação Comercial', type: 'card', desc: 'Legenda flutuante com cores de ocupação das lojas' },
-
-    // --- GRUPO 2: OPERAÇÃO & SINALIZAÇÕES (AS) ---
-    { id: 'formPanel', name: '09. Painel de Cadastro/Edição (Ativo / AS)', type: 'drawer', desc: 'Formulário completo de ativo e Autorização de Serviço' },
-    { id: 'inspecaoPanel', name: '10. Painel de Inspeção de Campo (S8)', type: 'modal', desc: 'Vistoria presencial, estado físico e checklist' },
-    { id: 'historicoPanel', name: '11. Linha do Tempo e Histórico (S8)', type: 'modal', desc: 'Histórico cronológico de inspeções e alterações' },
-    { id: 'pendenciasPanel', name: '12. Painel de Pendências e Chamados (S10)', type: 'modal', desc: 'Gestão de anomalias com prioridades e resoluções' },
-    { id: 'cicloVidaPanelS18', name: '13. Painel de Ciclo de Vida do Ativo (S18)', type: 'modal', desc: 'Vida útil, lonas, ferragens e desgaste acumulado' },
-    { id: 'eventoCicloEditorS18', name: '14. Modal de Evento de Ciclo de Vida (S18)', type: 'modal', desc: 'Submodal de lançamento de troca ou reforma' },
-    { id: 'reagendarPanelS191', name: '15. Modal de Reagendamento (S19.1)', type: 'modal', desc: 'Ajuste de vencimento de AS ou manutenção' },
-    { id: 'fotoModalS225', name: '16. Galeria de Fotos em Alta Resolução', type: 'modal_gallery', desc: 'Visualizador de fotos em tela cheia com zoom' },
-
-    // --- GRUPO 3: LOJISTAS & ESPAÇOS COMERCIAIS ---
-    { id: 'lojistasPanel', name: '17. Central de Gestão de Lojistas', type: 'modal', desc: 'Base mestre de espaços, contratos, LUCs e ocupação' },
-    { id: 'lojistaModal', name: '18. Modal Completo de Cadastro de Lojista', type: 'modal_overlay', desc: 'Ficha mestre com abas de contrato, contatos e AS' },
-
-    // --- GRUPO 4: TORRES E NÚCLEOS VERTICAIS ---
-    { id: 'torresPanelS2610C', name: '19. Central de Torres e Núcleos Verticais', type: 'modal', desc: 'Governança vertical N0-N3, elevadores e snapshots' },
-
-    // --- GRUPO 5: REFERÊNCIAS & CATÁLOGOS ---
-    { id: 'referenciasPanelS2610R3', name: '20. Central de Referências Espaciais', type: 'modal', desc: 'Consulta e filtros de pontos notáveis do mall' },
-    { id: 'referenciaNovaS2610R4', name: '21. Painel de Nova Referência', type: 'modal', desc: 'Formulário de cadastro inicial de referência' },
-    { id: 'referenciaConfirmarS2610R4', name: '22. Confirmação de Cadastro de Referência', type: 'modal', desc: 'Validação de posição e metadados' },
-    { id: 'referenciaReposicionarConfirmarS2610R5', name: '23. Confirmação de Reposicionamento', type: 'modal', desc: 'Atualização de coordenadas espaciais' },
-    { id: 'referenciaRemoverS2610R6C', name: '24. Modal de Remoção de Referência', type: 'modal', desc: 'Exclusão com verificação e digitação de confirmação' },
-    { id: 'referenciaEditorS2610R3', name: '25. Editor Detalhado de Referência', type: 'modal', desc: 'Edição de propriedades complementares' },
-    { id: 'referenciaCatalogoS2610R8', name: '26. Catálogo de Tipos de Referência', type: 'modal', desc: 'Categorias e taxonomias de referências' },
-    { id: 'catalogosPanelS269C1', name: '27. Central de Catálogos de Domínio', type: 'modal', desc: 'Taxonomias de materiais, tipos e situações' },
-    { id: 'catalogoOpcaoEditorS269C2', name: '28. Editor de Opção de Catálogo', type: 'modal', desc: 'Criação/edição de item de catálogo' },
-    { id: 'catalogoHistoricoPanelS269C2', name: '29. Histórico e Auditoria dos Catálogos', type: 'modal', desc: 'Trilha de auditoria das taxonomias' },
-
-    // --- GRUPO 6: ANÁLISE, DASHBOARD & RELATÓRIOS ---
-    { id: 'centralGestaoPanel', name: '30. Central Geral de Gestão Operacional', type: 'modal', desc: 'Visão executiva, KPIs de campo e ações em lote' },
-    { id: 'dashboardPanel', name: '31. Dashboard Analítico de Indicadores', type: 'modal', desc: 'Gráficos de conformidade e distribuição por piso' },
-    { id: 'relatoriosPanel', name: '32. Painel de Relatórios & Google Slides', type: 'modal', desc: 'Exportação em lote e geração de apresentações' },
-    { id: 'agendaPanelS19', name: '33. Agenda Operacional e Cronograma', type: 'modal', desc: 'Calendário de trocas e vencimentos de AS' },
-    { id: 'alertasPanelS21', name: '34. Central Proativa de Alertas', type: 'modal', desc: 'Monitoramento de AS vencidas e itens danificados' },
-    { id: 'planoEditorS20', name: '35. Editor de Planos Operacionais', type: 'modal', desc: 'Configuração de rotinas preventivas' },
-    { id: 'regraEditorS22', name: '36. Editor de Regras de Alerta', type: 'modal', desc: 'Disparadores automáticos de notificações' },
-    { id: 'escalamentoTesteS222', name: '37. Teste de Escalonamento de Alertas', type: 'modal', desc: 'Simulador de envio de notificações' },
-
-    // --- GRUPO 7: CARTOGRAFIA ADMINISTRATIVA ---
-    { id: 'calibracaoPanelS242', name: '38. Calibração dos Níveis e Plantas', type: 'modal', desc: 'Alinhamento de coordenadas com plantas 2025' },
-    { id: 'areasNivel0PanelS268D', name: '39. Delimitação do Subsolo / Nível 0', type: 'modal', desc: 'Polígonos de estacionamento, docas e acessos N0' },
-    { id: 'areasNivel1PanelS246', name: '40. Áreas Especiais do Nível 1', type: 'modal', desc: 'Polígonos de Hotel, CDM e áreas externas' },
-    { id: 'areaVermelhaPanelS244', name: '41. Estacionamento Nível 3 (Área Vermelha)', type: 'modal', desc: 'Delimitação de vagas e setor vermelho' },
-    { id: 'cartoPublicacaoPanelS255', name: '42. Publicação Cartográfica (Rascunho/Prod)', type: 'modal', desc: 'Revisão e publicação controlada de mapas' },
-    { id: 'restaurarCartografiaPanelS254', name: '43. Restauração de Versões Cartográficas', type: 'modal', desc: 'Rollback seguro de plantas' },
-    { id: 'cartoHistoricoDetalhePanelS253', name: '44. Detalhe do Histórico Cartográfico', type: 'modal', desc: 'Auditoria visual de alterações em mapas' },
-
-    // --- GRUPO 8: ADMINISTRAÇÃO, SEGURANÇA & OFFLINE ---
-    { id: 'adminPanelS14', name: '45. Central de Administração do Sistema', type: 'modal', desc: 'Painel com abas de usuários, perfis, auditoria e backups' },
-    { id: 'usuarioEditorS14', name: '46. Modal Editor de Usuário', type: 'modal', desc: 'Cadastro de operadores e permissões' },
-    { id: 'perfilEditorS14', name: '47. Modal Editor de Perfis de Acesso', type: 'modal', desc: 'Matriz de privilégios e papéis' },
-    { id: 'restorePanelS16', name: '48. Modal de Restauração de Backups SHA-256', type: 'modal', desc: 'Restauração com chave de integridade' },
-    { id: 'filaPanel', name: '49. Fila de Sincronização Offline (Outbox)', type: 'modal', desc: 'Itens locais pendentes de envio ao servidor' },
-    { id: 'offlinePanel', name: '50. Diagnóstico do Cache Offline', type: 'modal', desc: 'Barra de progresso, status e reparo local' }
-  ];
-
-  let currentIndex = 0;
-  let deviceModes = ['desktop', 'tablet', 'mobile'];
-  let currentDeviceModeIndex = 0;
-
-  // Popula o select do Dock
-  const select = document.getElementById('dockScreenSelect');
-  SCREENS.forEach((s, idx) => {
-    const opt = document.createElement('option');
-    opt.value = idx;
-    opt.textContent = s.name;
-    select.appendChild(opt);
-  });
-
-  function fecharTodasAsTelas() {
-    // Esconde painéis e modais
-    document.querySelectorAll('.offline-panel, .form-panel, .layers, .modal-overlay').forEach(el => {
-      el.hidden = true;
-      el.setAttribute('aria-hidden', 'true');
-      el.classList.remove('open');
-    });
-    // Esconde cards flutuantes
-    ['sinalizacaoMapaCard', 'localCard', 'legendaOcupacaoMapa', 'camadas', 'centralCamadasS261', 'appMenuS22513'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.hidden = true;
-    });
-    const bdrop = document.getElementById('appMenuBackdropS22513');
-    if (bdrop) bdrop.hidden = true;
-    const cbdrop = document.getElementById('centralCamadasBackdropS261');
-    if (cbdrop) cbdrop.hidden = true;
-  }
-
-  function injetarDadosSimuladosSeNecessario(screen) {
-    // 1. Simulação para o Card de Sinalização
-    const sigCard = document.getElementById('sinalizacaoMapaCard');
-    if (sigCard) {
-      const proto = document.getElementById('sigCardProtocolo');
-      if (proto) proto.textContent = 'CEOP-2026-N1-0842';
-      const tit = document.getElementById('sigCardTitulo');
-      if (tit) tit.textContent = 'Totem Direcional — Praça de Alimentação';
-      const tp = document.getElementById('sigCardTipo');
-      if (tp) tp.textContent = 'Tipo: Totem Iluminado Dupla Face';
-      const loc = document.getElementById('sigCardLocal');
-      if (loc) loc.textContent = 'Localização: Corredor Central (Piso L1, próx. LUC 1024)';
-      const resp = document.getElementById('sigCardResponsavel');
-      if (resp) resp.textContent = 'Responsável: Equipe Operações Mall';
-    }
-
-    // 2. Simulação para Localizador e Card de Ponto Selecionado
-    const locResumo = document.getElementById('localResumo');
-    if (locResumo) {
-      locResumo.innerHTML = '<strong>Ponto Coordenadas:</strong> X: 1420.50 | Y: 850.25<br><small>Referência mais próxima: Escada Rolante Central (12m)</small>';
-    }
-
-    // 3. Simulação para o Formulário de Registro
-    const fLocalResumo = document.getElementById('formLocalResumo');
-    if (fLocalResumo) fLocalResumo.textContent = 'Ponto selecionado em Piso L1 (Setor Laranja)';
-    const fCoords = document.getElementById('formCoords');
-    if (fCoords) fCoords.textContent = 'Coordenadas relativas: X 1420.5, Y 850.2';
-    const preview = document.getElementById('fotoPreview');
-    if (preview && preview.children.length === 0) {
-      preview.innerHTML = `
-        <div class="photo-card" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center; font-size:11px; color:#475569;">Foto 1 (Exemplo)</div>
-        <div class="photo-card" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center; font-size:11px; color:#475569;">Foto 2 (Exemplo)</div>
-      `;
-    }
-
-    // 4. Simulação para Lojistas (Tabela preenchida)
-    const lojistasTbody = document.querySelector('#tabelaLojistas tbody, #listaLojistas');
-    if (lojistasTbody && lojistasTbody.children.length === 0) {
-      lojistasTbody.innerHTML = `
-        <tr style="border-bottom:1px solid #e2e8f0;">
-          <td style="padding:10px;"><strong>LUC-1024</strong></td>
-          <td style="padding:10px;">Magazine Luiza</td>
-          <td style="padding:10px;">Nível 1</td>
-          <td style="padding:10px;"><span class="sig-badge" style="background:#16a34a;">OPERANDO</span></td>
-          <td style="padding:10px;">Âncora</td>
-        </tr>
-        <tr style="border-bottom:1px solid #e2e8f0;">
-          <td style="padding:10px;"><strong>LUC-1048</strong></td>
-          <td style="padding:10px;">Lojas Americanas</td>
-          <td style="padding:10px;">Nível 1</td>
-          <td style="padding:10px;"><span class="sig-badge" style="background:#ca8a04;">EM OBRAS</span></td>
-          <td style="padding:10px;">Âncora</td>
-        </tr>
-        <tr style="border-bottom:1px solid #e2e8f0;">
-          <td style="padding:10px;"><strong>LUC-2015</strong></td>
-          <td style="padding:10px;">Espaço Vago (Antiga Livraria)</td>
-          <td style="padding:10px;">Nível 2</td>
-          <td style="padding:10px;"><span class="sig-badge" style="background:#dc2626;">VAGO</span></td>
-          <td style="padding:10px;">Satélite</td>
-        </tr>
-      `;
-    }
-
-    // 5. Simulação de Usuários / Admin
-    const listaUsers = document.getElementById('listaUsuariosS14');
-    if (listaUsers && listaUsers.children.length === 0) {
-      listaUsers.innerHTML = `
-        <div style="padding:12px; border:1px solid #e2e8f0; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-          <div><strong>operador.mall@ceop.com.br</strong><br><small style="color:#64748b;">Perfil: Operador de Campo (Sinalização & AS)</small></div>
-          <span class="sig-badge">ATIVO</span>
-        </div>
-        <div style="padding:12px; border:1px solid #e2e8f0; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-          <div><strong>gestor.operacoes@ceop.com.br</strong><br><small style="color:#64748b;">Perfil: Administrador Geral</small></div>
-          <span class="sig-badge" style="background:#f50087;">ADMIN</span>
-        </div>
-      `;
-    }
-
-    // 6. Simulação de Galeria de Fotos
-    const fotoImg = document.getElementById('fotoImagemS225');
-    if (fotoImg) {
-      fotoImg.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect width="600" height="400" fill="%231e293b"/><text x="50%" y="50%" fill="%23f8fafc" font-family="sans-serif" font-size="24" text-anchor="middle" dominant-baseline="middle">Demonstração da Foto da Sinalização</text></svg>';
-      const stage = document.getElementById('fotoStageS225');
-      if (stage) stage.hidden = false;
-      const loading = document.getElementById('fotoLoadingS225');
-      if (loading) loading.hidden = true;
-      const rodape = document.getElementById('fotoRodapeS225');
-      if (rodape) rodape.hidden = false;
-      const nome = document.getElementById('fotoNomeS225');
-      if (nome) nome.textContent = 'Foto_Totem_Alimentacao_01.jpg';
-      const meta = document.getElementById('fotoMetaS225');
-      if (meta) meta.textContent = 'Enviada em 16/09/2026 às 10:14 por Operador 01';
-      const count = document.getElementById('fotoContadorS225');
-      if (count) count.textContent = '1 de 3';
-    }
-  }
-
-  function mostrarTela(index) {
-    if (index < 0) index = SCREENS.length - 1;
-    if (index >= SCREENS.length) index = 0;
-    currentIndex = index;
-
-    fecharTodasAsTelas();
-    const screen = SCREENS[index];
-
-    // Atualiza info bar e dock
-    document.getElementById('showroomInfoTitle').textContent = screen.name;
-    document.getElementById('showroomInfoTarget').textContent = `[#${screen.id}] • ${screen.desc}`;
-    document.getElementById('dockCounter').textContent = `${String(index + 1).padStart(2, '0')} / ${SCREENS.length}`;
-    select.value = index;
-
-    if (screen.id === 'view_mapa_base') {
-      return; // Apenas mapa base visível
-    }
-
-    injetarDadosSimuladosSeNecessario(screen);
-
-    // Abre a tela alvo
-    if (screen.id === 'appMenuS22513') {
-      const menu = document.getElementById('appMenuS22513');
-      const bdrop = document.getElementById('appMenuBackdropS22513');
-      const princ = document.getElementById('appMenuPrincipalS268D');
-      const carto = document.getElementById('appMenuCartografiaS268D');
-      if (menu) menu.hidden = false;
-      if (bdrop) bdrop.hidden = false;
-      if (princ) princ.hidden = false;
-      if (carto) carto.hidden = true;
-    } else if (screen.id === 'appMenuCartografiaS268D') {
-      const menu = document.getElementById('appMenuS22513');
-      const bdrop = document.getElementById('appMenuBackdropS22513');
-      const princ = document.getElementById('appMenuPrincipalS268D');
-      const carto = document.getElementById('appMenuCartografiaS268D');
-      if (menu) menu.hidden = false;
-      if (bdrop) bdrop.hidden = false;
-      if (princ) princ.hidden = true;
-      if (carto) carto.hidden = false;
-    } else if (screen.id === 'centralCamadasS261') {
-      const drawer = document.getElementById('centralCamadasS261');
-      const bdrop = document.getElementById('centralCamadasBackdropS261');
-      if (drawer) { drawer.hidden = false; drawer.setAttribute('aria-hidden', 'false'); }
-      if (bdrop) bdrop.hidden = false;
-    } else if (screen.id === 'camadas') {
-      const popup = document.getElementById('camadas');
-      if (popup) popup.hidden = false;
-    } else if (screen.id === 'formPanel') {
-      const f = document.getElementById('formPanel');
-      if (f) {
-        f.hidden = false;
-        f.setAttribute('aria-hidden', 'false');
-        f.classList.add('open');
-      }
-    } else {
-      const el = document.getElementById(screen.id);
-      if (el) {
-        el.hidden = false;
-        el.setAttribute('aria-hidden', 'false');
-        if (el.classList.contains('form-panel')) el.classList.add('open');
-      }
-    }
-  }
-
-  // Event Listeners
-  select.addEventListener('change', (e) => mostrarTela(parseInt(e.target.value, 10)));
-  document.getElementById('dockPrevBtn').addEventListener('click', () => mostrarTela(currentIndex - 1));
-  document.getElementById('dockNextBtn').addEventListener('click', () => mostrarTela(currentIndex + 1));
-  document.getElementById('dockResetBtn').addEventListener('click', () => mostrarTela(0));
-
-  // Alternador de dispositivo
-  document.getElementById('dockDeviceBtn').addEventListener('click', () => {
-    currentDeviceModeIndex = (currentDeviceModeIndex + 1) % deviceModes.length;
-    const mode = deviceModes[currentDeviceModeIndex];
-    document.body.classList.remove('showroom-mobile-mode', 'showroom-tablet-mode');
-    if (mode === 'mobile') {
-      document.body.classList.add('showroom-mobile-mode');
-      document.getElementById('dockDeviceBtn').textContent = '📱 Celular (390px)';
-    } else if (mode === 'tablet') {
-      document.body.classList.add('showroom-tablet-mode');
-      document.getElementById('dockDeviceBtn').textContent = '📱 Tablet (768px)';
-    } else {
-      document.getElementById('dockDeviceBtn').textContent = '🖥️ Desktop';
-    }
-  });
-
-  // Atalhos de teclado: Setas e Esc
-  window.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (e.key === 'ArrowRight') {
-      mostrarTela(currentIndex + 1);
-    } else if (e.key === 'ArrowLeft') {
-      mostrarTela(currentIndex - 1);
-    } else if (e.key === 'Escape') {
-      mostrarTela(0);
-    }
-  });
-
-  // Inicia na tela base do mapa
-  mostrarTela(0);
-})();
-</script>
-
   <div id="fotoModalS225" class="modal-overlay gallery-overlay-s225" hidden aria-hidden="true">
     <section class="gallery-modal-s225" role="dialog" aria-modal="true" aria-labelledby="fotoTituloS225">
       <header class="gallery-head-s225">
@@ -12395,9 +12997,12 @@ body.showroom-tablet-mode > main {
       <header class="as-preview-header">
         <div class="as-preview-header-info">
           <h3 id="asPreviewTitulo">📄 Visualização da Autorização para Serviço</h3>
-          <p>Dica: Na tela de impressão do seu navegador, escolha <strong>Salvar como PDF</strong> no destino para guardar o arquivo em seu computador.</p>
+          <p>Para guardar o documento em seu computador, escolha o destino <strong>Salvar como PDF</strong> na tela de impressão.</p>
         </div>
         <div class="as-preview-header-actions">
+          <button type="button" id="btnPreviewEnviarEmailAs" style="background:#7C3AED; color:#FFF; border:none; padding:8px 14px; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; margin-right:6px;">
+            ✉️ Enviar por E-mail
+          </button>
           <button type="button" id="btnExecutarImpressaoAs" class="primary as-btn-print-now">
             🖨️ Imprimir / Salvar como PDF
           </button>
@@ -12409,6 +13014,555 @@ body.showroom-tablet-mode > main {
       <div class="as-preview-body">
         <div id="asPreviewPaperStage" class="as-preview-paper-stage">
           <!-- O conteúdo renderizado do documento será inserido aqui dinamicamente -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE CONFIRMAÇÃO E ENVIO DE AS POR E-MAIL -->
+  <div id="modalAsEnviarEmail" class="modal-overlay as-email-overlay" hidden aria-hidden="true">
+    <div class="as-email-dialog" role="dialog" aria-modal="true" aria-labelledby="asEmailModalTitulo">
+      <div class="as-email-icon-wrap">
+        <span class="as-email-icon">✉️</span>
+      </div>
+      <small class="as-email-eyebrow">CEOP • CENTRAL DE OPERAÇÕES</small>
+      <h2 id="asEmailModalTitulo">Enviar Autorização por E-mail</h2>
+      <p class="as-email-desc">O documento oficial da Autorização de Serviço será enviado com formatação corporativa e o <strong>PDF oficial anexado</strong> para impressão ou arquivamento.</p>
+
+      <div class="as-email-info-card">
+        <div class="as-email-info-row">
+          <span class="as-email-label">Protocolo:</span>
+          <strong id="asEmailProtocolo">—</strong>
+        </div>
+        <div class="as-email-info-row">
+          <span class="as-email-label">Solicitante:</span>
+          <span id="asEmailSolicitante" style="font-weight:600; color:#0F172A;">—</span>
+        </div>
+        <div class="as-email-info-row">
+          <span class="as-email-label">Local / Espaço:</span>
+          <span id="asEmailLocal" style="font-weight:600; color:#1E293B;">—</span>
+        </div>
+        <div class="as-email-info-row">
+          <span class="as-email-label">Tipo de Serviço:</span>
+          <span id="asEmailServico" style="font-weight:700; color:#D97706;">—</span>
+        </div>
+        <div class="as-email-info-row" style="border-top:1px dashed #CBD5E1; padding-top:6px; margin-top:6px;">
+          <span class="as-email-label">Anexo Oficial:</span>
+          <span style="font-weight:700; color:#047857; display:flex; align-items:center; gap:4px;">📎 Documento em PDF (A4)</span>
+        </div>
+      </div>
+
+      <form id="formAsEnviarEmail" onsubmit="return false;" style="margin-top:14px; text-align:left;">
+        <label for="asEmailDestinatarioInput" style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:5px;">
+          E-mail do Solicitante / Destinatário *
+        </label>
+        <input type="email" id="asEmailDestinatarioInput" required placeholder="exemplo@email.com" style="width:100%; box-sizing:border-box; padding:9px 12px; border:1.5px solid #CBD5E1; border-radius:6px; font-size:13px; font-family:inherit; outline:none; transition:border 0.2s;" />
+        <small style="display:block; color:#64748B; font-size:11px; margin-top:4px;">
+          Você pode alterar ou informar o endereço desejado para recebimento.
+        </small>
+
+        <div style="margin-top:10px;">
+          <label for="asEmailCcInput" style="display:block; font-size:11px; font-weight:600; color:#475569; margin-bottom:4px;">
+            Cópia (Cc) — Opcional
+          </label>
+          <input type="email" id="asEmailCcInput" placeholder="copia@email.com (opcional)" style="width:100%; box-sizing:border-box; padding:7px 10px; border:1px solid #E2E8F0; border-radius:6px; font-size:12px; font-family:inherit; outline:none;" />
+        </div>
+
+        <div class="as-email-dialog-actions" style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end;">
+          <button type="button" id="btnCancelarEnviarEmailAs" style="background:#F1F5F9; color:#475569; border:1px solid #CBD5E1; padding:8px 16px; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer;">
+            Cancelar
+          </button>
+          <button type="submit" id="btnConfirmarEnviarEmailAs" style="background:#7C3AED; color:#FFF; border:none; padding:8px 18px; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+            <span id="asBtnEmailIcon">✉️</span> <span id="asBtnEmailTexto">Enviar Agora</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MÓDULO DE PATRIMÔNIO: FORMULÁRIO DE SOLICITAÇÃO (OS)
+       ===================================================== -->
+  <div id="formPatrimonioModal" class="modal-overlay modal-patrimonio-overlay" hidden aria-hidden="true">
+    <div class="modal modal-patrimonio-box">
+      <div class="modal-head">
+        <div>
+          <small class="modal-badge-patrimonio">Controle de Patrimônio — Serviços Interno</small>
+          <h3 id="patrimonioModalTitulo">Solicitação de Ordem de Serviços</h3>
+        </div>
+        <button id="fecharModalPatrimonio" type="button" class="icon-btn" aria-label="Fechar modal">×</button>
+      </div>
+
+      <form id="formOrdemPatrimonio" onsubmit="return false;" class="form-patrimonio-corpo">
+        <!-- Tags de Setor / Solicitante -->
+        <div class="patrimonio-section">
+          <label class="patrimonio-section-label">Setor / Solicitante *</label>
+          <div class="patrimonio-tags-container" id="patrimonioTagsContainer">
+            <button type="button" class="patrimonio-tag-btn active" data-tag="SOLICITAÇÃO COMERCIAL">● SOLICITAÇÃO COMERCIAL</button>
+            <button type="button" class="patrimonio-tag-btn" data-tag="SOLICITAÇÃO FINANCEIRO/COBRANÇA">● SOLICITAÇÃO FINANCEIRO/COBRANÇA</button>
+            <button type="button" class="patrimonio-tag-btn" data-tag="SOLICITAÇÃO PERMISSIONÁRIO">● SOLICITAÇÃO PERMISSIONÁRIO</button>
+            <button type="button" class="patrimonio-tag-btn" data-tag="SOLICITAÇÃO SETOR MARKETING">● SOLICITAÇÃO SETOR MARKETING</button>
+            <button type="button" class="patrimonio-tag-btn" data-tag="SOLICITAÇÃO SETOR OPERACIONAL">● SOLICITAÇÃO SETOR OPERACIONAL</button>
+          </div>
+          <input type="hidden" id="patrimonioTagSelecionada" value="SOLICITAÇÃO COMERCIAL" />
+        </div>
+
+        <!-- Identificação do Solicitante -->
+        <div class="patrimonio-section">
+          <div class="patrimonio-grid-2">
+            <div class="form-field-wrap">
+              <label for="patrimonioNomeInput">Nome Completo do Solicitante *</label>
+              <small class="field-hint">Insira o nome completo do solicitante utilizando letras maiúsculas</small>
+              <input type="text" id="patrimonioNomeInput" required placeholder="Digite aqui ..." style="text-transform:uppercase;" />
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="patrimonioCpfInput">CPF do Solicitante *</label>
+              <small class="field-hint">Insira o CPF do solicitante utilizando somente números</small>
+              <input type="text" id="patrimonioCpfInput" required placeholder="000.000.000-00" maxlength="14" />
+            </div>
+          </div>
+
+          <div class="patrimonio-grid-2" style="margin-top:10px;">
+            <div class="form-field-wrap">
+              <label for="patrimonioTelefoneInput">Contato (Telefone) do Solicitante *</label>
+              <small class="field-hint">Insira o contato telefônico com DDD</small>
+              <div class="phone-input-group">
+                <span class="country-flag">🇧🇷</span>
+                <input type="tel" id="patrimonioTelefoneInput" required placeholder="(85) 99999-9999" maxlength="15" />
+              </div>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="patrimonioEmailInput">E-mail do Solicitante</label>
+              <small class="field-hint">Para envio de comprovante e termo emitido</small>
+              <input type="email" id="patrimonioEmailInput" placeholder="exemplo@email.com" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Localização no Mall -->
+        <div class="patrimonio-section">
+          <div class="patrimonio-grid-3">
+            <div class="form-field-wrap">
+              <label for="patrimonioSetorSelect">Setor *</label>
+              <small class="field-hint">Selecione o setor da loja/box</small>
+              <select id="patrimonioSetorSelect" required>
+                <option value="">Selecione o Setor</option>
+                <option value="VERDE">VERDE</option>
+                <option value="AZUL">AZUL</option>
+                <option value="AMARELO">AMARELO</option>
+                <option value="BRANCO">BRANCO</option>
+                <option value="VERMELHO">VERMELHO</option>
+                <option value="ROXO">ROXO</option>
+              </select>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="patrimonioRuaSelect">Rua do Setor *</label>
+              <small class="field-hint">Selecione a rua do box/loja</small>
+              <select id="patrimonioRuaSelect" required>
+                <option value="">Selecione primeiro o setor</option>
+              </select>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="patrimonioBoxInput">Número do Box / Loja *</label>
+              <small class="field-hint">Insira o número do box</small>
+              <div class="box-search-group">
+                <input type="text" id="patrimonioBoxInput" required placeholder="Ex: 11111" />
+                <button type="button" id="btnBuscarLojistaPatrimonio" title="Auto-preencher dados pelo cadastro do lojista">🔍</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checklist de 25 Serviços de Patrimônio -->
+        <div class="patrimonio-section">
+          <label class="patrimonio-section-label">Solicitação de Serviços de Patrimônio *</label>
+          <small class="field-hint" style="display:block; margin-bottom:10px;">Marque os itens que serão objeto de intervenção, retirada ou colocação</small>
+          <div class="patrimonio-checklist-grid" id="patrimonioChecklistGrid">
+            <!-- 25 Itens Oficiais Gerados Dinamicamente via JS ou estáticos -->
+          </div>
+        </div>
+
+        <!-- Observações -->
+        <div class="patrimonio-section">
+          <label for="patrimonioObsInput">Observação</label>
+          <textarea id="patrimonioObsInput" rows="3" placeholder="Digite aqui observações adicionais sobre o serviço..."></textarea>
+        </div>
+
+        <div class="modal-actions-bar">
+          <button type="button" id="btnCancelarPatrimonio" class="btn-secondary">Cancelar</button>
+          <button type="submit" id="btnSalvarOrdemPatrimonio" class="btn-primary" style="background:#eab308; color:#000; border-color:#eab308;">
+            <span>💾</span> Registrar OS
+          </button>
+          <button type="button" id="btnEmitirTermoPatrimonio" class="btn-primary" style="background:#171b68;">
+            <span>✍️</span> Registrar e Emitir Termo
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MÓDULO DE RECLAMAÇÕES: NOVO CHAMADO (SAC / OUVIDORIA)
+       ===================================================== -->
+  <div id="formReclamacaoModal" class="modal-overlay modal-reclamacao-overlay" hidden aria-hidden="true">
+    <div class="modal modal-reclamacao-box">
+      <div class="modal-head">
+        <div>
+          <small class="modal-badge-reclamacao">SAC &amp; Ouvidoria CEOP</small>
+          <h3 id="reclamacaoModalTitulo">Novo Chamado de Reclamação</h3>
+        </div>
+        <button id="fecharModalReclamacao" type="button" class="icon-btn" aria-label="Fechar modal">×</button>
+      </div>
+
+      <form id="formNovoChamadoReclamacao" onsubmit="return false;" class="form-reclamacao-corpo">
+        <!-- Tipo de Reclamante -->
+        <div class="reclamacao-section">
+          <label class="reclamacao-section-label">Perfil do Reclamante *</label>
+          <div class="reclamacao-tipo-selector">
+            <label class="radio-card">
+              <input type="radio" name="tipoReclamante" value="PERMISSIONARIO/LOJISTA" checked />
+              <span class="radio-card-content">
+                <strong>🏪 Permissionário / Lojista</strong>
+                <small>Titular ou preposto de espaço no shopping</small>
+              </span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="tipoReclamante" value="CLIENTE VISITANTE" />
+              <span class="radio-card-content">
+                <strong>🛍️ Cliente Visitante</strong>
+                <small>Consumidor ou visitante do mall</small>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Dados do Reclamante -->
+        <div class="reclamacao-section">
+          <div class="reclamacao-grid-2">
+            <div class="form-field-wrap">
+              <label for="reclamacaoNomeInput">Nome Completo *</label>
+              <small class="field-hint">Insira o nome completo utilizando letras maiúsculas</small>
+              <input type="text" id="reclamacaoNomeInput" required placeholder="Digite aqui ..." style="text-transform:uppercase;" />
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="reclamacaoCpfInput">CPF *</label>
+              <small class="field-hint">Insira o CPF utilizando somente números</small>
+              <input type="text" id="reclamacaoCpfInput" required placeholder="000.000.000-00" maxlength="14" />
+            </div>
+          </div>
+
+          <div class="reclamacao-grid-2" style="margin-top:10px;">
+            <div class="form-field-wrap">
+              <label for="reclamacaoTelefoneInput">Contato (Telefone) *</label>
+              <small class="field-hint">Número com DDD para atualizações</small>
+              <div class="phone-input-group">
+                <span class="country-flag">🇧🇷</span>
+                <input type="tel" id="reclamacaoTelefoneInput" required placeholder="(85) 99999-9999" maxlength="15" />
+              </div>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="reclamacaoEmailInput">E-mail</label>
+              <small class="field-hint">E-mail para envio do protocolo e termo</small>
+              <input type="email" id="reclamacaoEmailInput" placeholder="exemplo@email.com" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Localização da Ocorrência -->
+        <div class="reclamacao-section">
+          <div class="reclamacao-grid-3">
+            <div class="form-field-wrap">
+              <label for="reclamacaoSetorSelect">Setor *</label>
+              <select id="reclamacaoSetorSelect" required>
+                <option value="">Selecione o Setor</option>
+                <option value="BRANCO">BRANCO</option>
+                <option value="AZUL">AZUL</option>
+                <option value="VERDE">VERDE</option>
+                <option value="AMARELO">AMARELO</option>
+                <option value="VERMELHO">VERMELHO</option>
+                <option value="ROXO">ROXO</option>
+                <option value="AREA_COMUM">ÁREA COMUM / GERAL</option>
+              </select>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="reclamacaoRuaSelect">Rua do Setor *</label>
+              <select id="reclamacaoRuaSelect" required>
+                <option value="">Selecione primeiro o setor</option>
+              </select>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="reclamacaoBoxInput">Número do Box / Loja</label>
+              <input type="text" id="reclamacaoBoxInput" placeholder="Ex: 1268" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Categoria da Reclamação -->
+        <div class="reclamacao-section">
+          <label class="reclamacao-section-label">Reclamações Relacionadas a: *</label>
+          <div class="reclamacao-chips-grid" id="reclamacaoChipsGrid">
+            <!-- 12 categorias renderizadas em pills selecionáveis -->
+          </div>
+          <input type="hidden" id="reclamacaoCategoriaSelecionada" value="ESTRUTURAL" />
+        </div>
+
+        <!-- Detalhes e Data -->
+        <div class="reclamacao-section">
+          <div class="form-field-wrap" style="max-width:220px; margin-bottom:12px;">
+            <label for="reclamacaoDataOcorrencia">Data da Ocorrência *</label>
+            <input type="date" id="reclamacaoDataOcorrencia" required />
+          </div>
+
+          <div class="form-field-wrap">
+            <label for="reclamacaoDetalhesInput">Detalhes de sua Reclamação *</label>
+            <small class="field-hint">Descreva minuciosamente o ocorrido para que a equipe possa averiguar</small>
+            <textarea id="reclamacaoDetalhesInput" rows="4" required placeholder="Descreva aqui com detalhes sua reclamação..."></textarea>
+          </div>
+        </div>
+
+        <!-- Anexos Multimídia (Fotos, Áudios, Vídeos) -->
+        <div class="reclamacao-section">
+          <label class="reclamacao-section-label">Anexos e Evidências</label>
+          <small class="field-hint" style="display:block; margin-bottom:8px;">Nos envie fotos, vídeos ou até mesmo áudios gravados relatando o problema.</small>
+          
+          <div class="midia-upload-dropzone" id="midiaUploadDropzone">
+            <div class="dropzone-icons">📷 🎙️ 🎥</div>
+            <p><strong>Clique para adicionar fotos, áudios ou vídeos</strong> ou arraste os arquivos aqui</p>
+            <input type="file" id="reclamacaoFileInput" multiple accept="image/*,video/*,audio/*" style="display:none;" />
+            <button type="button" class="btn-anexo-add" onclick="document.getElementById('reclamacaoFileInput').click();">
+              ＋ Adicionar novos arquivos
+            </button>
+          </div>
+
+          <div class="midia-preview-list" id="midiaPreviewList"></div>
+        </div>
+
+        <!-- Termo de Consentimento LGPD -->
+        <div class="reclamacao-section lgpd-box">
+          <h4>Lei Geral de Proteção de Dados (Lei nº 13.709/2018)</h4>
+          <p>
+            O solicitante, ao requerer Autorizações de Serviços e abrir chamados, autoriza expressamente a Central de Operações do Centro Fashion Fortaleza, na qualidade de Controlador, a realizar a coleta e tratamento de seus dados pessoais, sensíveis ou não, nos termos dos artigos 7° e 8° da legislação mencionada, para os fins específicos de fiel cumprimento do tratamento de reclamações, bem como para uso estatístico, os quais serão armazenados pelo período necessário.
+          </p>
+          <label class="lgpd-checkbox-label">
+            <input type="checkbox" id="aceiteLgpdCheckbox" required />
+            <span>Li e concordo com os termos e condições supracitados relacionados à Lei Geral de Proteção de Dados — (Lei nº 13.709/2018)</span>
+          </label>
+        </div>
+
+        <div class="modal-actions-bar">
+          <button type="button" id="btnCancelarReclamacao" class="btn-secondary">Cancelar</button>
+          <button type="submit" id="btnSalvarReclamacao" class="btn-primary" style="background:#e11d48; border-color:#e11d48;">
+            <span>📢</span> Registrar Chamado
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       CENTRAL DE GESTÃO DE ORDENS DE PATRIMÔNIO (PAINEL)
+       ===================================================== -->
+  <section id="gestaoPatrimonioPanel" class="offline-panel lojistas-panel" hidden aria-hidden="true">
+    <div class="offline-box lojistas-box">
+      <div class="offline-head lojistas-head" style="border-left: 4px solid #eab308;">
+        <div>
+          <small style="background:#fef08a; color:#854d0e; padding:3px 8px; border-radius:999px; font-weight:700; font-size:11px;">Módulo Operacional</small>
+          <h2>Gestão de Ordens de Patrimônio (Serviços Internos)</h2>
+          <p>Acompanhamento de retiradas, reformas de boxes, tapumes, instalações e termos formais.</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button id="btnNovaOsPatrimonioTopo" type="button" class="btn-primary" style="background:#eab308; color:#000; border-color:#eab308;">＋ Nova OS</button>
+          <button id="fecharGestaoPatrimonioPanel" class="icon-btn" type="button" aria-label="Fechar">×</button>
+        </div>
+      </div>
+
+      <div class="lojistas-kpis">
+        <article class="kpi-card"><strong id="kpiTotalPatrimonio">0</strong><span>Total de OS</span></article>
+        <article class="kpi-card kpi-bloqueada"><strong id="kpiPendentesPatrimonio">0</strong><span>Pendentes</span></article>
+        <article class="kpi-card kpi-ocupada"><strong id="kpiAndamentoPatrimonio">0</strong><span>Em Andamento</span></article>
+        <article class="kpi-card kpi-disponivel"><strong id="kpiConcluidasPatrimonio">0</strong><span>Concluídas</span></article>
+      </div>
+
+      <div class="lojistas-toolbar">
+        <label class="lojistas-search">
+          <span>Pesquisar Ordem de Serviço</span>
+          <input id="buscaPatrimonioInput" type="search" placeholder="Buscar por ID, solicitante, CPF ou box...">
+        </label>
+        <label>
+          <span>Status</span>
+          <select id="filtroStatusPatrimonio">
+            <option value="">Todos os status</option>
+            <option value="PENDENTE">Pendente</option>
+            <option value="EM_ANDAMENTO">Em Andamento</option>
+            <option value="CONCLUIDO">Concluído</option>
+          </select>
+        </label>
+        <label>
+          <span>Setor</span>
+          <select id="filtroSetorPatrimonio">
+            <option value="">Todos os setores</option>
+            <option value="VERDE">Verde</option>
+            <option value="AZUL">Azul</option>
+            <option value="AMARELO">Amarelo</option>
+            <option value="BRANCO">Branco</option>
+            <option value="VERMELHO">Vermelho</option>
+            <option value="ROXO">Roxo</option>
+          </select>
+        </label>
+        <button id="btnRecarregarPatrimonio" type="button" class="ghost">↻ Atualizar</button>
+      </div>
+
+      <div class="lojistas-table-wrap">
+        <table class="lojistas-table">
+          <thead>
+            <tr>
+              <th style="min-width:130px;">ID OS</th>
+              <th style="min-width:140px;">Data Criação</th>
+              <th style="min-width:160px;">Origem / Setor</th>
+              <th style="min-width:180px;">Solicitante</th>
+              <th style="min-width:150px;">Localização (Box)</th>
+              <th style="min-width:220px;">Serviços Solicitados</th>
+              <th style="min-width:110px; text-align:center;">Status</th>
+              <th style="min-width:240px; text-align:center;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaPatrimonioCorpo">
+            <tr><td colspan="8" style="text-align:center; padding:30px; color:#6B7280;">Nenhuma Ordem de Serviço carregada.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       CENTRAL DE GESTÃO DE RECLAMAÇÕES (PAINEL)
+       ===================================================== -->
+  <section id="gestaoReclamacoesPanel" class="offline-panel lojistas-panel" hidden aria-hidden="true">
+    <div class="offline-box lojistas-box">
+      <div class="offline-head lojistas-head" style="border-left: 4px solid #e11d48;">
+        <div>
+          <small style="background:#ffe4e6; color:#be123c; padding:3px 8px; border-radius:999px; font-weight:700; font-size:11px;">Ouvidoria &amp; Atendimento</small>
+          <h2>Central de Gestão de Reclamações (SAC CEOP)</h2>
+          <p>Triagem de ocorrências, averiguação com mídias, resolução e termo de quitação mútua.</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button id="btnNovoChamadoReclamacaoTopo" type="button" class="btn-primary" style="background:#e11d48; border-color:#e11d48;">📢 Novo Chamado</button>
+          <button id="fecharGestaoReclamacoesPanel" class="icon-btn" type="button" aria-label="Fechar">×</button>
+        </div>
+      </div>
+
+      <div class="lojistas-kpis">
+        <article class="kpi-card"><strong id="kpiTotalReclamacoes">0</strong><span>Total Chamados</span></article>
+        <article class="kpi-card kpi-bloqueada"><strong id="kpiNovosReclamacoes">0</strong><span>Novos</span></article>
+        <article class="kpi-card kpi-ocupada"><strong id="kpiAnaliseReclamacoes">0</strong><span>Em Análise</span></article>
+        <article class="kpi-card kpi-disponivel"><strong id="kpiEncerradosReclamacoes">0</strong><span>Encerrados</span></article>
+      </div>
+
+      <div class="lojistas-toolbar">
+        <label class="lojistas-search">
+          <span>Pesquisar Chamado</span>
+          <input id="buscaReclamacaoInput" type="search" placeholder="Buscar por Código Pipe, reclamante, CPF ou box...">
+        </label>
+        <label>
+          <span>Status</span>
+          <select id="filtroStatusReclamacao">
+            <option value="">Todos os status</option>
+            <option value="NOVO">Novo</option>
+            <option value="EM_ANALISE">Em Análise</option>
+            <option value="RESOLVIDO">Resolvido</option>
+            <option value="ENCERRADO">Encerrado</option>
+          </select>
+        </label>
+        <label>
+          <span>Categoria</span>
+          <select id="filtroCategoriaReclamacao">
+            <option value="">Todas as categorias</option>
+          </select>
+        </label>
+        <button id="btnRecarregarReclamacoes" type="button" class="ghost">↻ Atualizar</button>
+      </div>
+
+      <div class="lojistas-table-wrap">
+        <table class="lojistas-table">
+          <thead>
+            <tr>
+              <th style="min-width:130px;">Código Pipe</th>
+              <th style="min-width:120px;">Data Ocorr.</th>
+              <th style="min-width:150px;">Tipo / Reclamante</th>
+              <th style="min-width:140px;">Localização</th>
+              <th style="min-width:180px;">Categoria</th>
+              <th style="min-width:240px;">Descrição do Ocorrido</th>
+              <th style="min-width:110px; text-align:center;">Status</th>
+              <th style="min-width:240px; text-align:center;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaReclamacoesCorpo">
+            <tr><td colspan="8" style="text-align:center; padding:30px; color:#6B7280;">Nenhuma reclamação carregada.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       MODAL DE ASSINATURA DIGITAL E EMISSÃO DE TERMOS PDF
+       ===================================================== -->
+  <div id="termoAssinaturaModal" class="modal-overlay modal-assinatura-overlay" hidden aria-hidden="true">
+    <div class="modal modal-assinatura-box">
+      <div class="modal-head">
+        <div>
+          <small id="assinaturaModalSubtitulo">Formalização e Emissão Oficial de Documento</small>
+          <h3 id="assinaturaModalTitulo">Coleta de Assinatura Digital</h3>
+        </div>
+        <button id="fecharModalAssinatura" type="button" class="icon-btn" aria-label="Fechar modal">×</button>
+      </div>
+
+      <div class="assinatura-modal-corpo">
+        <div class="termo-resumo-card" id="termoResumoCard">
+          <!-- Popula dados resumidos do documento -->
+        </div>
+
+        <div class="assinaturas-grid-dupla">
+          <!-- Bloco 1: Assinatura do Cliente / Solicitante -->
+          <div class="sig-pad-block">
+            <div class="sig-pad-header">
+              <span id="labelAssinatura1">✍️ Assinatura do Cliente / Solicitante</span>
+              <button type="button" class="btn-clear-sig" id="btnLimparSig1">Limpar</button>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas id="canvasAssinatura1" width="380" height="150"></canvas>
+            </div>
+            <small class="sig-pad-hint">Assine com o dedo ou caneta touch no quadro acima</small>
+          </div>
+
+          <!-- Bloco 2: Assinatura do Representante Centro Fashion -->
+          <div class="sig-pad-block">
+            <div class="sig-pad-header">
+              <span id="labelAssinatura2">🏢 Assinatura Representante Centro Fashion</span>
+              <button type="button" class="btn-clear-sig" id="btnLimparSig2">Limpar</button>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas id="canvasAssinatura2" width="380" height="150"></canvas>
+            </div>
+            <small class="sig-pad-hint">Assine com o dedo ou caneta touch no quadro acima</small>
+          </div>
+        </div>
+
+        <div id="statusGeracaoTermoMsg" class="assinatura-status-msg" hidden></div>
+
+        <div class="modal-actions-bar" style="margin-top:20px;">
+          <button type="button" id="btnCancelarAssinatura" class="btn-secondary">Voltar</button>
+          <button type="button" id="btnConfirmarEmissaoTermoPdf" class="btn-primary" style="background:#171b68;">
+            <span>📄</span> Gerar PDF Oficial no Google Drive
+          </button>
         </div>
       </div>
     </div>
@@ -12604,7 +13758,7 @@ body.showroom-tablet-mode > main {
 <div id="ceopShowroomDock" role="toolbar" aria-label="Showroom de Telas CEOP">
   <div class="dock-brand">
     <span>CEOP Showroom</span>
-    <span class="dock-badge">50 Telas</span>
+    <span class="dock-badge">55 Telas</span>
   </div>
 
   <button id="dockPrevBtn" class="dock-btn" type="button" title="Tela Anterior (Seta Esquerda)">‹ Anterior</button>
@@ -12615,7 +13769,7 @@ body.showroom-tablet-mode > main {
 
   <button id="dockResetBtn" class="dock-btn" type="button" title="Fechar painéis e voltar ao mapa">⌖ Mapa</button>
 
-  <div class="dock-counter" id="dockCounter">01 / 50</div>
+  <div class="dock-counter" id="dockCounter">01 / 55</div>
 
   <button id="dockDeviceBtn" class="dock-btn" type="button" title="Alternar viewport (Desktop / Mobile / Tablet)">📱 Modo</button>
 </div>
@@ -12688,7 +13842,14 @@ body.showroom-tablet-mode > main {
     { id: 'perfilEditorS14', name: '47. Modal Editor de Perfis de Acesso', type: 'modal', desc: 'Matriz de privilégios e papéis' },
     { id: 'restorePanelS16', name: '48. Modal de Restauração de Backups SHA-256', type: 'modal', desc: 'Restauração com chave de integridade' },
     { id: 'filaPanel', name: '49. Fila de Sincronização Offline (Outbox)', type: 'modal', desc: 'Itens locais pendentes de envio ao servidor' },
-    { id: 'offlinePanel', name: '50. Diagnóstico do Cache Offline', type: 'modal', desc: 'Barra de progresso, status e reparo local' }
+    { id: 'offlinePanel', name: '50. Diagnóstico do Cache Offline', type: 'modal', desc: 'Barra de progresso, status e reparo local' },
+
+    // --- GRUPO 9: PATRIMÔNIO & RECLAMAÇÕES (CEOP) ---
+    { id: 'formPatrimonioModal', name: '51. Solicitação de Ordem de Patrimônio (OS)', type: 'modal_overlay', desc: 'Formulário com 25 serviços, tags de setor e dados' },
+    { id: 'gestaoPatrimonioPanel', name: '52. Gestão de Ordens de Patrimônio', type: 'modal', desc: 'Painel de OS com KPIs, filtros e emissão de termos' },
+    { id: 'formReclamacaoModal', name: '53. Novo Chamado de Reclamação (SAC)', type: 'modal_overlay', desc: 'Chamados com upload de fotos/áudio/vídeo e LGPD' },
+    { id: 'gestaoReclamacoesPanel', name: '54. Central de Gestão de Reclamações', type: 'modal', desc: 'Triagem, averiguação com mídias e resolução' },
+    { id: 'termoAssinaturaModal', name: '55. Coleta de Assinatura Digital & Termos', type: 'modal_overlay', desc: 'Assinatura touch em tela e emissão de PDF no Drive' }
   ];
 
   let currentIndex = 0;

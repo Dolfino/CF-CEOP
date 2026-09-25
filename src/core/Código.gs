@@ -72,6 +72,7 @@ function onOpen() {
     .addItem('Diagnóstico da release S26.10', 'diagnosticoS2610F2')
     .addSeparator()
     .addItem('Garantir colunas de Autorização de Serviço (AS)', 'menuGarantirColunasCeopAs')
+    .addItem('Inicializar estruturas de Patrimônio e Reclamações', 'menuInicializarPatrimonioEReclamacoes')
     .addItem('Sanear toponímia de boxes e galerias', 'menuSanearToponimiaLojasMapa')
     .addItem('Sanear caracteres corrompidos (acentuação / )', 'menuSanearCaracteresLojistas')
     .addItem('Inserir boxes da Ilha Central do Setor Roxo (16 boxes)', 'menuInserirBoxesIlhaCentralSetorRoxo')
@@ -79,6 +80,25 @@ function onOpen() {
     .addItem('Abrir pasta raiz no Drive', 'abrirPastaRaizS0')
     .addToUi();
 }
+
+/**
+ * Menu interativo para inicializar as abas e estruturas de Patrimônio e Reclamações.
+ */
+function menuInicializarPatrimonioEReclamacoes() {
+  const ui = SpreadsheetApp.getUi();
+  try {
+    garantirAbaPatrimonioOrdensServico_();
+    garantirAbasReclamacoes_();
+    ui.alert(
+      'Estruturas Inicializadas',
+      'As abas PATRIMONIO_ORDENS_SERVICO, CHAMADOS_RECLAMACOES e CHAMADOS_ANEXOS foram verificadas e inicializadas com sucesso na planilha.',
+      ui.ButtonSet.OK
+    );
+  } catch (e) {
+    ui.alert('Erro na Inicialização', 'Ocorreu um erro: ' + String(e?.message || e), ui.ButtonSet.OK);
+  }
+}
+
 
 /**
  * Menu interativo para executar o saneamento de caracteres corrompidos na Base Mestre de Lojistas.

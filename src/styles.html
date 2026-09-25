@@ -8730,5 +8730,544 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
   color: #64748b;
   font-weight: 600;
 }
+
+/* ==========================================================================
+   MÓDULOS PATRIMÔNIO & RECLAMAÇÕES (Fase S26.10 / CEOP)
+   ========================================================================== */
+.modal-patrimonio-box,
+.modal-reclamacao-box,
+.modal-assinatura-box {
+  max-width: 860px;
+  width: 95vw;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-modal);
+}
+
+.modal-badge-patrimonio {
+  background: #fef08a;
+  color: #854d0e;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.modal-badge-reclamacao {
+  background: #ffe4e6;
+  color: #be123c;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.form-patrimonio-corpo,
+.form-reclamacao-corpo,
+.assinatura-modal-corpo {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.patrimonio-section,
+.reclamacao-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.patrimonio-section-label,
+.reclamacao-section-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.field-hint {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 5px;
+}
+
+.form-field-wrap label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.form-field-wrap input,
+.form-field-wrap select,
+.form-field-wrap textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-field-wrap input:focus,
+.form-field-wrap select:focus,
+.form-field-wrap textarea:focus {
+  border-color: #171b68;
+  box-shadow: 0 0 0 3px rgba(23, 27, 104, 0.12);
+}
+
+.patrimonio-grid-2,
+.reclamacao-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.patrimonio-grid-3,
+.reclamacao-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 680px) {
+  .patrimonio-grid-2,
+  .reclamacao-grid-2,
+  .patrimonio-grid-3,
+  .reclamacao-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Tags de Solicitante */
+.patrimonio-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.patrimonio-tag-btn {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.patrimonio-tag-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.patrimonio-tag-btn.active {
+  background: #fffbeb;
+  border-color: #f59e0b;
+  color: #b45309;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+/* Phone input group */
+.phone-input-group {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.phone-input-group .country-flag {
+  padding: 8px 10px;
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+  font-size: 16px;
+}
+
+.phone-input-group input {
+  border: none !important;
+  box-shadow: none !important;
+  padding: 9px 12px;
+}
+
+/* Box Search */
+.box-search-group {
+  display: flex;
+  gap: 6px;
+}
+
+.box-search-group button {
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.box-search-group button:hover {
+  background: #e2e8f0;
+}
+
+/* Checklist 25 Serviços */
+.patrimonio-checklist-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px 4px;
+}
+
+@media (max-width: 640px) {
+  .patrimonio-checklist-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.patrimonio-check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.patrimonio-check-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.patrimonio-check-item.selected {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.patrimonio-check-item input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #171b68;
+  cursor: pointer;
+}
+
+.patrimonio-check-item span {
+  font-size: 11.5px;
+  line-height: 1.3;
+}
+
+/* Reclamações: Seletor de Tipo */
+.reclamacao-tipo-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.radio-card {
+  display: block;
+  cursor: pointer;
+}
+
+.radio-card input {
+  display: none;
+}
+
+.radio-card-content {
+  display: block;
+  padding: 12px 16px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.radio-card-content strong {
+  display: block;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.radio-card-content small {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.radio-card input:checked + .radio-card-content {
+  border-color: #e11d48;
+  background: #fff1f2;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
+}
+
+.radio-card input:checked + .radio-card-content strong {
+  color: #be123c;
+}
+
+/* Categorias de Reclamação */
+.reclamacao-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.reclamacao-chip {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.reclamacao-chip:hover {
+  background: #f1f5f9;
+}
+
+.reclamacao-chip.active {
+  background: #ffe4e6;
+  border-color: #f43f5e;
+  color: #be123c;
+  box-shadow: 0 2px 6px rgba(244, 63, 94, 0.2);
+}
+
+/* Dropzone Multimídia */
+.midia-upload-dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.midia-upload-dropzone:hover {
+  border-color: #171b68;
+  background: #f1f5f9;
+}
+
+.dropzone-icons {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.midia-upload-dropzone p {
+  margin: 0 0 12px 0;
+  font-size: 12px;
+  color: #475569;
+}
+
+.btn-anexo-add {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #171b68;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-anexo-add:hover {
+  background: #171b68;
+  color: #ffffff;
+  border-color: #171b68;
+}
+
+.midia-preview-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.midia-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.midia-preview-card .midia-remove-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+/* LGPD */
+.lgpd-box {
+  background: #f8fafc;
+  border-left: 4px solid #171b68;
+}
+
+.lgpd-box h4 {
+  margin: 0 0 6px 0;
+  font-size: 12.5px;
+  color: #0f172a;
+}
+
+.lgpd-box p {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #64748b;
+  margin: 0 0 10px 0;
+  text-align: justify;
+}
+
+.lgpd-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.lgpd-checkbox-label input[type="checkbox"] {
+  margin-top: 2px;
+  accent-color: #171b68;
+}
+
+/* Assinatura Digital & Canvas Pad */
+.assinaturas-grid-dupla {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (max-width: 720px) {
+  .assinaturas-grid-dupla {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sig-pad-block {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.sig-pad-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.btn-clear-sig {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #ef4444;
+  cursor: pointer;
+}
+
+.canvas-wrapper {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.canvas-wrapper canvas {
+  width: 100%;
+  height: 140px;
+  display: block;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.sig-pad-hint {
+  display: block;
+  text-align: center;
+  font-size: 10.5px;
+  color: #94a3b8;
+  margin-top: 6px;
+}
+
+.termo-resumo-card {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: #1e3a8a;
+  line-height: 1.5;
+}
+
+.assinatura-status-msg {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 12px;
+}
+.assinatura-status-msg.sucesso {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+.assinatura-status-msg.erro {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
 </style>
+
 

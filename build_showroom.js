@@ -213,7 +213,7 @@ body.showroom-tablet-mode > main {
 <div id="ceopShowroomDock" role="toolbar" aria-label="Showroom de Telas CEOP">
   <div class="dock-brand">
     <span>CEOP Showroom</span>
-    <span class="dock-badge">50 Telas</span>
+    <span class="dock-badge">55 Telas</span>
   </div>
 
   <button id="dockPrevBtn" class="dock-btn" type="button" title="Tela Anterior (Seta Esquerda)">‹ Anterior</button>
@@ -224,7 +224,7 @@ body.showroom-tablet-mode > main {
 
   <button id="dockResetBtn" class="dock-btn" type="button" title="Fechar painéis e voltar ao mapa">⌖ Mapa</button>
 
-  <div class="dock-counter" id="dockCounter">01 / 50</div>
+  <div class="dock-counter" id="dockCounter">01 / 55</div>
 
   <button id="dockDeviceBtn" class="dock-btn" type="button" title="Alternar viewport (Desktop / Mobile / Tablet)">📱 Modo</button>
 </div>
@@ -297,7 +297,14 @@ body.showroom-tablet-mode > main {
     { id: 'perfilEditorS14', name: '47. Modal Editor de Perfis de Acesso', type: 'modal', desc: 'Matriz de privilégios e papéis' },
     { id: 'restorePanelS16', name: '48. Modal de Restauração de Backups SHA-256', type: 'modal', desc: 'Restauração com chave de integridade' },
     { id: 'filaPanel', name: '49. Fila de Sincronização Offline (Outbox)', type: 'modal', desc: 'Itens locais pendentes de envio ao servidor' },
-    { id: 'offlinePanel', name: '50. Diagnóstico do Cache Offline', type: 'modal', desc: 'Barra de progresso, status e reparo local' }
+    { id: 'offlinePanel', name: '50. Diagnóstico do Cache Offline', type: 'modal', desc: 'Barra de progresso, status e reparo local' },
+
+    // --- GRUPO 9: PATRIMÔNIO & RECLAMAÇÕES (CEOP) ---
+    { id: 'formPatrimonioModal', name: '51. Solicitação de Ordem de Patrimônio (OS)', type: 'modal_overlay', desc: 'Formulário com 25 serviços, tags de setor e dados' },
+    { id: 'gestaoPatrimonioPanel', name: '52. Gestão de Ordens de Patrimônio', type: 'modal', desc: 'Painel de OS com KPIs, filtros e emissão de termos' },
+    { id: 'formReclamacaoModal', name: '53. Novo Chamado de Reclamação (SAC)', type: 'modal_overlay', desc: 'Chamados com upload de fotos/áudio/vídeo e LGPD' },
+    { id: 'gestaoReclamacoesPanel', name: '54. Central de Gestão de Reclamações', type: 'modal', desc: 'Triagem, averiguação com mídias e resolução' },
+    { id: 'termoAssinaturaModal', name: '55. Coleta de Assinatura Digital & Termos', type: 'modal_overlay', desc: 'Assinatura touch em tela e emissão de PDF no Drive' }
   ];
 
   let currentIndex = 0;

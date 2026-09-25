@@ -58,6 +58,12 @@
               <button id="menuEmitirAsBtn" class="app-menu-item-s22513 app-menu-item-as" type="button">
                 <span class="app-menu-icon-s22513">📝</span><span>Emitir AS</span>
               </button>
+              <button id="menuPatrimonioBtn" class="app-menu-item-s22513 app-menu-item-patrimonio" type="button">
+                <span class="app-menu-icon-s22513">🏷️</span><span>Patrimônio</span>
+              </button>
+              <button id="menuReclamacaoBtn" class="app-menu-item-s22513 app-menu-item-reclamacao" type="button">
+                <span class="app-menu-icon-s22513">📢</span><span>Reclamações</span>
+              </button>
               <button id="camadasBtn" class="app-menu-item-s22513" type="button">
                 <span class="app-menu-icon-s22513">▱</span><span>Camadas</span>
               </button>
@@ -106,6 +112,18 @@
               <button id="gestaoAsBtn" class="app-menu-item-s22513 app-menu-item-feature-s268d" type="button" hidden>
                 <span class="app-menu-icon-s22513">📝</span>
                 <span class="app-menu-item-copy-s268d"><strong>Autorizações de Serviço</strong><small>Em aberto, pendentes e concluídas</small></span>
+                <span class="app-menu-chevron-s268d">›</span>
+              </button>
+              <!-- Gestão de Patrimônio e Serviços Internos -->
+              <button id="gestaoPatrimonioBtn" class="app-menu-item-s22513 app-menu-item-feature-s268d" type="button">
+                <span class="app-menu-icon-s22513">🏷️</span>
+                <span class="app-menu-item-copy-s268d"><strong>Ordens de Patrimônio</strong><small>Serviços internos, reformas e termos</small></span>
+                <span class="app-menu-chevron-s268d">›</span>
+              </button>
+              <!-- Gestão de Reclamações e Ouvidoria SAC -->
+              <button id="gestaoReclamacoesBtn" class="app-menu-item-s22513 app-menu-item-feature-s268d" type="button">
+                <span class="app-menu-icon-s22513">📢</span>
+                <span class="app-menu-item-copy-s268d"><strong>Central de Reclamações</strong><small>SAC, evidências multimídia e termos de quitação</small></span>
                 <span class="app-menu-chevron-s268d">›</span>
               </button>
               <button id="cartografiaMenuBtnS268D" class="app-menu-item-s22513 app-menu-item-feature-s268d" type="button" hidden>
@@ -3784,6 +3802,494 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MÓDULO DE PATRIMÔNIO: FORMULÁRIO DE SOLICITAÇÃO (OS)
+       ===================================================== -->
+  <div id="formPatrimonioModal" class="modal-overlay modal-patrimonio-overlay" hidden aria-hidden="true">
+    <div class="modal modal-patrimonio-box">
+      <div class="modal-head">
+        <div>
+          <small class="modal-badge-patrimonio">Controle de Patrimônio — Serviços Interno</small>
+          <h3 id="patrimonioModalTitulo">Solicitação de Ordem de Serviços</h3>
+        </div>
+        <button id="fecharModalPatrimonio" type="button" class="icon-btn" aria-label="Fechar modal">×</button>
+      </div>
+
+      <form id="formOrdemPatrimonio" onsubmit="return false;" class="form-patrimonio-corpo">
+        <!-- Tags de Setor / Solicitante -->
+        <div class="patrimonio-section">
+          <label class="patrimonio-section-label">Setor / Solicitante *</label>
+          <div class="patrimonio-tags-container" id="patrimonioTagsContainer">
+            <button type="button" class="patrimonio-tag-btn active" data-tag="SOLICITAÇÃO COMERCIAL">● SOLICITAÇÃO COMERCIAL</button>
+            <button type="button" class="patrimonio-tag-btn" data-tag="SOLICITAÇÃO FINANCEIRO/COBRANÇA">● SOLICITAÇÃO FINANCEIRO/COBRANÇA</button>
+            <button type="button" class="patrimonio-tag-btn" data-tag="SOLICITAÇÃO PERMISSIONÁRIO">● SOLICITAÇÃO PERMISSIONÁRIO</button>
+            <button type="button" class="patrimonio-tag-btn" data-tag="SOLICITAÇÃO SETOR MARKETING">● SOLICITAÇÃO SETOR MARKETING</button>
+            <button type="button" class="patrimonio-tag-btn" data-tag="SOLICITAÇÃO SETOR OPERACIONAL">● SOLICITAÇÃO SETOR OPERACIONAL</button>
+          </div>
+          <input type="hidden" id="patrimonioTagSelecionada" value="SOLICITAÇÃO COMERCIAL" />
+        </div>
+
+        <!-- Identificação do Solicitante -->
+        <div class="patrimonio-section">
+          <div class="patrimonio-grid-2">
+            <div class="form-field-wrap">
+              <label for="patrimonioNomeInput">Nome Completo do Solicitante *</label>
+              <small class="field-hint">Insira o nome completo do solicitante utilizando letras maiúsculas</small>
+              <input type="text" id="patrimonioNomeInput" required placeholder="Digite aqui ..." style="text-transform:uppercase;" />
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="patrimonioCpfInput">CPF do Solicitante *</label>
+              <small class="field-hint">Insira o CPF do solicitante utilizando somente números</small>
+              <input type="text" id="patrimonioCpfInput" required placeholder="000.000.000-00" maxlength="14" />
+            </div>
+          </div>
+
+          <div class="patrimonio-grid-2" style="margin-top:10px;">
+            <div class="form-field-wrap">
+              <label for="patrimonioTelefoneInput">Contato (Telefone) do Solicitante *</label>
+              <small class="field-hint">Insira o contato telefônico com DDD</small>
+              <div class="phone-input-group">
+                <span class="country-flag">🇧🇷</span>
+                <input type="tel" id="patrimonioTelefoneInput" required placeholder="(85) 99999-9999" maxlength="15" />
+              </div>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="patrimonioEmailInput">E-mail do Solicitante</label>
+              <small class="field-hint">Para envio de comprovante e termo emitido</small>
+              <input type="email" id="patrimonioEmailInput" placeholder="exemplo@email.com" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Localização no Mall -->
+        <div class="patrimonio-section">
+          <div class="patrimonio-grid-3">
+            <div class="form-field-wrap">
+              <label for="patrimonioSetorSelect">Setor *</label>
+              <small class="field-hint">Selecione o setor da loja/box</small>
+              <select id="patrimonioSetorSelect" required>
+                <option value="">Selecione o Setor</option>
+                <option value="VERDE">VERDE</option>
+                <option value="AZUL">AZUL</option>
+                <option value="AMARELO">AMARELO</option>
+                <option value="BRANCO">BRANCO</option>
+                <option value="VERMELHO">VERMELHO</option>
+                <option value="ROXO">ROXO</option>
+              </select>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="patrimonioRuaSelect">Rua do Setor *</label>
+              <small class="field-hint">Selecione a rua do box/loja</small>
+              <select id="patrimonioRuaSelect" required>
+                <option value="">Selecione primeiro o setor</option>
+              </select>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="patrimonioBoxInput">Número do Box / Loja *</label>
+              <small class="field-hint">Insira o número do box</small>
+              <div class="box-search-group">
+                <input type="text" id="patrimonioBoxInput" required placeholder="Ex: 11111" />
+                <button type="button" id="btnBuscarLojistaPatrimonio" title="Auto-preencher dados pelo cadastro do lojista">🔍</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checklist de 25 Serviços de Patrimônio -->
+        <div class="patrimonio-section">
+          <label class="patrimonio-section-label">Solicitação de Serviços de Patrimônio *</label>
+          <small class="field-hint" style="display:block; margin-bottom:10px;">Marque os itens que serão objeto de intervenção, retirada ou colocação</small>
+          <div class="patrimonio-checklist-grid" id="patrimonioChecklistGrid">
+            <!-- 25 Itens Oficiais Gerados Dinamicamente via JS ou estáticos -->
+          </div>
+        </div>
+
+        <!-- Observações -->
+        <div class="patrimonio-section">
+          <label for="patrimonioObsInput">Observação</label>
+          <textarea id="patrimonioObsInput" rows="3" placeholder="Digite aqui observações adicionais sobre o serviço..."></textarea>
+        </div>
+
+        <div class="modal-actions-bar">
+          <button type="button" id="btnCancelarPatrimonio" class="btn-secondary">Cancelar</button>
+          <button type="submit" id="btnSalvarOrdemPatrimonio" class="btn-primary" style="background:#eab308; color:#000; border-color:#eab308;">
+            <span>💾</span> Registrar OS
+          </button>
+          <button type="button" id="btnEmitirTermoPatrimonio" class="btn-primary" style="background:#171b68;">
+            <span>✍️</span> Registrar e Emitir Termo
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MÓDULO DE RECLAMAÇÕES: NOVO CHAMADO (SAC / OUVIDORIA)
+       ===================================================== -->
+  <div id="formReclamacaoModal" class="modal-overlay modal-reclamacao-overlay" hidden aria-hidden="true">
+    <div class="modal modal-reclamacao-box">
+      <div class="modal-head">
+        <div>
+          <small class="modal-badge-reclamacao">SAC &amp; Ouvidoria CEOP</small>
+          <h3 id="reclamacaoModalTitulo">Novo Chamado de Reclamação</h3>
+        </div>
+        <button id="fecharModalReclamacao" type="button" class="icon-btn" aria-label="Fechar modal">×</button>
+      </div>
+
+      <form id="formNovoChamadoReclamacao" onsubmit="return false;" class="form-reclamacao-corpo">
+        <!-- Tipo de Reclamante -->
+        <div class="reclamacao-section">
+          <label class="reclamacao-section-label">Perfil do Reclamante *</label>
+          <div class="reclamacao-tipo-selector">
+            <label class="radio-card">
+              <input type="radio" name="tipoReclamante" value="PERMISSIONARIO/LOJISTA" checked />
+              <span class="radio-card-content">
+                <strong>🏪 Permissionário / Lojista</strong>
+                <small>Titular ou preposto de espaço no shopping</small>
+              </span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="tipoReclamante" value="CLIENTE VISITANTE" />
+              <span class="radio-card-content">
+                <strong>🛍️ Cliente Visitante</strong>
+                <small>Consumidor ou visitante do mall</small>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Dados do Reclamante -->
+        <div class="reclamacao-section">
+          <div class="reclamacao-grid-2">
+            <div class="form-field-wrap">
+              <label for="reclamacaoNomeInput">Nome Completo *</label>
+              <small class="field-hint">Insira o nome completo utilizando letras maiúsculas</small>
+              <input type="text" id="reclamacaoNomeInput" required placeholder="Digite aqui ..." style="text-transform:uppercase;" />
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="reclamacaoCpfInput">CPF *</label>
+              <small class="field-hint">Insira o CPF utilizando somente números</small>
+              <input type="text" id="reclamacaoCpfInput" required placeholder="000.000.000-00" maxlength="14" />
+            </div>
+          </div>
+
+          <div class="reclamacao-grid-2" style="margin-top:10px;">
+            <div class="form-field-wrap">
+              <label for="reclamacaoTelefoneInput">Contato (Telefone) *</label>
+              <small class="field-hint">Número com DDD para atualizações</small>
+              <div class="phone-input-group">
+                <span class="country-flag">🇧🇷</span>
+                <input type="tel" id="reclamacaoTelefoneInput" required placeholder="(85) 99999-9999" maxlength="15" />
+              </div>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="reclamacaoEmailInput">E-mail</label>
+              <small class="field-hint">E-mail para envio do protocolo e termo</small>
+              <input type="email" id="reclamacaoEmailInput" placeholder="exemplo@email.com" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Localização da Ocorrência -->
+        <div class="reclamacao-section">
+          <div class="reclamacao-grid-3">
+            <div class="form-field-wrap">
+              <label for="reclamacaoSetorSelect">Setor *</label>
+              <select id="reclamacaoSetorSelect" required>
+                <option value="">Selecione o Setor</option>
+                <option value="BRANCO">BRANCO</option>
+                <option value="AZUL">AZUL</option>
+                <option value="VERDE">VERDE</option>
+                <option value="AMARELO">AMARELO</option>
+                <option value="VERMELHO">VERMELHO</option>
+                <option value="ROXO">ROXO</option>
+                <option value="AREA_COMUM">ÁREA COMUM / GERAL</option>
+              </select>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="reclamacaoRuaSelect">Rua do Setor *</label>
+              <select id="reclamacaoRuaSelect" required>
+                <option value="">Selecione primeiro o setor</option>
+              </select>
+            </div>
+
+            <div class="form-field-wrap">
+              <label for="reclamacaoBoxInput">Número do Box / Loja</label>
+              <input type="text" id="reclamacaoBoxInput" placeholder="Ex: 1268" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Categoria da Reclamação -->
+        <div class="reclamacao-section">
+          <label class="reclamacao-section-label">Reclamações Relacionadas a: *</label>
+          <div class="reclamacao-chips-grid" id="reclamacaoChipsGrid">
+            <!-- 12 categorias renderizadas em pills selecionáveis -->
+          </div>
+          <input type="hidden" id="reclamacaoCategoriaSelecionada" value="ESTRUTURAL" />
+        </div>
+
+        <!-- Detalhes e Data -->
+        <div class="reclamacao-section">
+          <div class="form-field-wrap" style="max-width:220px; margin-bottom:12px;">
+            <label for="reclamacaoDataOcorrencia">Data da Ocorrência *</label>
+            <input type="date" id="reclamacaoDataOcorrencia" required />
+          </div>
+
+          <div class="form-field-wrap">
+            <label for="reclamacaoDetalhesInput">Detalhes de sua Reclamação *</label>
+            <small class="field-hint">Descreva minuciosamente o ocorrido para que a equipe possa averiguar</small>
+            <textarea id="reclamacaoDetalhesInput" rows="4" required placeholder="Descreva aqui com detalhes sua reclamação..."></textarea>
+          </div>
+        </div>
+
+        <!-- Anexos Multimídia (Fotos, Áudios, Vídeos) -->
+        <div class="reclamacao-section">
+          <label class="reclamacao-section-label">Anexos e Evidências</label>
+          <small class="field-hint" style="display:block; margin-bottom:8px;">Nos envie fotos, vídeos ou até mesmo áudios gravados relatando o problema.</small>
+          
+          <div class="midia-upload-dropzone" id="midiaUploadDropzone">
+            <div class="dropzone-icons">📷 🎙️ 🎥</div>
+            <p><strong>Clique para adicionar fotos, áudios ou vídeos</strong> ou arraste os arquivos aqui</p>
+            <input type="file" id="reclamacaoFileInput" multiple accept="image/*,video/*,audio/*" style="display:none;" />
+            <button type="button" class="btn-anexo-add" onclick="document.getElementById('reclamacaoFileInput').click();">
+              ＋ Adicionar novos arquivos
+            </button>
+          </div>
+
+          <div class="midia-preview-list" id="midiaPreviewList"></div>
+        </div>
+
+        <!-- Termo de Consentimento LGPD -->
+        <div class="reclamacao-section lgpd-box">
+          <h4>Lei Geral de Proteção de Dados (Lei nº 13.709/2018)</h4>
+          <p>
+            O solicitante, ao requerer Autorizações de Serviços e abrir chamados, autoriza expressamente a Central de Operações do Centro Fashion Fortaleza, na qualidade de Controlador, a realizar a coleta e tratamento de seus dados pessoais, sensíveis ou não, nos termos dos artigos 7° e 8° da legislação mencionada, para os fins específicos de fiel cumprimento do tratamento de reclamações, bem como para uso estatístico, os quais serão armazenados pelo período necessário.
+          </p>
+          <label class="lgpd-checkbox-label">
+            <input type="checkbox" id="aceiteLgpdCheckbox" required />
+            <span>Li e concordo com os termos e condições supracitados relacionados à Lei Geral de Proteção de Dados — (Lei nº 13.709/2018)</span>
+          </label>
+        </div>
+
+        <div class="modal-actions-bar">
+          <button type="button" id="btnCancelarReclamacao" class="btn-secondary">Cancelar</button>
+          <button type="submit" id="btnSalvarReclamacao" class="btn-primary" style="background:#e11d48; border-color:#e11d48;">
+            <span>📢</span> Registrar Chamado
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       CENTRAL DE GESTÃO DE ORDENS DE PATRIMÔNIO (PAINEL)
+       ===================================================== -->
+  <section id="gestaoPatrimonioPanel" class="offline-panel lojistas-panel" hidden aria-hidden="true">
+    <div class="offline-box lojistas-box">
+      <div class="offline-head lojistas-head" style="border-left: 4px solid #eab308;">
+        <div>
+          <small style="background:#fef08a; color:#854d0e; padding:3px 8px; border-radius:999px; font-weight:700; font-size:11px;">Módulo Operacional</small>
+          <h2>Gestão de Ordens de Patrimônio (Serviços Internos)</h2>
+          <p>Acompanhamento de retiradas, reformas de boxes, tapumes, instalações e termos formais.</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button id="btnNovaOsPatrimonioTopo" type="button" class="btn-primary" style="background:#eab308; color:#000; border-color:#eab308;">＋ Nova OS</button>
+          <button id="fecharGestaoPatrimonioPanel" class="icon-btn" type="button" aria-label="Fechar">×</button>
+        </div>
+      </div>
+
+      <div class="lojistas-kpis">
+        <article class="kpi-card"><strong id="kpiTotalPatrimonio">0</strong><span>Total de OS</span></article>
+        <article class="kpi-card kpi-bloqueada"><strong id="kpiPendentesPatrimonio">0</strong><span>Pendentes</span></article>
+        <article class="kpi-card kpi-ocupada"><strong id="kpiAndamentoPatrimonio">0</strong><span>Em Andamento</span></article>
+        <article class="kpi-card kpi-disponivel"><strong id="kpiConcluidasPatrimonio">0</strong><span>Concluídas</span></article>
+      </div>
+
+      <div class="lojistas-toolbar">
+        <label class="lojistas-search">
+          <span>Pesquisar Ordem de Serviço</span>
+          <input id="buscaPatrimonioInput" type="search" placeholder="Buscar por ID, solicitante, CPF ou box...">
+        </label>
+        <label>
+          <span>Status</span>
+          <select id="filtroStatusPatrimonio">
+            <option value="">Todos os status</option>
+            <option value="PENDENTE">Pendente</option>
+            <option value="EM_ANDAMENTO">Em Andamento</option>
+            <option value="CONCLUIDO">Concluído</option>
+          </select>
+        </label>
+        <label>
+          <span>Setor</span>
+          <select id="filtroSetorPatrimonio">
+            <option value="">Todos os setores</option>
+            <option value="VERDE">Verde</option>
+            <option value="AZUL">Azul</option>
+            <option value="AMARELO">Amarelo</option>
+            <option value="BRANCO">Branco</option>
+            <option value="VERMELHO">Vermelho</option>
+            <option value="ROXO">Roxo</option>
+          </select>
+        </label>
+        <button id="btnRecarregarPatrimonio" type="button" class="ghost">↻ Atualizar</button>
+      </div>
+
+      <div class="lojistas-table-wrap">
+        <table class="lojistas-table">
+          <thead>
+            <tr>
+              <th style="min-width:130px;">ID OS</th>
+              <th style="min-width:140px;">Data Criação</th>
+              <th style="min-width:160px;">Origem / Setor</th>
+              <th style="min-width:180px;">Solicitante</th>
+              <th style="min-width:150px;">Localização (Box)</th>
+              <th style="min-width:220px;">Serviços Solicitados</th>
+              <th style="min-width:110px; text-align:center;">Status</th>
+              <th style="min-width:240px; text-align:center;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaPatrimonioCorpo">
+            <tr><td colspan="8" style="text-align:center; padding:30px; color:#6B7280;">Nenhuma Ordem de Serviço carregada.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       CENTRAL DE GESTÃO DE RECLAMAÇÕES (PAINEL)
+       ===================================================== -->
+  <section id="gestaoReclamacoesPanel" class="offline-panel lojistas-panel" hidden aria-hidden="true">
+    <div class="offline-box lojistas-box">
+      <div class="offline-head lojistas-head" style="border-left: 4px solid #e11d48;">
+        <div>
+          <small style="background:#ffe4e6; color:#be123c; padding:3px 8px; border-radius:999px; font-weight:700; font-size:11px;">Ouvidoria &amp; Atendimento</small>
+          <h2>Central de Gestão de Reclamações (SAC CEOP)</h2>
+          <p>Triagem de ocorrências, averiguação com mídias, resolução e termo de quitação mútua.</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button id="btnNovoChamadoReclamacaoTopo" type="button" class="btn-primary" style="background:#e11d48; border-color:#e11d48;">📢 Novo Chamado</button>
+          <button id="fecharGestaoReclamacoesPanel" class="icon-btn" type="button" aria-label="Fechar">×</button>
+        </div>
+      </div>
+
+      <div class="lojistas-kpis">
+        <article class="kpi-card"><strong id="kpiTotalReclamacoes">0</strong><span>Total Chamados</span></article>
+        <article class="kpi-card kpi-bloqueada"><strong id="kpiNovosReclamacoes">0</strong><span>Novos</span></article>
+        <article class="kpi-card kpi-ocupada"><strong id="kpiAnaliseReclamacoes">0</strong><span>Em Análise</span></article>
+        <article class="kpi-card kpi-disponivel"><strong id="kpiEncerradosReclamacoes">0</strong><span>Encerrados</span></article>
+      </div>
+
+      <div class="lojistas-toolbar">
+        <label class="lojistas-search">
+          <span>Pesquisar Chamado</span>
+          <input id="buscaReclamacaoInput" type="search" placeholder="Buscar por Código Pipe, reclamante, CPF ou box...">
+        </label>
+        <label>
+          <span>Status</span>
+          <select id="filtroStatusReclamacao">
+            <option value="">Todos os status</option>
+            <option value="NOVO">Novo</option>
+            <option value="EM_ANALISE">Em Análise</option>
+            <option value="RESOLVIDO">Resolvido</option>
+            <option value="ENCERRADO">Encerrado</option>
+          </select>
+        </label>
+        <label>
+          <span>Categoria</span>
+          <select id="filtroCategoriaReclamacao">
+            <option value="">Todas as categorias</option>
+          </select>
+        </label>
+        <button id="btnRecarregarReclamacoes" type="button" class="ghost">↻ Atualizar</button>
+      </div>
+
+      <div class="lojistas-table-wrap">
+        <table class="lojistas-table">
+          <thead>
+            <tr>
+              <th style="min-width:130px;">Código Pipe</th>
+              <th style="min-width:120px;">Data Ocorr.</th>
+              <th style="min-width:150px;">Tipo / Reclamante</th>
+              <th style="min-width:140px;">Localização</th>
+              <th style="min-width:180px;">Categoria</th>
+              <th style="min-width:240px;">Descrição do Ocorrido</th>
+              <th style="min-width:110px; text-align:center;">Status</th>
+              <th style="min-width:240px; text-align:center;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaReclamacoesCorpo">
+            <tr><td colspan="8" style="text-align:center; padding:30px; color:#6B7280;">Nenhuma reclamação carregada.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       MODAL DE ASSINATURA DIGITAL E EMISSÃO DE TERMOS PDF
+       ===================================================== -->
+  <div id="termoAssinaturaModal" class="modal-overlay modal-assinatura-overlay" hidden aria-hidden="true">
+    <div class="modal modal-assinatura-box">
+      <div class="modal-head">
+        <div>
+          <small id="assinaturaModalSubtitulo">Formalização e Emissão Oficial de Documento</small>
+          <h3 id="assinaturaModalTitulo">Coleta de Assinatura Digital</h3>
+        </div>
+        <button id="fecharModalAssinatura" type="button" class="icon-btn" aria-label="Fechar modal">×</button>
+      </div>
+
+      <div class="assinatura-modal-corpo">
+        <div class="termo-resumo-card" id="termoResumoCard">
+          <!-- Popula dados resumidos do documento -->
+        </div>
+
+        <div class="assinaturas-grid-dupla">
+          <!-- Bloco 1: Assinatura do Cliente / Solicitante -->
+          <div class="sig-pad-block">
+            <div class="sig-pad-header">
+              <span id="labelAssinatura1">✍️ Assinatura do Cliente / Solicitante</span>
+              <button type="button" class="btn-clear-sig" id="btnLimparSig1">Limpar</button>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas id="canvasAssinatura1" width="380" height="150"></canvas>
+            </div>
+            <small class="sig-pad-hint">Assine com o dedo ou caneta touch no quadro acima</small>
+          </div>
+
+          <!-- Bloco 2: Assinatura do Representante Centro Fashion -->
+          <div class="sig-pad-block">
+            <div class="sig-pad-header">
+              <span id="labelAssinatura2">🏢 Assinatura Representante Centro Fashion</span>
+              <button type="button" class="btn-clear-sig" id="btnLimparSig2">Limpar</button>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas id="canvasAssinatura2" width="380" height="150"></canvas>
+            </div>
+            <small class="sig-pad-hint">Assine com o dedo ou caneta touch no quadro acima</small>
+          </div>
+        </div>
+
+        <div id="statusGeracaoTermoMsg" class="assinatura-status-msg" hidden></div>
+
+        <div class="modal-actions-bar" style="margin-top:20px;">
+          <button type="button" id="btnCancelarAssinatura" class="btn-secondary">Voltar</button>
+          <button type="button" id="btnConfirmarEmissaoTermoPdf" class="btn-primary" style="background:#171b68;">
+            <span>📄</span> Gerar PDF Oficial no Google Drive
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
