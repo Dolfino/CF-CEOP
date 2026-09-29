@@ -8876,7 +8876,8 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
   .patrimonio-grid-2,
   .reclamacao-grid-2,
   .patrimonio-grid-3,
-  .reclamacao-grid-3 {
+  .reclamacao-grid-3,
+  .reclamacao-tipo-selector {
     grid-template-columns: 1fr;
     gap: 10px;
   }
@@ -9012,7 +9013,7 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
 /* Reclamações: Seletor de Tipo */
 .reclamacao-tipo-selector {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-top: 6px;
 }
