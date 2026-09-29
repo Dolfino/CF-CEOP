@@ -1,7 +1,7 @@
-﻿# Ignorar tudo por padrÃ£o
+# Ignorar tudo por padrão
 **/**
 
-# Permitir manifest e cÃ³digo recursivamente dentro de src/
+# Permitir manifest e código recursivamente dentro de src/
 !appsscript.json
 !**/*.gs
 !**/*.html
