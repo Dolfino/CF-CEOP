@@ -8502,17 +8502,53 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
 }
 
 .gestao-as-toolbar {
-  gap: 10px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
 }
 
-.gestao-as-filter-periodo {
-  flex: 1 1 145px;
+.gestao-as-toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  width: 100%;
+}
+
+.gestao-as-toolbar-row-top label.gestao-as-search {
+  flex: 3 1 280px;
+}
+
+.gestao-as-toolbar-row-top label.gestao-as-select-field {
+  flex: 1 1 140px;
   min-width: 130px;
 }
 
+.gestao-as-filter-periodo {
+  flex: 0 0 170px !important;
+  min-width: 160px;
+}
+
 .gestao-as-filter-date {
-  flex: 0 1 130px;
-  min-width: 125px;
+  flex: 0 0 150px !important;
+  min-width: 140px;
+}
+
+.gestao-as-filter-date input[type="date"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.gestao-as-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-wrap: wrap;
 }
 
 .btn-relatorio-as {
