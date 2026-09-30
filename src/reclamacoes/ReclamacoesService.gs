@@ -635,11 +635,11 @@ function gerarTermoEncerramentoReclamacaoPdf(codigoPipe, assinaturaSolicitanteBa
       <ul class="bullet-list">
         <li><strong>Data da Ocorrência:</strong> ${d.DATA_OCORRENCIA || '-'}</li>
         <li><strong>Nome do Solicitante:</strong> ${d.NOME_RECLAMANTE || '-'}</li>
-        <li><strong>Email do Solicitante:</strong> ${d.EMAIL_RECLAMANTE || '-'}</li>
+        ${d.EMAIL_RECLAMANTE ? `<li><strong>Email do Solicitante:</strong> ${d.EMAIL_RECLAMANTE}</li>` : ''}
         <li><strong>Código Pipe:</strong> ${d.CODIGO_PIPE}</li>
-        <li><strong>Localização da Loja:</strong> SETOR ${d.SETOR || '-'}, ${d.RUA || '-'}, ${d.BOX_LOJA || '-'}</li>
+        ${(d.SETOR || d.RUA || d.BOX_LOJA) ? `<li><strong>Localização da Loja:</strong> SETOR ${d.SETOR || '-'}, ${d.RUA || '-'}, ${d.BOX_LOJA || '-'}</li>` : ''}
         <li><strong>Número de Contato:</strong> ${d.TELEFONE_RECLAMANTE || '-'}</li>
-        <li><strong>Categoria da Reclamação:</strong> ${d.CATEGORIA || '-'}</li>
+        ${(d.CATEGORIA && d.CATEGORIA !== 'GERAL' && d.CATEGORIA !== 'OUTROS') ? `<li><strong>Categoria:</strong> ${d.CATEGORIA}</li>` : ''}
       </ul>
 
       <div class="desc-box">

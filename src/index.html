@@ -3997,53 +3997,8 @@
                 <input type="tel" id="reclamacaoTelefoneInput" required placeholder="(85) 99999-9999" maxlength="15" />
               </div>
             </div>
-
-            <div class="form-field-wrap">
-              <label for="reclamacaoEmailInput">E-mail</label>
-              <small class="field-hint">E-mail para envio do protocolo e termo</small>
-              <input type="email" id="reclamacaoEmailInput" placeholder="exemplo@email.com" />
-            </div>
           </div>
-        </div>
-
-        <!-- Localização da Ocorrência -->
-        <div class="reclamacao-section">
-          <div class="reclamacao-grid-3">
-            <div class="form-field-wrap">
-              <label for="reclamacaoSetorSelect">Setor *</label>
-              <select id="reclamacaoSetorSelect" required>
-                <option value="">Selecione o Setor</option>
-                <option value="BRANCO">BRANCO</option>
-                <option value="AZUL">AZUL</option>
-                <option value="VERDE">VERDE</option>
-                <option value="AMARELO">AMARELO</option>
-                <option value="VERMELHO">VERMELHO</option>
-                <option value="ROXO">ROXO</option>
-                <option value="AREA_COMUM">ÁREA COMUM / GERAL</option>
-              </select>
-            </div>
-
-            <div class="form-field-wrap">
-              <label for="reclamacaoRuaSelect">Rua do Setor *</label>
-              <select id="reclamacaoRuaSelect" required>
-                <option value="">Selecione primeiro o setor</option>
-              </select>
-            </div>
-
-            <div class="form-field-wrap">
-              <label for="reclamacaoBoxInput">Número do Box / Loja</label>
-              <input type="text" id="reclamacaoBoxInput" placeholder="Ex: 1268" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Categoria da Reclamação -->
-        <div class="reclamacao-section">
-          <label class="reclamacao-section-label">Reclamações Relacionadas a: *</label>
-          <div class="reclamacao-chips-grid" id="reclamacaoChipsGrid">
-            <!-- 12 categorias renderizadas em pills selecionáveis -->
-          </div>
-          <input type="hidden" id="reclamacaoCategoriaSelecionada" value="ESTRUTURAL" />
+          <input type="hidden" id="reclamacaoCategoriaSelecionada" value="GERAL" />
         </div>
 
         <!-- Detalhes e Data -->

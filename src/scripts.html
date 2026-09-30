@@ -28356,7 +28356,7 @@ Verificado agora: ${hora}` : ''}`;
       setor: setor,
       rua: rua,
       boxLoja: box,
-      categoria: moduloReclamacoesState.categoriaSelecionada,
+      categoria: (moduloReclamacoesState && moduloReclamacoesState.categoriaSelecionada) || 'GERAL',
       dataOcorrencia: dataOcorr,
       descricaoReclamacao: detalhes,
       aceiteLGPD: true
