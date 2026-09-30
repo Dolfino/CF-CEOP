@@ -10,9 +10,13 @@
 
 <body>
   <header>
-    <div><strong>CEOP — Central de Operações</strong><small id="versao">MVP-3.32.0-SINALIZACAO-S26.10</small></div><span
-      id="status" class="pill">Carregando…</span><button id="userBadgeS14" class="user-badge" type="button"
-      title="Sessão atual">Carregando usuário…</button>
+    <div><strong>CEOP — Central de Operações</strong><small id="versao">MVP-3.32.0-SINALIZACAO-S26.10</small></div>
+    <span id="status" class="pill">Carregando…</span>
+    <button id="userBadgeS14" class="user-badge" type="button" title="Sessão atual — clique para ver detalhes ou trocar de conta">Carregando usuário…</button>
+    <button id="logoutMallS223" class="auth-logout-s223" type="button" title="Encerrar sessão e sair">
+      <span class="auth-logout-icon" aria-hidden="true">🚪</span>
+      <span>Sair</span>
+    </button>
   </header>
   <main>
     <section class="toolbar toolbar-s22513">
@@ -153,6 +157,23 @@
                 <span class="app-menu-icon-s22513">⚙</span><span>Administração</span>
               </button>
             </div>
+          </section>
+
+          <!-- Sessão do Usuário Autenticado e Ação de Logout -->
+          <section class="app-menu-section-s268d app-menu-section-auth-s2610" aria-labelledby="menuUsuarioTituloS2610">
+            <div id="menuUsuarioTituloS2610" class="app-menu-section-title-s268d">Sessão do Usuário</div>
+            <div class="app-menu-user-card-s2610">
+              <div class="app-menu-user-avatar-s2610" aria-hidden="true">👤</div>
+              <div class="app-menu-user-info-s2610">
+                <strong id="menuUserNameS2610">Carregando usuário…</strong>
+                <small id="menuUserEmailS2610">Sessão ativa</small>
+                <span id="menuUserPerfilS2610" class="pill-perfil-s2610">CONSULTA</span>
+              </div>
+            </div>
+            <button id="btnMenuLogoutS2610" class="app-menu-logout-btn-s2610" type="button" title="Encerrar sessão neste dispositivo">
+              <span class="app-menu-icon-s22513" aria-hidden="true">🚪</span>
+              <span>Sair da conta / Encerrar sessão</span>
+            </button>
           </section>
         </div>
 

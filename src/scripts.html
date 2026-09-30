@@ -5117,11 +5117,39 @@ Verificado agora: ${hora}` : ''}`;
   }
 
   function renderUserBadgeS14(s) {
-    const b = $('userBadgeS14'); if (!b) return;
-    const nome = s.nome || s.email || 'Usuário';
-    b.textContent = `${nome} • ${s.perfil || 'CONSULTA'}`;
-    b.title = s.email || nome;
-    b.classList.toggle('denied', !s.autenticado);
+    if (!s) return;
+    const b = $('userBadgeS14');
+    const nome = s.nome || (s.email ? s.email.split('@')[0] : 'Usuário');
+    const email = s.email || '';
+    const perfil = (s.perfil || 'CONSULTA').toUpperCase();
+
+    if (b) {
+      b.textContent = `${nome} • ${perfil}`;
+      b.title = email ? `${email} (${perfil}) — Clique para opções de conta ou sair` : `${nome} (${perfil})`;
+      b.classList.toggle('denied', !s.autenticado);
+      if (!b.dataset.s2610wired) {
+        b.dataset.s2610wired = '1';
+        b.onclick = abrirOpcoesUsuarioS14;
+      }
+    }
+
+    const menuNome = $('menuUserNameS2610');
+    if (menuNome) menuNome.textContent = nome;
+    const menuEmail = $('menuUserEmailS2610');
+    if (menuEmail) menuEmail.textContent = email || 'Sessão ativa';
+    const menuPerfil = $('menuUserPerfilS2610');
+    if (menuPerfil) menuPerfil.textContent = perfil;
+
+    const btnLogout = $('logoutMallS223');
+    if (btnLogout && !btnLogout.dataset.s2610wired) {
+      btnLogout.dataset.s2610wired = '1';
+      btnLogout.onclick = logoutMallS223;
+    }
+    const btnMenuLogout = $('btnMenuLogoutS2610');
+    if (btnMenuLogout && !btnMenuLogout.dataset.s2610wired) {
+      btnMenuLogout.dataset.s2610wired = '1';
+      btnMenuLogout.onclick = logoutMallS223;
+    }
   }
 
   function setPermVisibleS14(id, permitido) {
@@ -7701,11 +7729,15 @@ Verificado agora: ${hora}` : ''}`;
   function garantirBotaoSairS223() {
     let host = document.querySelector('.app-header,.topbar,header');
     if (!host) return;
-    if ($('logoutMallS223')) return;
-    const b = document.createElement('button');
-    b.id = 'logoutMallS223'; b.type = 'button'; b.className = 'auth-logout-s223'; b.textContent = 'Sair';
+    let b = $('logoutMallS223');
+    if (!b) {
+      b = document.createElement('button');
+      b.id = 'logoutMallS223'; b.type = 'button'; b.className = 'auth-logout-s223';
+      b.innerHTML = '<span class="auth-logout-icon" aria-hidden="true">🚪</span><span>Sair</span>';
+      b.title = 'Encerrar sessão e sair';
+      host.appendChild(b);
+    }
     b.onclick = logoutMallS223;
-    host.appendChild(b);
   }
 
   async function loginMallS223(e) {
@@ -7745,11 +7777,64 @@ Verificado agora: ${hora}` : ''}`;
   }
 
   async function logoutMallS223() {
-    if (!confirm('Encerrar esta sessão do Mall neste navegador?')) return;
+    const s = s14State?.sessao || AUTH_S223?.usuario || {};
+    const nomeUsuario = s.nome || (s.email ? s.email.split('@')[0] : 'usuário');
+    if (!confirm(`Deseja realmente encerrar a sessão de "${nomeUsuario}" e sair do CEOP?\n\nSuas credenciais salvas e o acesso ativo neste dispositivo serão desconectados.`)) return;
+
+    try {
+      if ($('status')) $('status').textContent = 'Encerrando sessão…';
+    } catch (_) { }
+
     const token = authTokenS223();
-    try { if (token) await serverRawS223('appLogoutMallS223', { token }); } catch (_) { }
+    try {
+      if (token) await serverRawS223('appLogoutMallS223', { token });
+    } catch (e) {
+      console.warn('[AUTH] Falha ao notificar encerramento no servidor:', e);
+    }
+
     limparAuthS223();
+
+    try {
+      if (typeof idbPutS5A === 'function') {
+        await idbPutS5A('config', {
+          chave: 'sessaoS14',
+          valor: null,
+          atualizadoEm: new Date().toISOString()
+        });
+      }
+    } catch (_) { }
+
+    try {
+      if (window.s14State) window.s14State.sessao = null;
+      if (window.AUTH_S223) window.AUTH_S223.usuario = null;
+    } catch (_) { }
+
+    try {
+      sessionStorage.setItem('ceop_usuario_desconectado', '1');
+      localStorage.removeItem(AUTH_S223.emailKey);
+    } catch (_) { }
+
     location.reload();
+  }
+
+  function abrirOpcoesUsuarioS14() {
+    const s = s14State?.sessao || AUTH_S223?.usuario || {};
+    const nome = s.nome || (s.email ? s.email.split('@')[0] : 'Usuário');
+    const email = s.email || 'Não informado';
+    const perfil = (s.perfil || 'CONSULTA').toUpperCase();
+    const origem = s.origem || (AUTH_S223?.usuario ? 'PIN' : 'Google Workspace');
+
+    const msg = `SESSÃO ATUAL NO CEOP\n` +
+      `──────────────────────────\n` +
+      `Usuário: ${nome}\n` +
+      `E-mail: ${email}\n` +
+      `Perfil: ${perfil}\n` +
+      `Acesso: ${origem}\n\n` +
+      `Deseja encerrar a sessão (Logout)?`;
+
+    if (confirm(msg)) {
+      logoutMallS223();
+    }
   }
 
   // Chamada crua ao google.script.run, usada apenas pela camada de autenticação.
@@ -7779,6 +7864,22 @@ Verificado agora: ${hora}` : ''}`;
     });
     const pf = $('formPinUsuarioS223');
     if (pf && !pf.dataset.s223) { pf.dataset.s223 = '1'; pf.onsubmit = salvarPinUsuarioS223; }
+
+    const btnLogout = $('logoutMallS223');
+    if (btnLogout && !btnLogout.dataset.s2610wired) {
+      btnLogout.dataset.s2610wired = '1';
+      btnLogout.onclick = logoutMallS223;
+    }
+    const btnMenuLogout = $('btnMenuLogoutS2610');
+    if (btnMenuLogout && !btnMenuLogout.dataset.s2610wired) {
+      btnMenuLogout.dataset.s2610wired = '1';
+      btnMenuLogout.onclick = logoutMallS223;
+    }
+    const userBadge = $('userBadgeS14');
+    if (userBadge && !userBadge.dataset.s2610wired) {
+      userBadge.dataset.s2610wired = '1';
+      userBadge.onclick = abrirOpcoesUsuarioS14;
+    }
 
     // S22.3.1: a abertura do login é controlada pelo watcher reativo,
     // evitando condição de corrida com carregarSessaoS14().
@@ -7894,6 +7995,15 @@ Verificado agora: ${hora}` : ''}`;
 
   async function avaliarNecessidadeLoginS2231(sessao = null) {
     if (S2231_LOGIN_WATCH.abrindo) return;
+
+    try {
+      if (sessionStorage.getItem('ceop_usuario_desconectado') === '1') {
+        sessionStorage.removeItem('ceop_usuario_desconectado');
+        if ($('status')) $('status').textContent = 'Sessão encerrada';
+        abrirLoginMallS223();
+        return;
+      }
+    } catch (_) { }
 
     // Se já existe sessão autenticada, não exibe fallback.
     const atual = sessao || window.s14State?.sessao || null;
