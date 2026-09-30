@@ -7805,16 +7805,39 @@ Verificado agora: ${hora}` : ''}`;
     } catch (_) { }
 
     try {
-      if (window.s14State) window.s14State.sessao = null;
-      if (window.AUTH_S223) window.AUTH_S223.usuario = null;
-    } catch (_) { }
-
-    try {
-      sessionStorage.setItem('ceop_usuario_desconectado', '1');
       localStorage.removeItem(AUTH_S223.emailKey);
     } catch (_) { }
 
-    location.reload();
+    const sessaoDesconectada = {
+      autenticado: false,
+      nome: 'Não identificado',
+      email: '',
+      perfil: 'CONSULTA',
+      ativo: false,
+      permissoes: {}
+    };
+
+    if (window.s14State) window.s14State.sessao = sessaoDesconectada;
+    if (window.AUTH_S223) window.AUTH_S223.usuario = null;
+
+    try { aplicarPermissoesS14(sessaoDesconectada); } catch (_) { }
+    try { renderUserBadgeS14(sessaoDesconectada); } catch (_) { }
+
+    // Fecha o menu lateral se estiver aberto
+    try {
+      const menu = $('appMenuS22513'), backdrop = $('appMenuBackdropS22513');
+      if (menu) menu.hidden = true;
+      if (backdrop) backdrop.hidden = true;
+      const btn = $('appMenuBtnS22513');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    } catch (_) { }
+
+    // Atualiza status e abre o modal de login sem recarregar o iframe do Apps Script
+    if ($('status')) $('status').textContent = 'Sessão encerrada';
+    abrirLoginMallS223();
+    if (typeof notificarMallS2610 === 'function') {
+      notificarMallS2610('sucesso', 'Sessão encerrada com sucesso.');
+    }
   }
 
   function abrirOpcoesUsuarioS14() {
