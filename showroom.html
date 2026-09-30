@@ -8509,6 +8509,48 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
   max-width: 1480px;
 }
 
+.gestao-as-toolbar {
+  gap: 10px;
+}
+
+.gestao-as-filter-periodo {
+  flex: 1 1 145px;
+  min-width: 130px;
+}
+
+.gestao-as-filter-date {
+  flex: 0 1 130px;
+  min-width: 125px;
+}
+
+.btn-relatorio-as {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: 1px solid #1e293b !important;
+  font-weight: 700 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-relatorio-as:hover {
+  background: #1e293b !important;
+  border-color: #475569 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-relatorio-as:active {
+  transform: translateY(0);
+}
+
 .kpi-card-as-filter {
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
@@ -8884,7 +8926,8 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
   .patrimonio-grid-2,
   .reclamacao-grid-2,
   .patrimonio-grid-3,
-  .reclamacao-grid-3 {
+  .reclamacao-grid-3,
+  .reclamacao-tipo-selector {
     grid-template-columns: 1fr;
     gap: 10px;
   }
@@ -9020,7 +9063,7 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
 /* Reclamações: Seletor de Tipo */
 .reclamacao-tipo-selector {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-top: 6px;
 }
@@ -11890,7 +11933,34 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
             </select>
           </label>
 
-          <div class="lojistas-actions-row">
+          <label class="gestao-as-filter-periodo">
+            <span>Período / Semana</span>
+            <select id="filtroPeriodoAs" title="Filtro rápido por dia, semana ou mês">
+              <option value="">Todas as datas</option>
+              <option value="HOJE">Hoje</option>
+              <option value="AMANHA">Amanhã</option>
+              <option value="ESTA_SEMANA">Esta Semana</option>
+              <option value="PROXIMA_SEMANA">Próxima Semana</option>
+              <option value="ESTE_MES">Este Mês</option>
+              <option value="PROXIMOS_7_DIAS">Próximos 7 Dias</option>
+              <option value="PERSONALIZADO">Personalizado...</option>
+            </select>
+          </label>
+
+          <label class="gestao-as-filter-date">
+            <span>De (Início)</span>
+            <input id="filtroDataDeAs" type="date" title="Filtrar serviços a partir desta data">
+          </label>
+
+          <label class="gestao-as-filter-date">
+            <span>Até (Fim)</span>
+            <input id="filtroDataAteAs" type="date" title="Filtrar serviços até esta data">
+          </label>
+
+          <div class="lojistas-actions-row gestao-as-actions-row">
+            <button id="btnRelatorioAs" type="button" class="btn-relatorio-as" title="Gerar relatório impresso / PDF da visualização atual com os filtros aplicados">
+              <span>🖨️</span> Imprimir Relatório
+            </button>
             <button id="btnNovaAsPainel" type="button" class="primary" title="Emitir nova Autorização de Serviço">
               <span>＋</span> Nova AS
             </button>
@@ -13259,6 +13329,13 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
                 <small>Consumidor ou visitante do mall</small>
               </span>
             </label>
+            <label class="radio-card">
+              <input type="radio" name="tipoReclamante" value="RECLAMAÇÃO CEOP" />
+              <span class="radio-card-content">
+                <strong>🏢 Reclamação CEOP</strong>
+                <small>Chamado interno da Central de Operações</small>
+              </span>
+            </label>
           </div>
         </div>
 
@@ -13288,7 +13365,7 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
               </div>
             </div>
 
-            <div class="form-field-wrap">
+            <div class="form-field-wrap" id="reclamacaoEmailWrap">
               <label for="reclamacaoEmailInput">E-mail</label>
               <small class="field-hint">E-mail para envio do protocolo e termo</small>
               <input type="email" id="reclamacaoEmailInput" placeholder="exemplo@email.com" />
@@ -13296,8 +13373,8 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
           </div>
         </div>
 
-        <!-- Localização da Ocorrência -->
-        <div class="reclamacao-section">
+        <!-- Localização da Ocorrência (Opcional/Oculto para CEOP) -->
+        <div class="reclamacao-section" id="reclamacaoSecaoLocalizacao">
           <div class="reclamacao-grid-3">
             <div class="form-field-wrap">
               <label for="reclamacaoSetorSelect">Setor *</label>
@@ -13327,8 +13404,8 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
           </div>
         </div>
 
-        <!-- Categoria da Reclamação -->
-        <div class="reclamacao-section">
+        <!-- Categoria da Reclamação (Opcional/Oculto para CEOP) -->
+        <div class="reclamacao-section" id="reclamacaoSecaoCategoria">
           <label class="reclamacao-section-label">Reclamações Relacionadas a: *</label>
           <div class="reclamacao-chips-grid" id="reclamacaoChipsGrid">
             <!-- 12 categorias renderizadas em pills selecionáveis -->
@@ -13823,6 +13900,7 @@ body.showroom-tablet-mode > main {
     // --- GRUPO 3: LOJISTAS & ESPAÇOS COMERCIAIS ---
     { id: 'lojistasPanel', name: '17. Central de Gestão de Lojistas', type: 'modal', desc: 'Base mestre de espaços, contratos, LUCs e ocupação' },
     { id: 'lojistaModal', name: '18. Modal Completo de Cadastro de Lojista', type: 'modal_overlay', desc: 'Ficha mestre com abas de contrato, contatos e AS' },
+    { id: 'gestaoAsPanel', name: '18.1. Central de Gestão de Autorizações de Serviço (AS)', type: 'modal', desc: 'Controle de AS com filtros por período/semana, KPIs e impressão de relatório' },
 
     // --- GRUPO 4: TORRES E NÚCLEOS VERTICAIS ---
     { id: 'torresPanelS2610C', name: '19. Central de Torres e Núcleos Verticais', type: 'modal', desc: 'Governança vertical N0-N3, elevadores e snapshots' },
@@ -13999,6 +14077,54 @@ body.showroom-tablet-mode > main {
       if (meta) meta.textContent = 'Enviada em 16/09/2026 às 10:14 por Operador 01';
       const count = document.getElementById('fotoContadorS225');
       if (count) count.textContent = '1 de 3';
+    }
+
+    // 7. Simulação para Gestão de Autorizações de Serviço (AS)
+    const asTbody = document.getElementById('tabelaGestaoAsCorpo');
+    if (asTbody) {
+      const kpiTotal = document.getElementById('kpiTotalAs');
+      if (kpiTotal) kpiTotal.textContent = '5';
+      const kpiAbertas = document.getElementById('kpiAbertasAs');
+      if (kpiAbertas) kpiAbertas.textContent = '5';
+      const kpiPendentes = document.getElementById('kpiPendentesAs');
+      if (kpiPendentes) kpiPendentes.textContent = '0';
+      const kpiConcluidas = document.getElementById('kpiConcluidasAs');
+      if (kpiConcluidas) kpiConcluidas.textContent = '0';
+      const pagInfo = document.getElementById('gestaoAsPaginacaoInfo');
+      if (pagInfo) pagInfo.textContent = 'Exibindo 1 a 5 de 5 solicitações';
+
+      asTbody.innerHTML = `
+        <tr>
+          <td><strong style="color:#0F172A; font-size:12.5px;">CEOP-AS-2026-001</strong><div style="font-size:10.5px; color:#64748B;">23/09/2026 08:30</div></td>
+          <td><div style="font-weight:700; color:#1E293B;">Rua Barão do Rio Branco</div><span class="tag-local-tipo tipo-loja">Box 31216</span></td>
+          <td><div style="font-weight:600; color:#0F172A;">LUANA MONTEIRO RODRIGUES</div><div style="font-size:11px; color:#64748B;">📞 (85) 99929-2924</div></td>
+          <td><div style="font-weight:600; color:#0F172A;">YASMIM</div></td>
+          <td><div style="font-weight:700; color:#D97706;">OBRA DE MELHORIA</div><div style="font-size:11px; color:#475569;">reforma</div></td>
+          <td><div style="font-weight:600;">23/09/2026</div><div style="font-size:11px; color:#64748B;">⏰ 07:00 AS 19:00</div></td>
+          <td style="text-align:center;"><span class="badge-as-status status-autorizado">AUTORIZADO</span></td>
+          <td><div class="as-acoes-cell"><button type="button" class="btn-as-tabela btn-as-tab-print">📄 Imprimir</button><button type="button" class="btn-as-tabela btn-as-tab-email">✉️ Enviar</button><button type="button" class="btn-as-tabela btn-as-tab-edit">✏️</button><button type="button" class="btn-as-tabela btn-as-tab-concluir">✅ Concluir</button><button type="button" class="btn-as-tabela btn-as-tab-map">📍 Mapa</button></div></td>
+        </tr>
+        <tr>
+          <td><strong style="color:#0F172A; font-size:12.5px;">CEOP-AS-2026-002</strong><div style="font-size:10.5px; color:#64748B;">24/09/2026 09:15</div></td>
+          <td><div style="font-weight:700; color:#1E293B;">Rua Barão do Rio Branco</div><span class="tag-local-tipo tipo-loja">Box 31220</span></td>
+          <td><div style="font-weight:600; color:#0F172A;">JUCILENE MACHADO DOS ANJOS</div><div style="font-size:11px; color:#64748B;">📞 (85) 99912-5992</div></td>
+          <td><div style="font-weight:600; color:#0F172A;">MARIA FULANO DE TAL</div><div style="font-size:11px; color:#64748B;">🏢 Delimpo</div></td>
+          <td><div style="font-weight:700; color:#D97706;">ORGANIZAÇÃO E LIMPEZA</div><div style="font-size:11px; color:#475569;">Realização de serviços de organização ...</div></td>
+          <td><div style="font-weight:600;">24/09/2026 a 25/09/2026</div><div style="font-size:11px; color:#64748B;">⏰ 07:00 AS 09:00</div></td>
+          <td style="text-align:center;"><span class="badge-as-status status-autorizado">AUTORIZADO</span></td>
+          <td><div class="as-acoes-cell"><button type="button" class="btn-as-tabela btn-as-tab-print">📄 Imprimir</button><button type="button" class="btn-as-tabela btn-as-tab-email">✉️ Enviar</button><button type="button" class="btn-as-tabela btn-as-tab-edit">✏️</button><button type="button" class="btn-as-tabela btn-as-tab-concluir">✅ Concluir</button><button type="button" class="btn-as-tabela btn-as-tab-map">📍 Mapa</button></div></td>
+        </tr>
+        <tr>
+          <td><strong style="color:#0F172A; font-size:12.5px;">CEOP-AS-2026-003</strong><div style="font-size:10.5px; color:#64748B;">23/09/2026 14:00</div></td>
+          <td><div style="font-weight:700; color:#1E293B;">Avenida Dom Manuel</div><span class="tag-local-tipo tipo-loja">Box IN1164</span></td>
+          <td><div style="font-weight:600; color:#0F172A;">FRANCISCO AURICELIO DE SOUSA</div></td>
+          <td><div style="font-weight:600; color:#0F172A;">JOÃO FULANO DE TAL</div><div style="font-size:11px; color:#64748B;">🏢 Terceirizada Brisanet</div></td>
+          <td><div style="font-weight:700; color:#D97706;">OBRA DE MELHORIA</div><div style="font-size:11px; color:#475569;">Realização de serviços de adequação ...</div></td>
+          <td><div style="font-weight:600;">23/09/2026 a 24/09/2026</div></td>
+          <td style="text-align:center;"><span class="badge-as-status status-autorizado">AUTORIZADO</span></td>
+          <td><div class="as-acoes-cell"><button type="button" class="btn-as-tabela btn-as-tab-print">📄 Imprimir</button><button type="button" class="btn-as-tabela btn-as-tab-email">✉️ Enviar</button><button type="button" class="btn-as-tabela btn-as-tab-edit">✏️</button><button type="button" class="btn-as-tabela btn-as-tab-concluir">✅ Concluir</button><button type="button" class="btn-as-tabela btn-as-tab-map">📍 Mapa</button></div></td>
+        </tr>
+      `;
     }
   }
 

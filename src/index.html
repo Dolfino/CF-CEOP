@@ -2593,7 +2593,34 @@
             </select>
           </label>
 
-          <div class="lojistas-actions-row">
+          <label class="gestao-as-filter-periodo">
+            <span>Período / Semana</span>
+            <select id="filtroPeriodoAs" title="Filtro rápido por dia, semana ou mês">
+              <option value="">Todas as datas</option>
+              <option value="HOJE">Hoje</option>
+              <option value="AMANHA">Amanhã</option>
+              <option value="ESTA_SEMANA">Esta Semana</option>
+              <option value="PROXIMA_SEMANA">Próxima Semana</option>
+              <option value="ESTE_MES">Este Mês</option>
+              <option value="PROXIMOS_7_DIAS">Próximos 7 Dias</option>
+              <option value="PERSONALIZADO">Personalizado...</option>
+            </select>
+          </label>
+
+          <label class="gestao-as-filter-date">
+            <span>De (Início)</span>
+            <input id="filtroDataDeAs" type="date" title="Filtrar serviços a partir desta data">
+          </label>
+
+          <label class="gestao-as-filter-date">
+            <span>Até (Fim)</span>
+            <input id="filtroDataAteAs" type="date" title="Filtrar serviços até esta data">
+          </label>
+
+          <div class="lojistas-actions-row gestao-as-actions-row">
+            <button id="btnRelatorioAs" type="button" class="btn-relatorio-as" title="Gerar relatório impresso / PDF da visualização atual com os filtros aplicados">
+              <span>🖨️</span> Imprimir Relatório
+            </button>
             <button id="btnNovaAsPainel" type="button" class="primary" title="Emitir nova Autorização de Serviço">
               <span>＋</span> Nova AS
             </button>

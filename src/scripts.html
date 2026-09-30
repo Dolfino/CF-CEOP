@@ -27104,9 +27104,92 @@ Verificado agora: ${hora}` : ''}`;
       busca: '',
       status: '',
       local: '',
-      setor: ''
+      setor: '',
+      periodoPreset: '',
+      dataDe: '',
+      dataAte: ''
     }
   };
+
+  function normalizarDataParaIsoYmdAS(val) {
+    if (!val) return '';
+    if (val instanceof Date && !isNaN(val.getTime())) {
+      const y = val.getFullYear();
+      const m = String(val.getMonth() + 1).padStart(2, '0');
+      const d = String(val.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+    const s = String(val).trim();
+    const mBr = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (mBr) {
+      const dia = String(mBr[1]).padStart(2, '0');
+      const mes = String(mBr[2]).padStart(2, '0');
+      const ano = mBr[3];
+      return `${ano}-${mes}-${dia}`;
+    }
+    const mIso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (mIso) {
+      return `${mIso[1]}-${mIso[2]}-${mIso[3]}`;
+    }
+    const dt = new Date(s);
+    if (!isNaN(dt.getTime())) {
+      const y = dt.getFullYear();
+      const m = String(dt.getMonth() + 1).padStart(2, '0');
+      const d = String(dt.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+    return '';
+  }
+
+  function calcularIntervaloPresetDatasAS(preset) {
+    const agora = new Date();
+    const formatar = (d) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const dia = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${dia}`;
+    };
+
+    if (preset === 'HOJE') {
+      const hoje = formatar(agora);
+      return { de: hoje, ate: hoje };
+    }
+    if (preset === 'AMANHA') {
+      const am = new Date(agora);
+      am.setDate(am.getDate() + 1);
+      const d = formatar(am);
+      return { de: d, ate: d };
+    }
+    if (preset === 'ESTA_SEMANA') {
+      const diaSemana = agora.getDay();
+      const diffSeg = diaSemana === 0 ? -6 : 1 - diaSemana;
+      const seg = new Date(agora);
+      seg.setDate(agora.getDate() + diffSeg);
+      const dom = new Date(seg);
+      dom.setDate(seg.getDate() + 6);
+      return { de: formatar(seg), ate: formatar(dom) };
+    }
+    if (preset === 'PROXIMA_SEMANA') {
+      const diaSemana = agora.getDay();
+      const diffSeg = diaSemana === 0 ? -6 : 1 - diaSemana;
+      const seg = new Date(agora);
+      seg.setDate(agora.getDate() + diffSeg + 7);
+      const dom = new Date(seg);
+      dom.setDate(seg.getDate() + 6);
+      return { de: formatar(seg), ate: formatar(dom) };
+    }
+    if (preset === 'ESTE_MES') {
+      const pri = new Date(agora.getFullYear(), agora.getMonth(), 1);
+      const ult = new Date(agora.getFullYear(), agora.getMonth() + 1, 0);
+      return { de: formatar(pri), ate: formatar(ult) };
+    }
+    if (preset === 'PROXIMOS_7_DIAS') {
+      const fim = new Date(agora);
+      fim.setDate(agora.getDate() + 7);
+      return { de: formatar(agora), ate: formatar(fim) };
+    }
+    return { de: '', ate: '' };
+  }
 
   function abrirGestaoAsPanel() {
     const painel = $('gestaoAsPanel');
@@ -27168,6 +27251,8 @@ Verificado agora: ${hora}` : ''}`;
     const stFiltro = String(gestaoAsState.filtros.status || '').toUpperCase();
     const localFiltro = String(gestaoAsState.filtros.local || '').toUpperCase();
     const setorFiltro = String(gestaoAsState.filtros.setor || '').toUpperCase();
+    const deIso = String(gestaoAsState.filtros.dataDe || '').trim();
+    const ateIso = String(gestaoAsState.filtros.dataAte || '').trim();
 
     // Recalcula KPIs sobre a totalidade de itens
     let abertas = 0, concluidas = 0, pendentes = 0;
@@ -27212,12 +27297,32 @@ Verificado agora: ${hora}` : ''}`;
         if (!setorTexto.includes(setorFiltro)) return false;
       }
 
+      // Filtro de Data / Período / Semana
+      if (deIso || ateIso) {
+        let dtIni = normalizarDataParaIsoYmdAS(it.dataInicio);
+        let dtFim = normalizarDataParaIsoYmdAS(it.dataFim);
+
+        if (!dtIni && !dtFim) {
+          dtIni = normalizarDataParaIsoYmdAS(it.criadoEm);
+          dtFim = dtIni;
+        } else if (!dtIni && dtFim) {
+          dtIni = dtFim;
+        } else if (dtIni && !dtFim) {
+          dtFim = dtIni;
+        }
+
+        if (!dtIni && !dtFim) return false;
+
+        if (deIso && dtFim && dtFim < deIso) return false;
+        if (ateIso && dtIni && dtIni > ateIso) return false;
+      }
+
       // Busca textual ampla
       if (busca) {
         const campos = [
           it.protocolo, it.numeroLoja, it.luc, it.nomeLoja, it.rua, it.trecho,
           it.solicitante, it.prestador, it.prestadorEmpresa, it.tipoSolicitacao,
-          it.titulo, it.descricao, it.status
+          it.titulo, it.descricao, it.status, it.dataInicio, it.dataFim, it.horario
         ].map(v => String(v || '').toLowerCase()).join(' ');
         if (!campos.includes(busca)) return false;
       }
@@ -27569,6 +27674,578 @@ Verificado agora: ${hora}` : ''}`;
     }
   }
 
+  function imprimirRelatorioGestaoAs() {
+    const itens = gestaoAsState.filtrados;
+    if (!itens || itens.length === 0) {
+      alert('Nenhuma Autorização de Serviço encontrada com os filtros atuais para gerar o relatório.');
+      return;
+    }
+
+    const deIso = gestaoAsState.filtros.dataDe;
+    const ateIso = gestaoAsState.filtros.dataAte;
+    const preset = gestaoAsState.filtros.periodoPreset;
+    
+    const fmtBr = (iso) => {
+      if (!iso) return '';
+      const p = iso.split('-');
+      return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
+    };
+
+    let textoPeriodo = 'Todas as datas cadastradas';
+    if (deIso && ateIso) {
+      if (deIso === ateIso) {
+        textoPeriodo = `Data: ${fmtBr(deIso)}`;
+        if (preset === 'HOJE') textoPeriodo += ' (Hoje)';
+        else if (preset === 'AMANHA') textoPeriodo += ' (Amanhã)';
+      } else {
+        textoPeriodo = `De ${fmtBr(deIso)} até ${fmtBr(ateIso)}`;
+        if (preset === 'ESTA_SEMANA') textoPeriodo += ' (Esta Semana)';
+        else if (preset === 'PROXIMA_SEMANA') textoPeriodo += ' (Próxima Semana)';
+        else if (preset === 'ESTE_MES') textoPeriodo += ' (Este Mês)';
+        else if (preset === 'PROXIMOS_7_DIAS') textoPeriodo += ' (Próximos 7 Dias)';
+      }
+    } else if (deIso) {
+      textoPeriodo = `A partir de ${fmtBr(deIso)}`;
+    } else if (ateIso) {
+      textoPeriodo = `Até ${fmtBr(ateIso)}`;
+    }
+
+    let textoStatus = 'Todos os status';
+    const stFiltro = gestaoAsState.filtros.status;
+    if (stFiltro === 'ABERTAS') textoStatus = 'Em Aberto / Autorizadas';
+    else if (stFiltro === 'PENDENTES') textoStatus = 'Pendentes / Em Andamento';
+    else if (stFiltro === 'CONCLUIDAS') textoStatus = 'Concluídas / Finalizadas';
+    else if (stFiltro === 'CANCELADAS') textoStatus = 'Canceladas';
+
+    let textoLocal = 'Todos os locais';
+    if (gestaoAsState.filtros.local === 'RUA') textoLocal = 'Apenas Ruas e Corredores';
+    else if (gestaoAsState.filtros.local === 'LOJA') textoLocal = 'Apenas Lojas / Boxes';
+
+    const textoSetor = gestaoAsState.filtros.setor ? `Setor ${gestaoAsState.filtros.setor}` : 'Todos os setores';
+    const textoBusca = gestaoAsState.filtros.busca ? `"${gestaoAsState.filtros.busca}"` : 'Sem pesquisa textual';
+
+    let countAbertas = 0, countPendentes = 0, countConcluidas = 0, countCanceladas = 0;
+    itens.forEach(it => {
+      const st = String(it.status || 'AUTORIZADO').toUpperCase();
+      if (['CONCLUIDO', 'CONCLUIDA', 'FINALIZADO', 'FINALIZADA'].includes(st)) countConcluidas++;
+      else if (['PENDENTE', 'EM_ANDAMENTO', 'EM ANDAMENTO'].includes(st)) countPendentes++;
+      else if (['CANCELADO', 'CANCELADA'].includes(st)) countCanceladas++;
+      else countAbertas++;
+    });
+
+    const agora = new Date();
+    const dd = String(agora.getDate()).padStart(2, '0');
+    const mm = String(agora.getMonth() + 1).padStart(2, '0');
+    const yyyy = agora.getFullYear();
+    const hh = String(agora.getHours()).padStart(2, '0');
+    const min = String(agora.getMinutes()).padStart(2, '0');
+    const dataHoraEmissao = `${dd}/${mm}/${yyyy} às ${hh}:${min}`;
+
+    const nomeOperador = (typeof obterNomeOperadorLogadoAS === 'function' ? obterNomeOperadorLogadoAS(null) : '') || 'Central de Operações (CEOP)';
+
+    // Monta linhas da tabela do relatório
+    let linhasHtml = '';
+    itens.forEach((it, idx) => {
+      const stUpper = String(it.status || 'AUTORIZADO').toUpperCase().trim();
+      const ehLoja = Boolean(it.numeroLoja || it.luc);
+      const tagLocal = ehLoja
+        ? `Box ${esc(it.numeroLoja || '')}${it.luc ? ' (' + esc(it.luc) + ')' : ''}`
+        : 'Corredor / Rua';
+      const localDesc = [it.rua, it.trecho].filter(Boolean).join(' • ') || 'Mall';
+      const setorDesc = it.mapa || it.idMapaSetor || '';
+
+      const formatarDataIsoCurta = (v) => {
+        if (!v) return '';
+        const s = String(v).trim();
+        const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (m) return `${m[3]}/${m[2]}/${m[1]}`;
+        return s.split(' ')[0] || s;
+      };
+
+      const dIni = formatarDataIsoCurta(it.dataInicio);
+      const dFim = formatarDataIsoCurta(it.dataFim);
+      const dataStr = dIni ? `${dIni}${dFim && dFim !== dIni ? ' a ' + dFim : ''}` : (it.criadoEm ? String(it.criadoEm).split(' ')[0] : '—');
+      const horarioStr = it.horario ? `<div style="font-size:7.5pt; color:#475569; margin-top:2px;">⏰ ${esc(it.horario)}</div>` : '';
+
+      linhasHtml += `
+        <tr>
+          <td style="text-align:center; font-weight:700; color:#0F172A;">
+            ${idx + 1}
+          </td>
+          <td>
+            <strong style="color:#0F172A; font-size:8.5pt;">${esc(it.protocolo || 'S/N')}</strong>
+            <div style="font-size:7.5pt; color:#64748B;">${esc(it.criadoEm || '')}</div>
+          </td>
+          <td>
+            <strong style="color:#1E293B;">${esc(tagLocal)}</strong>
+            <div style="font-size:7.5pt; color:#475569;">${esc(localDesc)}</div>
+            ${setorDesc ? `<div style="font-size:7pt; color:#2563EB; font-weight:600;">${esc(setorDesc)}</div>` : ''}
+          </td>
+          <td>
+            <div style="font-weight:700; color:#0F172A;">${esc(it.solicitante || '—')}</div>
+            ${it.solicitanteContato ? `<div style="font-size:7.5pt; color:#64748B;">📞 ${esc(it.solicitanteContato)}</div>` : ''}
+          </td>
+          <td>
+            <div style="font-weight:600; color:#0F172A;">${esc(it.prestador || '—')}</div>
+            ${it.prestadorEmpresa ? `<div style="font-size:7.5pt; color:#64748B;">🏢 ${esc(it.prestadorEmpresa)}</div>` : ''}
+          </td>
+          <td>
+            <strong style="color:#D97706; font-size:8pt;">${esc(it.tipoSolicitacao || it.tipo || 'Serviço')}</strong>
+            ${it.descricao ? `<div style="font-size:7.5pt; color:#334155; line-height:1.2; margin-top:2px;">${esc(it.descricao)}</div>` : ''}
+          </td>
+          <td style="white-space:nowrap;">
+            <div style="font-weight:700; color:#0F172A;">${esc(dataStr)}</div>
+            ${horarioStr}
+          </td>
+          <td style="text-align:center;">
+            <span class="report-status-badge report-status-${esc(stUpper.toLowerCase().replace(/\\s+/g, '_'))}">
+              ${esc(stUpper)}
+            </span>
+          </td>
+        </tr>`;
+    });
+
+    const reportHtml = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Relatório de Autorizações de Serviço (AS) — Centro Fashion Fortaleza</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 8mm 10mm;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      background: #F8FAFC;
+      color: #0F172A;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 8pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .print-bar {
+      position: sticky;
+      top: 0;
+      background: #0F172A;
+      color: #FFF;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+    .print-bar h2 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-bar-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-action-print {
+      background: #2563EB;
+      color: #FFF;
+      border: none;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease;
+    }
+    .btn-action-print:hover { background: #1D4ED8; }
+    .btn-action-close {
+      background: rgba(255, 255, 255, 0.15);
+      color: #FFF;
+      border: none;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-action-close:hover { background: rgba(255, 255, 255, 0.25); }
+    
+    .report-paper {
+      background: #FFF;
+      width: 100%;
+      max-width: 1140px;
+      margin: 14px auto 30px;
+      padding: 16px 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      border-radius: 6px;
+    }
+    
+    .report-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #0F172A;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .report-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .report-logo {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+    }
+    .report-title-box h1 {
+      margin: 0;
+      font-size: 14pt;
+      font-weight: 800;
+      color: #0F172A;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .report-title-box h2 {
+      margin: 2px 0 0 0;
+      font-size: 9pt;
+      font-weight: 700;
+      color: #2563EB;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .report-meta-box {
+      text-align: right;
+      font-size: 7.5pt;
+      color: #475569;
+      line-height: 1.4;
+    }
+    
+    .report-filters-bar {
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      font-size: 8pt;
+    }
+    .filter-item {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .filter-label {
+      font-weight: 700;
+      color: #334155;
+      text-transform: uppercase;
+      font-size: 7pt;
+    }
+    .filter-val {
+      font-weight: 800;
+      color: #0F172A;
+      background: #FFF;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #CBD5E1;
+    }
+    
+    .report-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .report-kpi {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .report-kpi strong {
+      font-size: 13pt;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .report-kpi span {
+      font-size: 7pt;
+      font-weight: 700;
+      color: #64748B;
+      text-transform: uppercase;
+    }
+    .report-kpi.kpi-aberta strong { color: #2563EB; }
+    .report-kpi.kpi-pendente strong { color: #D97706; }
+    .report-kpi.kpi-concluida strong { color: #059669; }
+    
+    table.report-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 7.5pt;
+      margin-bottom: 16px;
+    }
+    table.report-table th {
+      background: #0F172A;
+      color: #FFF;
+      text-align: left;
+      padding: 6px 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 7pt;
+      letter-spacing: 0.03em;
+      border: 1px solid #0F172A;
+    }
+    table.report-table td {
+      padding: 6px 8px;
+      border: 1px solid #E2E8F0;
+      vertical-align: top;
+    }
+    table.report-table tbody tr:nth-child(even) {
+      background: #F8FAFC;
+    }
+    
+    .report-status-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 6.5pt;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      border: 1px solid #CBD5E1;
+    }
+    .report-status-autorizado, .report-status-ativa, .report-status-aberta {
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border-color: #BFDBFE;
+    }
+    .report-status-pendente, .report-status-em_andamento {
+      background: #FFFBEB;
+      color: #B45309;
+      border-color: #FDE68A;
+    }
+    .report-status-concluido, .report-status-concluida, .report-status-finalizado {
+      background: #ECFDF5;
+      color: #047857;
+      border-color: #A7F3D0;
+    }
+    .report-status-cancelado, .report-status-cancelada {
+      background: #FEF2F2;
+      color: #B91C1C;
+      border-color: #FECACA;
+    }
+    
+    .report-signatures {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 24px;
+      padding-top: 12px;
+      page-break-inside: avoid;
+    }
+    .sig-block {
+      text-align: center;
+    }
+    .sig-line {
+      border-top: 1px solid #0F172A;
+      margin-bottom: 4px;
+    }
+    .sig-title {
+      font-size: 8pt;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .sig-sub {
+      font-size: 7pt;
+      color: #64748B;
+      text-transform: uppercase;
+    }
+    
+    .report-footer {
+      border-top: 1px dashed #CBD5E1;
+      padding-top: 8px;
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 7pt;
+      color: #94A3B8;
+      page-break-inside: avoid;
+    }
+    
+    @media print {
+      .print-bar { display: none !important; }
+      html, body {
+        background: #FFF !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .report-paper {
+        box-shadow: none !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      tr { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="print-bar">
+    <h2><span>📊</span> Relatório de Autorizações de Serviço (AS) — CEOP</h2>
+    <div class="print-bar-actions">
+      <button type="button" class="btn-action-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+      <button type="button" class="btn-action-close" onclick="window.close()">✕ Fechar Janela</button>
+    </div>
+  </div>
+
+  <div class="report-paper">
+    <header class="report-header">
+      <div class="report-brand">
+        <img class="report-logo" src="${typeof LOGO_CENTRO_FASHION_B64 !== 'undefined' ? LOGO_CENTRO_FASHION_B64 : ''}" alt="Centro Fashion">
+        <div class="report-title-box">
+          <h1>Relatório de Autorizações de Serviço (AS)</h1>
+          <h2>Centro Fashion Fortaleza — Central de Serviços &amp; Operações (CEOP)</h2>
+        </div>
+      </div>
+      <div class="report-meta-box">
+        <div><strong>Emissão:</strong> ${esc(dataHoraEmissao)}</div>
+        <div><strong>Operador:</strong> ${esc(nomeOperador)}</div>
+        <div><strong>Ambiente:</strong> Produção Mall / CEOP</div>
+      </div>
+    </header>
+
+    <div class="report-filters-bar">
+      <div class="filter-item">
+        <span class="filter-label">Período:</span>
+        <span class="filter-val">${esc(textoPeriodo)}</span>
+      </div>
+      <div class="filter-item">
+        <span class="filter-label">Status:</span>
+        <span class="filter-val">${esc(textoStatus)}</span>
+      </div>
+      <div class="filter-item">
+        <span class="filter-label">Local:</span>
+        <span class="filter-val">${esc(textoLocal)}</span>
+      </div>
+      <div class="filter-item">
+        <span class="filter-label">Setor:</span>
+        <span class="filter-val">${esc(textoSetor)}</span>
+      </div>
+      ${gestaoAsState.filtros.busca ? `
+      <div class="filter-item">
+        <span class="filter-label">Busca:</span>
+        <span class="filter-val">${esc(textoBusca)}</span>
+      </div>` : ''}
+    </div>
+
+    <div class="report-kpis">
+      <div class="report-kpi">
+        <span>Total no Relatório</span>
+        <strong>${itens.length}</strong>
+      </div>
+      <div class="report-kpi kpi-aberta">
+        <span>Em Aberto / Autorizadas</span>
+        <strong>${countAbertas}</strong>
+      </div>
+      <div class="report-kpi kpi-pendente">
+        <span>Pendentes / Em Andamento</span>
+        <strong>${countPendentes}</strong>
+      </div>
+      <div class="report-kpi kpi-concluida">
+        <span>Concluídas / Finalizadas</span>
+        <strong>${countConcluidas}</strong>
+      </div>
+    </div>
+
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th style="width:30px; text-align:center;">#</th>
+          <th style="width:110px;">Protocolo</th>
+          <th style="width:150px;">Localização / Espaço</th>
+          <th style="width:130px;">Solicitante / Loja</th>
+          <th style="width:130px;">Prestador / Empresa</th>
+          <th>Serviço Solicitado</th>
+          <th style="width:130px;">Período / Horário</th>
+          <th style="width:90px; text-align:center;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${linhasHtml}
+      </tbody>
+    </table>
+
+    <div class="report-signatures">
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-title">Supervisor de Operações (CEOP)</div>
+        <div class="sig-sub">Centro Fashion Fortaleza — Autorização &amp; Fiscalização</div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-title">Portaria / Segurança do Mall</div>
+        <div class="sig-sub">Controle de Acesso de Prestadores e Materiais</div>
+      </div>
+    </div>
+
+    <footer class="report-footer">
+      <div>Relatório gerado pelo Sistema de Sinalização &amp; Gestão Operacional CEOP.</div>
+      <div>Página impressa em formato A4 Paisagem</div>
+    </footer>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        try {
+          window.focus();
+          window.print();
+        } catch (_) {}
+      }, 450);
+    });
+  <\/script>
+</body>
+</html>`;
+
+    // Tenta abrir janela dedicada de impressão
+    const printWin = window.open('', '_blank', 'width=1160,height=880,menubar=no,toolbar=no,location=no,status=no');
+    if (printWin && printWin.document) {
+      printWin.document.open();
+      printWin.document.write(reportHtml);
+      printWin.document.close();
+      setTimeout(() => {
+        try {
+          printWin.focus();
+        } catch (_) {}
+      }, 350);
+    } else {
+      // Fallback em caso de bloqueio de pop-up
+      const docPrint = $('asDocumentoImpressao');
+      if (docPrint) {
+        docPrint.innerHTML = reportHtml;
+        window.print();
+      } else {
+        alert('Por favor, permita pop-ups no navegador para visualizar e imprimir o relatório.');
+      }
+    }
+  }
+
   function instalarGestaoAs() {
     if (gestaoAsState.instalado) return;
     gestaoAsState.instalado = true;
@@ -27644,6 +28321,67 @@ Verificado agora: ${hora}` : ''}`;
       selSetor.addEventListener('change', () => {
         gestaoAsState.filtros.setor = selSetor.value;
         aplicarFiltrosGestaoAs();
+      });
+    }
+
+    // Filtros de Data / Período / Semana
+    const selPeriodo = $('filtroPeriodoAs');
+    const inputDataDe = $('filtroDataDeAs');
+    const inputDataAte = $('filtroDataAteAs');
+
+    if (selPeriodo) {
+      selPeriodo.addEventListener('change', () => {
+        const val = selPeriodo.value;
+        gestaoAsState.filtros.periodoPreset = val;
+        if (val === 'PERSONALIZADO') {
+          if (inputDataDe) inputDataDe.focus();
+        } else if (val) {
+          const intervalo = calcularIntervaloPresetDatasAS(val);
+          if (inputDataDe) inputDataDe.value = intervalo.de;
+          if (inputDataAte) inputDataAte.value = intervalo.ate;
+          gestaoAsState.filtros.dataDe = intervalo.de;
+          gestaoAsState.filtros.dataAte = intervalo.ate;
+        } else {
+          if (inputDataDe) inputDataDe.value = '';
+          if (inputDataAte) inputDataAte.value = '';
+          gestaoAsState.filtros.dataDe = '';
+          gestaoAsState.filtros.dataAte = '';
+        }
+        aplicarFiltrosGestaoAs();
+      });
+    }
+
+    const aoAlterarDatasManuais = () => {
+      const de = String(inputDataDe?.value || '').trim();
+      const ate = String(inputDataAte?.value || '').trim();
+      gestaoAsState.filtros.dataDe = de;
+      gestaoAsState.filtros.dataAte = ate;
+      if (selPeriodo) {
+        if (!de && !ate) {
+          selPeriodo.value = '';
+          gestaoAsState.filtros.periodoPreset = '';
+        } else {
+          selPeriodo.value = 'PERSONALIZADO';
+          gestaoAsState.filtros.periodoPreset = 'PERSONALIZADO';
+        }
+      }
+      aplicarFiltrosGestaoAs();
+    };
+
+    if (inputDataDe) {
+      inputDataDe.addEventListener('change', aoAlterarDatasManuais);
+    }
+    if (inputDataAte) {
+      inputDataAte.addEventListener('change', aoAlterarDatasManuais);
+    }
+
+    // Botão de Imprimir Relatório da Visualização Atual
+    const btnRelatorio = $('btnRelatorioAs');
+    if (btnRelatorio) {
+      btnRelatorio.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        imprimirRelatorioGestaoAs();
       });
     }
 

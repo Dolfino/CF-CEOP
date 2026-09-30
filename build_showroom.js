@@ -256,6 +256,7 @@ body.showroom-tablet-mode > main {
     // --- GRUPO 3: LOJISTAS & ESPAÇOS COMERCIAIS ---
     { id: 'lojistasPanel', name: '17. Central de Gestão de Lojistas', type: 'modal', desc: 'Base mestre de espaços, contratos, LUCs e ocupação' },
     { id: 'lojistaModal', name: '18. Modal Completo de Cadastro de Lojista', type: 'modal_overlay', desc: 'Ficha mestre com abas de contrato, contatos e AS' },
+    { id: 'gestaoAsPanel', name: '18.1. Central de Gestão de Autorizações de Serviço (AS)', type: 'modal', desc: 'Controle de AS com filtros por período/semana, KPIs e impressão de relatório' },
 
     // --- GRUPO 4: TORRES E NÚCLEOS VERTICAIS ---
     { id: 'torresPanelS2610C', name: '19. Central de Torres e Núcleos Verticais', type: 'modal', desc: 'Governança vertical N0-N3, elevadores e snapshots' },
@@ -432,6 +433,54 @@ body.showroom-tablet-mode > main {
       if (meta) meta.textContent = 'Enviada em 16/09/2026 às 10:14 por Operador 01';
       const count = document.getElementById('fotoContadorS225');
       if (count) count.textContent = '1 de 3';
+    }
+
+    // 7. Simulação para Gestão de Autorizações de Serviço (AS)
+    const asTbody = document.getElementById('tabelaGestaoAsCorpo');
+    if (asTbody) {
+      const kpiTotal = document.getElementById('kpiTotalAs');
+      if (kpiTotal) kpiTotal.textContent = '5';
+      const kpiAbertas = document.getElementById('kpiAbertasAs');
+      if (kpiAbertas) kpiAbertas.textContent = '5';
+      const kpiPendentes = document.getElementById('kpiPendentesAs');
+      if (kpiPendentes) kpiPendentes.textContent = '0';
+      const kpiConcluidas = document.getElementById('kpiConcluidasAs');
+      if (kpiConcluidas) kpiConcluidas.textContent = '0';
+      const pagInfo = document.getElementById('gestaoAsPaginacaoInfo');
+      if (pagInfo) pagInfo.textContent = 'Exibindo 1 a 5 de 5 solicitações';
+
+      asTbody.innerHTML = \`
+        <tr>
+          <td><strong style="color:#0F172A; font-size:12.5px;">CEOP-AS-2026-001</strong><div style="font-size:10.5px; color:#64748B;">23/09/2026 08:30</div></td>
+          <td><div style="font-weight:700; color:#1E293B;">Rua Barão do Rio Branco</div><span class="tag-local-tipo tipo-loja">Box 31216</span></td>
+          <td><div style="font-weight:600; color:#0F172A;">LUANA MONTEIRO RODRIGUES</div><div style="font-size:11px; color:#64748B;">📞 (85) 99929-2924</div></td>
+          <td><div style="font-weight:600; color:#0F172A;">YASMIM</div></td>
+          <td><div style="font-weight:700; color:#D97706;">OBRA DE MELHORIA</div><div style="font-size:11px; color:#475569;">reforma</div></td>
+          <td><div style="font-weight:600;">23/09/2026</div><div style="font-size:11px; color:#64748B;">⏰ 07:00 AS 19:00</div></td>
+          <td style="text-align:center;"><span class="badge-as-status status-autorizado">AUTORIZADO</span></td>
+          <td><div class="as-acoes-cell"><button type="button" class="btn-as-tabela btn-as-tab-print">📄 Imprimir</button><button type="button" class="btn-as-tabela btn-as-tab-email">✉️ Enviar</button><button type="button" class="btn-as-tabela btn-as-tab-edit">✏️</button><button type="button" class="btn-as-tabela btn-as-tab-concluir">✅ Concluir</button><button type="button" class="btn-as-tabela btn-as-tab-map">📍 Mapa</button></div></td>
+        </tr>
+        <tr>
+          <td><strong style="color:#0F172A; font-size:12.5px;">CEOP-AS-2026-002</strong><div style="font-size:10.5px; color:#64748B;">24/09/2026 09:15</div></td>
+          <td><div style="font-weight:700; color:#1E293B;">Rua Barão do Rio Branco</div><span class="tag-local-tipo tipo-loja">Box 31220</span></td>
+          <td><div style="font-weight:600; color:#0F172A;">JUCILENE MACHADO DOS ANJOS</div><div style="font-size:11px; color:#64748B;">📞 (85) 99912-5992</div></td>
+          <td><div style="font-weight:600; color:#0F172A;">MARIA FULANO DE TAL</div><div style="font-size:11px; color:#64748B;">🏢 Delimpo</div></td>
+          <td><div style="font-weight:700; color:#D97706;">ORGANIZAÇÃO E LIMPEZA</div><div style="font-size:11px; color:#475569;">Realização de serviços de organização ...</div></td>
+          <td><div style="font-weight:600;">24/09/2026 a 25/09/2026</div><div style="font-size:11px; color:#64748B;">⏰ 07:00 AS 09:00</div></td>
+          <td style="text-align:center;"><span class="badge-as-status status-autorizado">AUTORIZADO</span></td>
+          <td><div class="as-acoes-cell"><button type="button" class="btn-as-tabela btn-as-tab-print">📄 Imprimir</button><button type="button" class="btn-as-tabela btn-as-tab-email">✉️ Enviar</button><button type="button" class="btn-as-tabela btn-as-tab-edit">✏️</button><button type="button" class="btn-as-tabela btn-as-tab-concluir">✅ Concluir</button><button type="button" class="btn-as-tabela btn-as-tab-map">📍 Mapa</button></div></td>
+        </tr>
+        <tr>
+          <td><strong style="color:#0F172A; font-size:12.5px;">CEOP-AS-2026-003</strong><div style="font-size:10.5px; color:#64748B;">23/09/2026 14:00</div></td>
+          <td><div style="font-weight:700; color:#1E293B;">Avenida Dom Manuel</div><span class="tag-local-tipo tipo-loja">Box IN1164</span></td>
+          <td><div style="font-weight:600; color:#0F172A;">FRANCISCO AURICELIO DE SOUSA</div></td>
+          <td><div style="font-weight:600; color:#0F172A;">JOÃO FULANO DE TAL</div><div style="font-size:11px; color:#64748B;">🏢 Terceirizada Brisanet</div></td>
+          <td><div style="font-weight:700; color:#D97706;">OBRA DE MELHORIA</div><div style="font-size:11px; color:#475569;">Realização de serviços de adequação ...</div></td>
+          <td><div style="font-weight:600;">23/09/2026 a 24/09/2026</div></td>
+          <td style="text-align:center;"><span class="badge-as-status status-autorizado">AUTORIZADO</span></td>
+          <td><div class="as-acoes-cell"><button type="button" class="btn-as-tabela btn-as-tab-print">📄 Imprimir</button><button type="button" class="btn-as-tabela btn-as-tab-email">✉️ Enviar</button><button type="button" class="btn-as-tabela btn-as-tab-edit">✏️</button><button type="button" class="btn-as-tabela btn-as-tab-concluir">✅ Concluir</button><button type="button" class="btn-as-tabela btn-as-tab-map">📍 Mapa</button></div></td>
+        </tr>
+      \`;
     }
   }
 
