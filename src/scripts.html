@@ -28228,6 +28228,7 @@ Verificado agora: ${hora}` : ''}`;
     if (btnMenu) {
       btnMenu.addEventListener('click', () => {
         abrirModal('formReclamacaoModal');
+        alternarCamposPorTipoReclamante();
         fecharMenuLateral();
       });
     }
@@ -28257,6 +28258,7 @@ Verificado agora: ${hora}` : ''}`;
     if (btnNovoTopo) {
       btnNovoTopo.addEventListener('click', () => {
         abrirModal('formReclamacaoModal');
+        alternarCamposPorTipoReclamante();
       });
     }
 
@@ -28266,8 +28268,38 @@ Verificado agora: ${hora}` : ''}`;
       form.addEventListener('submit', submeterChamadoReclamacao);
     }
 
-    const btnRec = $('btnRecarregarReclamacoes');
-    if (btnRec) btnRec.addEventListener('click', carregarChamadosReclamacoes);
+    // Alternância dinâmica de campos conforme Perfil do Reclamante (CEOP oculta email, localização e categorias)
+    function alternarCamposPorTipoReclamante() {
+      const rdoTipo = document.querySelector('input[name="tipoReclamante"]:checked');
+      const tipo = rdoTipo ? rdoTipo.value : 'PERMISSIONARIO/LOJISTA';
+      const ehCeop = (tipo === 'RECLAMAÇÃO CEOP');
+
+      const emailWrap = $('reclamacaoEmailWrap');
+      const secaoLoc = $('reclamacaoSecaoLocalizacao');
+      const secaoCat = $('reclamacaoSecaoCategoria');
+      const selSetor = $('reclamacaoSetorSelect');
+      const selRua = $('reclamacaoRuaSelect');
+
+      if (emailWrap) emailWrap.style.display = ehCeop ? 'none' : '';
+      if (secaoLoc) secaoLoc.style.display = ehCeop ? 'none' : '';
+      if (secaoCat) secaoCat.style.display = ehCeop ? 'none' : '';
+
+      if (selSetor) {
+        if (ehCeop) selSetor.removeAttribute('required');
+        else selSetor.setAttribute('required', 'required');
+      }
+      if (selRua) {
+        if (ehCeop) selRua.removeAttribute('required');
+        else selRua.setAttribute('required', 'required');
+      }
+    }
+
+    document.querySelectorAll('input[name="tipoReclamante"]').forEach(radio => {
+      radio.addEventListener('change', alternarCamposPorTipoReclamante);
+    });
+    alternarCamposPorTipoReclamante();
+
+    window.alternarCamposPorTipoReclamante = alternarCamposPorTipoReclamante;
   }
 
   window.selecionarCategoriaReclamacao = function(btn, cat) {
@@ -28342,21 +28374,30 @@ Verificado agora: ${hora}` : ''}`;
 
     const rdoTipo = document.querySelector('input[name="tipoReclamante"]:checked');
     const tipo = rdoTipo ? rdoTipo.value : 'PERMISSIONARIO/LOJISTA';
+    const ehCeop = (tipo === 'RECLAMAÇÃO CEOP');
 
     if (!nome) { alert('Informe o nome completo.'); return; }
+    if (!ehCeop) {
+      if (!setor) { alert('Selecione o Setor da ocorrência.'); return; }
+      if (!rua) { alert('Selecione a Rua do setor.'); return; }
+    }
     if (!detalhes) { alert('Descreva detalhadamente o ocorrido.'); return; }
     if (!lgpd) { alert('É obrigatório aceitar o termo da LGPD para registrar a reclamação.'); return; }
+
+    const categoriaFinal = ehCeop
+      ? 'RECLAMAÇÃO CEOP'
+      : ((moduloReclamacoesState && moduloReclamacoesState.categoriaSelecionada) || 'ESTRUTURAL');
 
     const payload = {
       tipoReclamante: tipo,
       nomeReclamante: nome,
       cpfReclamante: cpf,
       telefoneReclamante: tel,
-      emailReclamante: email,
-      setor: setor,
-      rua: rua,
-      boxLoja: box,
-      categoria: (moduloReclamacoesState && moduloReclamacoesState.categoriaSelecionada) || 'GERAL',
+      emailReclamante: ehCeop ? '' : email,
+      setor: ehCeop ? '' : setor,
+      rua: ehCeop ? '' : rua,
+      boxLoja: ehCeop ? '' : box,
+      categoria: categoriaFinal,
       dataOcorrencia: dataOcorr,
       descricaoReclamacao: detalhes,
       aceiteLGPD: true
