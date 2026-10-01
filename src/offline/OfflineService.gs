@@ -3955,9 +3955,9 @@ function montarHtmlDocumentoPdf_(d) {
             </td>
           </tr>
         </table>
-        <div style="background-color:#F8FAFC; border-top:1px solid #E2E8F0; padding:6px 8px;">
-          <span style="font-size:6.5pt; color:#64748B; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:2px;">Equipe / Integrantes Autorizados:</span>
-          <div style="font-size:8pt; color:#334155;">${equipe}</div>
+        <div style="background-color:#F8FAFC; border-top:1px solid #CBD5E1; padding:6px 8px;">
+          <span style="font-size:6.5pt; color:#475569; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:3px;">Equipe / Integrantes Autorizados:</span>
+          <div style="font-size:9.5pt; color:#0F172A; font-weight:bold; line-height:1.45;">${equipe}</div>
         </div>
       </div>
     `;
@@ -4113,9 +4113,9 @@ function montarHtmlDocumentoPdf_(d) {
           </td>
         </tr>
       </table>
-      <div style="background-color:#F8FAFC; padding:6px 8px;">
-        <span style="font-size:6.5pt; color:#64748B; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:2px;">Descrição Específica do Serviço / Pertences:</span>
-        <div style="font-size:8.5pt; color:#334155; line-height:1.4;">${descricao}</div>
+      <div style="background-color:#F8FAFC; border-top:1px solid #CBD5E1; padding:7px 10px;">
+        <span style="font-size:6.5pt; color:#475569; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:3px;">Descrição Específica do Serviço / Pertences:</span>
+        <div style="font-size:9.5pt; color:#0F172A; font-weight:bold; line-height:1.45;">${descricao}</div>
       </div>
     </div>
 
