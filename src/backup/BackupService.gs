@@ -3167,6 +3167,7 @@ const S223_RPC_ALLOWLIST=Object.freeze([
   'appPrevisualizarRestauracaoS254', 'appProcessarNotificacoesS22', 'appPublicarCartografiaS255',
   'appPublicarTorresS2610F', 'appReabrirRascunhoCartograficoS255', 'appReabrirRascunhoTorresS2610F',
   'appReagendarInspecaoS19', 'appRegistrarEventoCicloS18', 'appRelatorioGerencialS14',
+  'appRemoverColunasLegadasRegistros',
   'appRemoverItemCatalogoReferenciaS2610R8', 'appRemoverReferenciaS2610R6C', 'appReposicionarReferenciaS2610R5',
   'appResolverAlertaS21', 'appBuscarLojistasParaLocalizador', 'appResolverLojistaDoPonto', 'appResolverLojistaPorLuc', 'appResolverPontoNivel0S268D', 'appResolverPontoNivel1S246',
   'appResolverPontoNivel3S244', 'appResolverPontoNivelS243', 'appResolverTorreS2610D',

@@ -636,7 +636,139 @@ function appGarantirColunasCeopAs() {
   return garantirColunasCeopAs_();
 }
 
-function CABECALHOS_REGISTROS_S3_(){return ['ID_REGISTRO','CLIENT_EVENT_ID','PROTOCOLO','CRIADO_EM','SINCRONIZADO_EM','STATUS','TIPO','FINALIDADE','TITULO','TEXTO_SINALIZACAO','DESCRICAO','MATERIAL','DIMENSOES','COR','FIXACAO','ILUMINADA','DUPLA_FACE','QR_CODE','BRAILLE','PICTOGRAMA','ESTADO_CONSERVACAO','CONDICAO','RESPONSAVEL','ID_MAPA_SETOR','MAPA','PISO','X_NORMALIZADO','Y_NORMALIZADO','ID_CORREDOR','RUA','ID_SEGMENTO','TRECHO','CRUZAMENTO','REFERENCIA','NUMERO_LOJA','LUC','NOME_LOJA','LOCALIZACAO_CONFIRMADA','DATA_INSTALACAO','VALIDADE','DATA_ULTIMA_INSPECAO','PROXIMA_INSPECAO','ORIGEM','USUARIO','DEVICE_ID','VERSAO_APP','ID_PLANTA_NIVEL','X_NIVEL','Y_NIVEL','ID_TORRE','CODIGO_TORRE','NOME_TORRE','ID_REPRESENTACAO_TORRE','VERSAO_GEOMETRIA_TORRE','ORIGEM_TORRE'].concat(COLUNAS_CEOP_AS_REGISTROS);}
+/**
+ * Lista de colunas legadas do antigo projeto de sinalização física (placas).
+ */
+const COLUNAS_LEGADAS_SINALIZACAO = Object.freeze([
+  'TEXTO_SINALIZACAO',
+  'MATERIAL',
+  'DIMENSOES',
+  'COR',
+  'FIXACAO',
+  'ILUMINADA',
+  'DUPLA_FACE',
+  'QR_CODE',
+  'BRAILLE',
+  'PICTOGRAMA',
+  'ESTADO_CONSERVACAO',
+  'CONDICAO',
+  'DATA_INSTALACAO',
+  'VALIDADE',
+  'DATA_ULTIMA_INSPECAO',
+  'PROXIMA_INSPECAO'
+]);
+
+/**
+ * Remove com segurança as 16 colunas legadas de sinalização física da aba REGISTROS,
+ * preservando todas as colunas de auditoria, geolocalização, torres e CEOP/AS.
+ *
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} [shAlvo] Aba REGISTROS (opcional)
+ * @returns {{ ok: boolean, totalRemovidas: number, colunasRemovidas: string[], totalColunasRestantes: number }}
+ */
+function removerColunasLegadasRegistros_(shAlvo) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = shAlvo || ss.getSheetByName('REGISTROS');
+  if (!sh) throw new Error('Aba REGISTROS não encontrada na planilha.');
+
+  const lastCol = sh.getLastColumn();
+  if (lastCol < 1) {
+    return { ok: true, totalRemovidas: 0, colunasRemovidas: [], totalColunasRestantes: 0 };
+  }
+
+  const headers = sh.getRange(1, 1, 1, lastCol).getValues()[0].map(v => String(v || '').trim());
+  const indicesParaDeletar = [];
+
+  headers.forEach((h, idx) => {
+    if (COLUNAS_LEGADAS_SINALIZACAO.includes(h)) {
+      indicesParaDeletar.push({ nome: h, coluna: idx + 1 });
+    }
+  });
+
+  if (!indicesParaDeletar.length) {
+    return {
+      ok: true,
+      totalRemovidas: 0,
+      colunasRemovidas: [],
+      totalColunasRestantes: lastCol,
+      mensagem: 'Nenhuma coluna legada de sinalização encontrada na aba REGISTROS.'
+    };
+  }
+
+  // Deletar da direita para a esquerda (decrescente) para evitar deslocamento de índices
+  indicesParaDeletar.sort((a, b) => b.coluna - a.coluna);
+  const removidas = [];
+  indicesParaDeletar.forEach(item => {
+    sh.deleteColumn(item.coluna);
+    removidas.push(item.nome);
+  });
+
+  console.log(JSON.stringify({
+    evento: 'CEOP_COLUNAS_LEGADAS_REMOVIDAS',
+    totalRemovidas: removidas.length,
+    colunas: removidas,
+    totalRestantes: sh.getLastColumn(),
+    ts: new Date().toISOString()
+  }));
+
+  return {
+    ok: true,
+    totalRemovidas: removidas.length,
+    colunasRemovidas: removidas,
+    totalColunasRestantes: sh.getLastColumn()
+  };
+}
+
+/**
+ * RPC para remoção de colunas legadas da aba REGISTROS por administradores.
+ */
+function appRemoverColunasLegadasRegistros() {
+  exigirPermissaoS14_('administrar');
+  return removerColunasLegadasRegistros_();
+}
+
+function CABECALHOS_REGISTROS_S3_() {
+  return [
+    'ID_REGISTRO',
+    'CLIENT_EVENT_ID',
+    'PROTOCOLO',
+    'CRIADO_EM',
+    'SINCRONIZADO_EM',
+    'STATUS',
+    'TIPO',
+    'FINALIDADE',
+    'TITULO',
+    'DESCRICAO',
+    'RESPONSAVEL',
+    'ID_MAPA_SETOR',
+    'MAPA',
+    'PISO',
+    'X_NORMALIZADO',
+    'Y_NORMALIZADO',
+    'ID_CORREDOR',
+    'RUA',
+    'ID_SEGMENTO',
+    'TRECHO',
+    'CRUZAMENTO',
+    'REFERENCIA',
+    'NUMERO_LOJA',
+    'LUC',
+    'NOME_LOJA',
+    'LOCALIZACAO_CONFIRMADA',
+    'ORIGEM',
+    'USUARIO',
+    'DEVICE_ID',
+    'VERSAO_APP',
+    'ID_PLANTA_NIVEL',
+    'X_NIVEL',
+    'Y_NIVEL',
+    'ID_TORRE',
+    'CODIGO_TORRE',
+    'NOME_TORRE',
+    'ID_REPRESENTACAO_TORRE',
+    'VERSAO_GEOMETRIA_TORRE',
+    'ORIGEM_TORRE'
+  ].concat(COLUNAS_CEOP_AS_REGISTROS);
+}
 function garantirCabecalhoS3_(aba,headers){const ss=SpreadsheetApp.getActive();let sh=ss.getSheetByName(aba);if(!sh)sh=ss.insertSheet(aba);if(sh.getMaxColumns()<headers.length)sh.insertColumnsAfter(sh.getMaxColumns(),headers.length-sh.getMaxColumns());sh.getRange(1,1,1,headers.length).setValues([headers]).setFontWeight('bold').setBackground('#171B68').setFontColor('#FFFFFF');sh.setFrozenRows(1);}
 function diagnosticoS3(){const ss=SpreadsheetApp.getActive(),cfg=lerConfigComoObjeto_(ss),checks=[];check_(checks,'APP_ID',cfg.APP_ID===APP.ID,cfg.APP_ID);check_(checks,'APP_VERSAO',cfg.APP_VERSAO===APP.VERSAO,cfg.APP_VERSAO);check_(checks,'APP_FASE',cfg.APP_FASE===APP.FASE,cfg.APP_FASE);check_(checks,'MODO_DADOS',cfg.MODO_DADOS===APP.MODO_DADOS,cfg.MODO_DADOS);check_(checks,'S2_INSTALADA',cfg.S2_STATUS==='INSTALADO',cfg.S2_STATUS);const sh=ss.getSheetByName('REGISTROS');check_(checks,'ABA_REGISTROS',!!sh,sh?'OK':'ausente');if(sh){const h=sh.getRange(1,1,1,Math.max(1,sh.getLastColumn())).getDisplayValues()[0];const falt=CABECALHOS_REGISTROS_S3_().filter(x=>!h.includes(x));check_(checks,'CABECALHO_REGISTROS',falt.length===0,falt.length?'faltando: '+falt.join(', '):`${CABECALHOS_REGISTROS_S3_().length} colunas`);}const mapas=listarMapasS2_();check_(checks,'MAPAS_ATIVOS',mapas.length===5,`${mapas.length} mapa(s)`);['CORREDORES','CORREDOR_PONTOS','SEGMENTOS_CORREDORES','CRUZAMENTOS','PONTOS_REFERENCIA','LOJAS_MAPA'].forEach(a=>check_(checks,`LOCALIZACAO_${a}`,!!ss.getSheetByName(a),ss.getSheetByName(a)?'OK':'ausente'));const falhas=checks.filter(c=>!c.ok);return {ok:!falhas.length,totalChecks:checks.length,totalFalhas:falhas.length,checks};}
 function mostrarDiagnosticoS3(){const d=diagnosticoS3();SpreadsheetApp.getUi().alert('Diagnóstico S3',`${d.ok?'CADASTRO S3 OK':'HÁ PENDÊNCIAS'}\n\n${d.checks.map(c=>`${c.ok?'✅':'❌'} ${c.nome}: ${c.detalhe}`).join('\n')}`,SpreadsheetApp.getUi().ButtonSet.OK);return d;}

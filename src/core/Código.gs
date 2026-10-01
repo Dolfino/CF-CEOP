@@ -72,6 +72,7 @@ function onOpen() {
     .addItem('Diagnóstico da release S26.10', 'diagnosticoS2610F2')
     .addSeparator()
     .addItem('Garantir colunas de Autorização de Serviço (AS)', 'menuGarantirColunasCeopAs')
+    .addItem('Limpar colunas legadas de sinalização física (REGISTROS)', 'menuRemoverColunasLegadasRegistros')
     .addItem('Inicializar estruturas de Patrimônio e Reclamações', 'menuInicializarPatrimonioEReclamacoes')
     .addItem('Sanear toponímia de boxes e galerias', 'menuSanearToponimiaLojasMapa')
     .addItem('Sanear caracteres corrompidos (acentuação / )', 'menuSanearCaracteresLojistas')
@@ -216,6 +217,46 @@ function menuGarantirColunasCeopAs() {
     }
   } catch (err) {
     ui.alert('Aviso', 'Falha ao verificar colunas: ' + (err?.message || err), ui.ButtonSet.OK);
+  }
+}
+
+/**
+ * Menu interativo para remover as 16 colunas legadas do antigo projeto de sinalização física.
+ */
+function menuRemoverColunasLegadasRegistros() {
+  const ui = SpreadsheetApp.getUi();
+  const resp = ui.alert(
+    'Limpeza de Colunas Legadas de Sinalização',
+    'Esta ação irá remover da aba REGISTROS as 16 colunas legadas do antigo projeto de placas físicas:\n\n' +
+    'TEXTO_SINALIZACAO, MATERIAL, DIMENSOES, COR, FIXACAO, ILUMINADA, DUPLA_FACE, QR_CODE, BRAILLE, PICTOGRAMA, ESTADO_CONSERVACAO, CONDICAO, DATA_INSTALACAO, VALIDADE, DATA_ULTIMA_INSPECAO, PROXIMA_INSPECAO.\n\n' +
+    'Todas as colunas do CEOP (AS, solicitante, prestador, datas, horários e localização) serão 100% PRESERVADAS.\n\nDeseja continuar?',
+    ui.ButtonSet.YES_NO
+  );
+
+  if (resp !== ui.Button.YES) {
+    ui.alert('Operação Cancelada', 'Nenhuma alteração foi feita na planilha.', ui.ButtonSet.OK);
+    return;
+  }
+
+  try {
+    const res = removerColunasLegadasRegistros_();
+    if (res.totalRemovidas > 0) {
+      ui.alert(
+        'Colunas Removidas com Sucesso',
+        `${res.totalRemovidas} colunas legadas foram removidas da aba REGISTROS.\n\n` +
+        `Colunas removidas:\n${res.colunasRemovidas.join(', ')}\n\n` +
+        `Total de colunas restantes: ${res.totalColunasRestantes}`,
+        ui.ButtonSet.OK
+      );
+    } else {
+      ui.alert(
+        'Nenhuma Coluna Encontrada',
+        'A aba REGISTROS já estava limpa! Nenhuma das 16 colunas legadas foi encontrada.',
+        ui.ButtonSet.OK
+      );
+    }
+  } catch (e) {
+    ui.alert('Erro ao Remover Colunas', 'Ocorreu um erro: ' + String(e?.message || e), ui.ButtonSet.OK);
   }
 }
 
