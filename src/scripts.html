@@ -27229,6 +27229,7 @@ Verificado agora: ${hora}` : ''}`;
     carregando: false,
     itens: [],
     filtrados: [],
+    planilhaUrl: '',
     kpis: { total: 0, abertas: 0, pendentes: 0, concluidas: 0 },
     paginaAtual: 1,
     itensPorPagina: 12,
@@ -27365,6 +27366,13 @@ Verificado agora: ${hora}` : ''}`;
       if (resp && resp.ok && Array.isArray(resp.itens)) {
         gestaoAsState.itens = resp.itens;
         if (resp.kpis) gestaoAsState.kpis = resp.kpis;
+        if (resp.planilhaUrl) {
+          gestaoAsState.planilhaUrl = resp.planilhaUrl;
+          const btnPlanilha = $('btnAbrirPlanilhaAs');
+          if (btnPlanilha) {
+            btnPlanilha.href = resp.planilhaUrl;
+          }
+        }
         atualizarOpcoesFiltroHorarioAs(resp.itens);
         aplicarFiltrosGestaoAs();
       } else {
@@ -28596,6 +28604,40 @@ Verificado agora: ${hora}` : ''}`;
         e.preventDefault();
         e.stopPropagation();
         imprimirRelatorioGestaoAs();
+      });
+    }
+
+    // Botão de Abrir Planilha de Dados no Google Sheets (Aba REGISTROS)
+    const btnPlanilha = $('btnAbrirPlanilhaAs');
+    if (btnPlanilha) {
+      btnPlanilha.addEventListener('click', async (e) => {
+        if (gestaoAsState.planilhaUrl && gestaoAsState.planilhaUrl !== '#') {
+          return;
+        }
+        e.preventDefault();
+        try {
+          btnPlanilha.classList.add('loading');
+          if (typeof notificarMallS2610 === 'function') {
+            notificarMallS2610('info', 'Localizando planilha de registros...');
+          }
+          const resp = await server('appObterUrlPlanilhaRegistros', {});
+          if (resp && resp.ok && resp.url) {
+            gestaoAsState.planilhaUrl = resp.url;
+            btnPlanilha.href = resp.url;
+            window.open(resp.url, '_blank', 'noopener,noreferrer');
+          } else {
+            throw new Error(resp?.mensagem || 'URL da planilha não encontrada.');
+          }
+        } catch (err) {
+          console.error('[GESTAO AS] Erro ao abrir planilha:', err);
+          if (typeof notificarMallS2610 === 'function') {
+            notificarMallS2610('erro', 'Não foi possível abrir a planilha: ' + (err.message || err));
+          } else {
+            alert('Não foi possível abrir a planilha: ' + (err.message || err));
+          }
+        } finally {
+          btnPlanilha.classList.remove('loading');
+        }
       });
     }
 

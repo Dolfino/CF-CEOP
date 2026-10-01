@@ -3277,10 +3277,13 @@ function appListarTodasAutorizacoesServico(filtros) {
 
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sh = ss.getSheetByName('REGISTROS');
+  const planilhaUrl = (sh ? (ss.getUrl() + '#gid=' + sh.getSheetId()) : ss.getUrl());
+
   if (!sh || sh.getLastRow() < 2) {
     return {
       ok: true,
       total: 0,
+      planilhaUrl: planilhaUrl,
       kpis: { total: 0, abertas: 0, pendentes: 0, concluidas: 0 },
       itens: []
     };
@@ -3388,7 +3391,23 @@ function appListarTodasAutorizacoesServico(filtros) {
       pendentes: countPendentes,
       concluidas: countConcluidas
     },
-    itens: itens
+    itens: itens,
+    planilhaUrl: planilhaUrl
+  };
+}
+
+/**
+ * Retorna o link direto para a planilha de registros/dados no Google Sheets (aba REGISTROS).
+ */
+function appObterUrlPlanilhaRegistros() {
+  exigirPermissaoLeituraLojistaS14_();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName('REGISTROS');
+  const url = sh ? (ss.getUrl() + '#gid=' + sh.getSheetId()) : ss.getUrl();
+  return {
+    ok: true,
+    url: url,
+    nomeAba: sh ? sh.getName() : 'REGISTROS'
   };
 }
 
