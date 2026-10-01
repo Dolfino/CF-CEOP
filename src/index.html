@@ -2641,6 +2641,18 @@
               <input id="filtroDataAteAs" type="date" title="Filtrar serviços até esta data">
             </label>
 
+            <label class="gestao-as-filter-horario">
+              <span>Horário Autorizado</span>
+              <select id="filtroHorarioAs" title="Filtrar por horário de realização do serviço">
+                <option value="">Todos os horários</option>
+                <option value="07:00 AS 09:00">07:00 às 09:00 (Manhã)</option>
+                <option value="19:00 AS 00:00">19:00 às 00:00 (Noite)</option>
+                <option value="07:00 AS 19:00">07:00 às 19:00 (Diurno)</option>
+                <option value="08:00 AS 17:00">Segunda 08:00 às 17:00</option>
+                <option value="08:00 AS 00:00">Segunda 08:00 às 00:00</option>
+              </select>
+            </label>
+
             <div class="lojistas-actions-row gestao-as-actions-row">
               <button id="btnRelatorioAs" type="button" class="btn-relatorio-as" title="Gerar relatório impresso / PDF da visualização atual com os filtros aplicados">
                 <span>🖨️</span> Imprimir Relatório

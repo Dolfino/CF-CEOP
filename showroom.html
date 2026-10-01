@@ -8683,6 +8683,16 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
   box-sizing: border-box;
 }
 
+.gestao-as-filter-horario {
+  flex: 0 0 190px !important;
+  min-width: 170px;
+}
+
+.gestao-as-filter-horario select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .gestao-as-actions-row {
   display: flex;
   align-items: center;
@@ -12147,6 +12157,18 @@ body.referencia-map-mode-s2610r4 #viewport.dragging *{
             <label class="gestao-as-filter-date">
               <span>Até (Fim)</span>
               <input id="filtroDataAteAs" type="date" title="Filtrar serviços até esta data">
+            </label>
+
+            <label class="gestao-as-filter-horario">
+              <span>Horário Autorizado</span>
+              <select id="filtroHorarioAs" title="Filtrar por horário de realização do serviço">
+                <option value="">Todos os horários</option>
+                <option value="07:00 AS 09:00">07:00 às 09:00 (Manhã)</option>
+                <option value="19:00 AS 00:00">19:00 às 00:00 (Noite)</option>
+                <option value="07:00 AS 19:00">07:00 às 19:00 (Diurno)</option>
+                <option value="08:00 AS 17:00">Segunda 08:00 às 17:00</option>
+                <option value="08:00 AS 00:00">Segunda 08:00 às 00:00</option>
+              </select>
             </label>
 
             <div class="lojistas-actions-row gestao-as-actions-row">

@@ -27240,7 +27240,8 @@ Verificado agora: ${hora}` : ''}`;
       setor: '',
       periodoPreset: '',
       dataDe: '',
-      dataAte: ''
+      dataAte: '',
+      horario: ''
     }
   };
 
@@ -27364,6 +27365,7 @@ Verificado agora: ${hora}` : ''}`;
       if (resp && resp.ok && Array.isArray(resp.itens)) {
         gestaoAsState.itens = resp.itens;
         if (resp.kpis) gestaoAsState.kpis = resp.kpis;
+        atualizarOpcoesFiltroHorarioAs(resp.itens);
         aplicarFiltrosGestaoAs();
       } else {
         throw new Error(resp?.mensagem || 'Falha ao obter lista de AS.');
@@ -27386,6 +27388,7 @@ Verificado agora: ${hora}` : ''}`;
     const setorFiltro = String(gestaoAsState.filtros.setor || '').toUpperCase();
     const deIso = String(gestaoAsState.filtros.dataDe || '').trim();
     const ateIso = String(gestaoAsState.filtros.dataAte || '').trim();
+    const horarioFiltro = String(gestaoAsState.filtros.horario || '').trim().toUpperCase();
 
     // Recalcula KPIs sobre a totalidade de itens
     let abertas = 0, concluidas = 0, pendentes = 0;
@@ -27428,6 +27431,15 @@ Verificado agora: ${hora}` : ''}`;
       if (setorFiltro) {
         const setorTexto = String(it.mapa || it.idMapaSetor || '').toUpperCase();
         if (!setorTexto.includes(setorFiltro)) return false;
+      }
+
+      // Filtro de Horário Autorizado
+      if (horarioFiltro) {
+        const horItem = String(it.horario || '').toUpperCase().replace(/ÀS/g, 'AS');
+        const horSegItem = String(it.horarioSegunda || '').toUpperCase().replace(/ÀS/g, 'AS');
+        const textoHorarios = `${horItem} ${horSegItem}`;
+        const termoFiltro = horarioFiltro.replace(/ÀS/g, 'AS');
+        if (!textoHorarios.includes(termoFiltro)) return false;
       }
 
       // Filtro de Data / Período / Semana
@@ -27568,7 +27580,13 @@ Verificado agora: ${hora}` : ''}`;
         ? `${esc(dIni)}${dFim && dFim !== dIni ? ' a ' + esc(dFim) : ''}`
         : (esc(it.criadoEm ? String(it.criadoEm).split(' ')[0] : '') || '—');
 
-      const horarioStr = it.horario ? `<div style="font-size:11px; color:#64748B;">⏰ ${esc(it.horario)}</div>` : '';
+      let horarioStr = '';
+      if (it.horario) {
+        horarioStr += `<div style="font-size:11px; color:#475569; font-weight:600;">⏰ ${esc(it.horario)}</div>`;
+      }
+      if (it.horarioSegunda && !it.horarioSegunda.toUpperCase().includes('NÃO SE APLICA') && !it.horarioSegunda.toUpperCase().includes('NAO SE APLICA')) {
+        horarioStr += `<div style="font-size:10px; color:#2563EB; font-weight:600; margin-top:2px;">📅 ${esc(it.horarioSegunda)}</div>`;
+      }
 
       const btnConcluirHtml = isConcluido
         ? `<button type="button" class="btn-as-tabela btn-as-tab-reabrir" data-idx="${inicio + i}" title="Reabrir Autorização de Serviço">🔄 Reabrir</button>`
@@ -27855,6 +27873,8 @@ Verificado agora: ${hora}` : ''}`;
     else if (gestaoAsState.filtros.local === 'LOJA') textoLocal = 'Apenas Lojas / Boxes';
 
     const textoSetor = gestaoAsState.filtros.setor ? `Setor ${gestaoAsState.filtros.setor}` : 'Todos os setores';
+    const selHorario = $('filtroHorarioAs');
+    const textoHorario = selHorario?.options[selHorario.selectedIndex]?.text || gestaoAsState.filtros.horario || 'Todos os horários';
     const textoBusca = gestaoAsState.filtros.busca ? `"${gestaoAsState.filtros.busca}"` : 'Sem pesquisa textual';
 
     let countAbertas = 0, countPendentes = 0, countConcluidas = 0, countCanceladas = 0;
@@ -27897,8 +27917,13 @@ Verificado agora: ${hora}` : ''}`;
 
       const dIni = formatarDataIsoCurta(it.dataInicio);
       const dFim = formatarDataIsoCurta(it.dataFim);
-      const dataStr = dIni ? `${dIni}${dFim && dFim !== dIni ? ' a ' + dFim : ''}` : (it.criadoEm ? String(it.criadoEm).split(' ')[0] : '—');
-      const horarioStr = it.horario ? `<div style="font-size:7.5pt; color:#475569; margin-top:2px;">⏰ ${esc(it.horario)}</div>` : '';
+      let horarioStr = '';
+      if (it.horario) {
+        horarioStr += `<div style="font-size:7.5pt; color:#334155; font-weight:600; margin-top:2px;">⏰ ${esc(it.horario)}</div>`;
+      }
+      if (it.horarioSegunda && !it.horarioSegunda.toUpperCase().includes('NÃO SE APLICA') && !it.horarioSegunda.toUpperCase().includes('NAO SE APLICA')) {
+        horarioStr += `<div style="font-size:7pt; color:#2563EB; font-weight:600; margin-top:1px;">📅 ${esc(it.horarioSegunda)}</div>`;
+      }
 
       linhasHtml += `
         <tr>
@@ -28280,6 +28305,11 @@ Verificado agora: ${hora}` : ''}`;
         <span class="filter-label">Setor:</span>
         <span class="filter-val">${esc(textoSetor)}</span>
       </div>
+      ${gestaoAsState.filtros.horario ? `
+      <div class="filter-item">
+        <span class="filter-label">Horário:</span>
+        <span class="filter-val">${esc(textoHorario)}</span>
+      </div>` : ''}
       ${gestaoAsState.filtros.busca ? `
       <div class="filter-item">
         <span class="filter-label">Busca:</span>
@@ -28377,6 +28407,48 @@ Verificado agora: ${hora}` : ''}`;
         alert('Por favor, permita pop-ups no navegador para visualizar e imprimir o relatório.');
       }
     }
+  }
+
+  function atualizarOpcoesFiltroHorarioAs(itens = []) {
+    const sel = $('filtroHorarioAs');
+    if (!sel) return;
+    const valorAtual = sel.value || gestaoAsState.filtros.horario || '';
+
+    const opcoesPadrao = [
+      { valor: '', texto: 'Todos os horários' },
+      { valor: '07:00 AS 09:00', texto: '07:00 às 09:00 (Manhã)' },
+      { valor: '19:00 AS 00:00', texto: '19:00 às 00:00 (Noite)' },
+      { valor: '07:00 AS 19:00', texto: '07:00 às 19:00 (Diurno)' },
+      { valor: '08:00 AS 17:00', texto: 'Segunda 08:00 às 17:00' },
+      { valor: '08:00 AS 00:00', texto: 'Segunda 08:00 às 00:00' }
+    ];
+
+    const valoresPadrao = new Set(opcoesPadrao.map(o => o.valor));
+    const extras = new Set();
+    itens.forEach(it => {
+      [it.horario, it.horarioSegunda].forEach(h => {
+        if (!h) return;
+        const limpo = String(h).trim();
+        if (limpo && !limpo.toUpperCase().includes('NÃO SE APLICA') && !limpo.toUpperCase().includes('NAO SE APLICA')) {
+          const limpoNorm = limpo.toUpperCase().replace(/ÀS/g, 'AS');
+          const bateu = Array.from(valoresPadrao).some(vp => vp && limpoNorm.includes(vp));
+          if (!bateu) extras.add(limpo);
+        }
+      });
+    });
+
+    let html = opcoesPadrao.map(o => `<option value="${esc(o.valor)}"${o.valor === valorAtual ? ' selected' : ''}>${esc(o.texto)}</option>`).join('');
+
+    if (extras.size > 0) {
+      html += `<optgroup label="Outros horários cadastrados">`;
+      extras.forEach(extra => {
+        html += `<option value="${esc(extra)}"${extra === valorAtual ? ' selected' : ''}>${esc(extra)}</option>`;
+      });
+      html += `</optgroup>`;
+    }
+
+    sel.innerHTML = html;
+    if (valorAtual) sel.value = valorAtual;
   }
 
   function instalarGestaoAs() {
@@ -28506,6 +28578,15 @@ Verificado agora: ${hora}` : ''}`;
     }
     if (inputDataAte) {
       inputDataAte.addEventListener('change', aoAlterarDatasManuais);
+    }
+
+    // Select de Horário Autorizado
+    const selHorario = $('filtroHorarioAs');
+    if (selHorario) {
+      selHorario.addEventListener('change', () => {
+        gestaoAsState.filtros.horario = selHorario.value;
+        aplicarFiltrosGestaoAs();
+      });
     }
 
     // Botão de Imprimir Relatório da Visualização Atual
