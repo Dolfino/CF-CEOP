@@ -27834,7 +27834,8 @@ Verificado agora: ${hora}` : ''}`;
   }
 
   function imprimirRelatorioGestaoAs() {
-    const itens = gestaoAsState.filtrados;
+    try {
+      const itens = gestaoAsState.filtrados;
     if (!itens || itens.length === 0) {
       alert('Nenhuma Autorização de Serviço encontrada com os filtros atuais para gerar o relatório.');
       return;
@@ -27925,6 +27926,9 @@ Verificado agora: ${hora}` : ''}`;
 
       const dIni = formatarDataIsoCurta(it.dataInicio);
       const dFim = formatarDataIsoCurta(it.dataFim);
+      const dataStr = dIni
+        ? `${dIni}${dFim && dFim !== dIni ? ' a ' + dFim : ''}`
+        : (it.criadoEm ? String(it.criadoEm).split(' ')[0] : '—');
       let horarioStr = '';
       if (it.horario) {
         horarioStr += `<div style="font-size:7.5pt; color:#334155; font-weight:600; margin-top:2px;">⏰ ${esc(it.horario)}</div>`;
@@ -28414,6 +28418,10 @@ Verificado agora: ${hora}` : ''}`;
       } else {
         alert('Por favor, permita pop-ups no navegador para visualizar e imprimir o relatório.');
       }
+    }
+  } catch (err) {
+      console.error('[GESTAO AS] Erro ao imprimir relatório:', err);
+      alert('Erro ao gerar relatório de impressão: ' + (err?.message || err));
     }
   }
 
